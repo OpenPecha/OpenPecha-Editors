@@ -48,6 +48,7 @@ import { mapGetters } from "vuex";
 import { mapActions } from "vuex";
 
 export default {
+  name: "LoginRegister",
   data() {
     return {
       showRegisterOwner: false,

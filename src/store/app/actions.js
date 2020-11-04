@@ -10,4 +10,5 @@ export function logout({ commit }, payload) {
     Loading.show();
     commit('setIsAuthenticated', false)
     Loading.hide()
+    this.$router.push("/login")
 }

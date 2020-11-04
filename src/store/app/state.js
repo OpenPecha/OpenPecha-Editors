@@ -1,6 +1,8 @@
 export default function () {
     return {
         // User
-        isAuthenticated: false
+        isAuthenticated: false,
+        //toolbar
+        showToolbar: true
     }
 }

@@ -1,11 +1,14 @@
 <template>
-  <q-page class="flex flex-center">
-    <img alt="Quasar logo" src="~assets/quasar-logo-full.svg" />
+  <q-page padding>
+    <editor />
   </q-page>
 </template>
 
 <script>
 export default {
   name: "PageIndex",
+  components: {
+    editor: require("components/Editor.vue").default,
+  },
 };
 </script>

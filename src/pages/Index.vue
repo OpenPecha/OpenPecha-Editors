@@ -8,7 +8,7 @@
 export default {
   name: "PageIndex",
   components: {
-    editor: require("components/Editor.vue").default,
+    editor: require("components/Editor/Editor.vue").default,
   },
 };
 </script>

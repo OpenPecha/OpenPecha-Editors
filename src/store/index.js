@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import app from './app'
+import editor from './editor'
 
 
 Vue.use(Vuex)
@@ -17,7 +18,8 @@ Vue.use(Vuex)
 export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
     modules: {
-      app
+      app,
+      editor
     },
 
     // enable strict mode (adds overhead!)

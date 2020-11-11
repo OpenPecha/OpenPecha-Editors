@@ -1,6 +1,21 @@
 export default function () {
     return {
-        qeditor: '<pre>Check out the two different types of dropdowns' +
-                 ' in each of the "Align" buttons.</pre> '
+        editor: null,
+        content: '',
+        options: {
+            mode: "hfml",
+            lineNumbers: true,
+            viewportMargin: Infinity,
+            lineWrapping: true,
+            theme: "default",
+            extraKeys: {
+                F11: function (cm) {
+                cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+                },
+                Esc: function (cm) {
+                if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+                },
+            },
+        }
     }
 }

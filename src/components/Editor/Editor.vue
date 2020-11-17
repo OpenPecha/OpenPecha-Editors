@@ -27,10 +27,11 @@
     <!-- <div>
       <textarea ref="textarea"></textarea>
     </div> -->
-    <entity-item-box
+    <Entities
       :labels="items"
       :text="currentDoc.text"
       :entities="currentDoc.annotations"
+      :add-annotation="addAnnotation"
     />
   </div>
 </template>
@@ -54,7 +55,7 @@ import "./mode/hfml.js";
 
 export default {
   components: {
-    "entity-item-box": require("components/Editor/EntityItemBox").default,
+    Entities: require("components/Editor/Entities").default,
   },
   data() {
     return {
@@ -148,6 +149,7 @@ export default {
   },
   methods: {
     ...mapGetters("editor", ["getContent"]),
+
     toggle(e) {
       const target = this.$refs.editor;
       console.log(target);
@@ -162,6 +164,16 @@ export default {
           // uh, oh, error!!
           // console.error(err)
         });
+    },
+
+    addAnnotation(startOffset, endOffset, labelId) {
+      const payload = {
+        id: Math.floor(Math.random() * Math.floor(Number.MAX_SAFE_INTEGER)),
+        start_offset: startOffset,
+        end_offset: endOffset,
+        label: labelId,
+      };
+      this.currentDoc.annotations.push(payload);
     },
   },
   computed: {

@@ -1,13 +1,13 @@
 <template>
-  <span v-if="label" class="cursor-pointer">
-    <span>
+  <span v-if="entityLabel" class="cursor-pointer">
+    <span class="labeled-entity">
       {{ content }}
     </span>
-    <q-menu auto-close>
+    <q-menu v-model="showMenu">
       <q-list dense>
-        <q-item v-for="(item, i) in labels" :key="i" clickable v-close-popup>
+        <q-item v-for="(label, i) in labels" :key="i" clickable v-close-popup>
           <q-item-section>
-            <q-item-label v-text="item.text" />
+            <q-item-label v-text="label.text" />
           </q-item-section>
         </q-item>
       </q-list>
@@ -24,7 +24,7 @@ export default {
       default: "",
       required: true,
     },
-    label: {
+    entityLabel: {
       type: String,
       default: "",
     },
@@ -74,5 +74,9 @@ export default {
 };
 </script>
 
-<style lang="sass" scoped>
+<style scoped>
+.labeled-entity {
+  background-color: rgba(255, 165, 0, 0.2);
+  border-bottom: 2px solid orange;
+}
 </style>

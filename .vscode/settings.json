@@ -1,5 +1,6 @@
 {
   
   "vetur.experimental.templateInterpolationService": true,
-  "editor.defaultFormatter": "octref.vetur"
+  "editor.defaultFormatter": "octref.vetur",
+  "vetur.validation.interpolation": false
 }

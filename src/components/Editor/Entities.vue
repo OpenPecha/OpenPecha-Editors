@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @click="open" @touchend="open">
     <Entity
       v-for="(chunk, i) in chunks"
       :key="i"
@@ -9,30 +9,36 @@
       :color="chunk.color"
       :labels="labels"
     />
-    <q-menu :value="showMenu">
-      <q-list dense>
-        <q-item
-          clickable
-          v-close-popup
-          v-for="(label, i) in labels"
-          :key="i"
-          v-shortkey="[label.suffix_key]"
-          @shortkey="assignLabel(label.id)"
-          @click="assignLabel(label.id)"
-        >
-          <q-item-section>
-            <q-item-label v-text="label.text" />
-          </q-item-section>
-        </q-item>
-      </q-list>
-    </q-menu>
+    <div>
+      <q-menu v-model="showMenu" :offset="[x, y]">
+        <q-list dense>
+          <q-item
+            clickable
+            v-close-popup
+            v-for="(label, i) in labels"
+            :key="i"
+            @click="assignLabel(label.id)"
+          >
+            <q-item-section>
+              <q-item-label v-text="label.text" />
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </q-menu>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  components: {
-    Entity: require("components/Editor/Entity").default,
+  data() {
+    return {
+      showMenu: false,
+      x: 0,
+      y: 0,
+      start: 0,
+      end: 0,
+    };
   },
   props: {
     text: {
@@ -56,14 +62,8 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      showMenu: false,
-      x: 0,
-      y: 0,
-      start: 0,
-      end: 0,
-    };
+  components: {
+    Entity: require("components/Editor/Entity").default,
   },
   computed: {
     sortedEntities() {
@@ -139,6 +139,7 @@ export default {
       this.showMenu = false;
       this.x = e.clientX || e.changedTouches[0].clientX;
       this.y = e.clientY || e.changedTouches[0].clientY;
+      console.log(this.x, this.y);
       this.$nextTick(() => {
         this.showMenu = true;
       });

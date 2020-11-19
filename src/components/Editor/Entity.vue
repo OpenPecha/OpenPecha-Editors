@@ -3,7 +3,7 @@
     <span class="labeled-entity">
       {{ content }}
     </span>
-    <q-menu v-model="showMenu">
+    <q-menu v-model="showMenu" separate-close-popup>
       <q-list dense>
         <q-item v-for="(label, i) in labels" :key="i" clickable v-close-popup>
           <q-item-section>

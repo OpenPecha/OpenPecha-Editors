@@ -1,7 +1,6 @@
 export default function () {
     return {
         editor: null,
-        content: '',
         options: {
             mode: "hfml",
             lineNumbers: true,

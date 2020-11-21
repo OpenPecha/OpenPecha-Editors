@@ -1,10 +1,10 @@
 <template>
   <q-header elevated class="bg-white text-primary">
-    <q-toolbar v-if="$q.platform.is.desktop">
+    <!-- <q-toolbar v-if="$q.platform.is.desktop">
       <q-toolbar-title class="text-bold">OpenPecha Editor</q-toolbar-title>
 
       <q-btn flat dense icon="exit_to_app" label="Logout" @click="logout" />
-    </q-toolbar>
+    </q-toolbar> -->
   </q-header>
 </template>
 

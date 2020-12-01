@@ -15,6 +15,8 @@ export default function () {
                 if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
                 },
             },
-        }
+        },
+        org: "OpenPecha",
+        repo: "P000100",
     }
 }

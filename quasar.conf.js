@@ -18,9 +18,10 @@ module.exports = function (/* ctx */) {
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/boot-files
     boot: [
-      
+
       'i18n',
       'axios',
+      'vplugins'
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
@@ -65,6 +66,7 @@ module.exports = function (/* ctx */) {
       // https://quasar.dev/quasar-cli/handling-webpack
       extendWebpack (cfg) {
       },
+      devtool: 'source-map'
     },
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer

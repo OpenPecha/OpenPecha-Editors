@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <div class="editor">
     <div id="editor-toolbar">
       <div class="toolbar-group">
         <q-btn
           flat
           dense
-          @click="drawerLeft = !drawerLeft"
+          @click="showTextList = !showTextList"
           icon="menu"
           class="text-list-btn"
           color="grey-7"
@@ -65,15 +65,21 @@
         <q-btn flat round dense icon="get_app" color="grey-7" size="sm" />
       </div>
     </div>
-    <div>
-      <textarea ref="editorContent" cols="30" rows="10"></textarea>
+    <div class="editorContainer row">
+      <div v-show="showTextList" class="text-navigation col-2">
+        <TextList :layer="currentLayer" />
+      </div>
+      <div class="textarea col">
+        <textarea id="editorTextarea" cols="30" rows="10"></textarea>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import CodeMirror from "codemirror";
+import { Octokit } from "@octokit/core";
 
 // basic
 import "codemirror/lib/codemirror.css";
@@ -91,13 +97,27 @@ import "./mode/hfml.js";
 export default {
   data() {
     return {
-      layers: ["Publicaiton", "Citation", "Sabche", "Yigchung"],
+      layers: ["BaseText", "Citation", "Sabche", "Yigchung"],
       themes: ["Default", "Darcula", "Monospace"],
       currentTheme: "Default",
-      currentLayer: "Publication",
+      currentLayer: "BaseText",
+      showTextList: false,
     };
   },
+  components: {
+    TextList: require("components/Editor/TextList").default,
+  },
+  computed: {
+    ...mapGetters("editor", [
+      "getContent",
+      "getEditor",
+      "getOptions",
+      "org",
+      "repo",
+    ]),
+  },
   methods: {
+    ...mapActions("editor", ["setOrg", "setRepo"]),
     selectLayer(layer) {
       this.currentLayer = layer;
     },
@@ -106,11 +126,11 @@ export default {
       this.currentTheme = theme;
     },
   },
-  computed: {
-    ...mapGetters("editor", ["getContent", "getEditor", "getOptions"]),
-  },
   mounted: function () {
-    editor = CodeMirror.fromTextArea(this.$refs.editorContent, this.options);
+    this.editor = CodeMirror.fromTextArea(
+      document.getElementById("editorTextarea"),
+      this.options
+    );
   },
 };
 </script>
@@ -121,17 +141,14 @@ export default {
   align-items: center;
   height: 30px;
   width: 100%;
-  border-top: 1px solid #ccc;
-  border-right: 1px solid #ccc;
-  border-left: 1px solid #ccc;
+  border: 1px solid #ccc;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
 }
 
 .toolbar-group {
   display: flex;
-  align-items: center;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   position: relative;
   margin: 0 4px;
 }
@@ -146,14 +163,10 @@ export default {
   background: rgba(0, 0, 0, 0.12);
 }
 
-.selector {
-  width: 80px;
-  height: inherit;
-  font-size: 10px;
-}
-
 .CodeMirror {
-  border: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
   background: white;
   border-bottom-left-radius: 3px;
   border-bottom-right-radius: 3px;

@@ -69,10 +69,7 @@ export default {
 
     async login(newwindow) {
       console.log(this.authUrl, this.accessTokenUrl);
-      openWindow(
-        "https://github.com/login/oauth/authorize?client_id=ee82383cf85381446486",
-        this.$t("login")
-      );
+      openWindow(this.authUrl, this.$t("login"));
     },
 
     onMessage(e) {

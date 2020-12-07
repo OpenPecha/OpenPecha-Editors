@@ -5,7 +5,8 @@ export default function () {
 
         // Oauth
         userAccessToken: null,
-        authUrl: "https://github.com/login/oauth/authorize",
-        clientId: "ee82383cf85381446486",
+        authUrlBase: "https://github.com/login/oauth/authorize",
+        accessTokenUrlBase: "http://localhost:8000/api/v1/login/oauth/access_token",
+        oauthClientId: "ee82383cf85381446486",
     }
 }

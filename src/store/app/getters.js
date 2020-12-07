@@ -3,9 +3,13 @@ export function isAuthenticated(state) {
 }
 
 export function authUrl(state) {
-    return state.authUrl + "?client_id=" + state.clientId;
+    return state.authUrlBase + "?client_id=" + state.oauthClientId;
 }
 
 export function accessTokenUrl(state) {
-    return state.accessTokenUrl;
+    return state.accessTokenUrlBase;
+}
+
+export function userAccessToken(state) {
+    return state.userAccessToken;
 }

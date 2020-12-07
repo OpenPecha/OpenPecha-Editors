@@ -13,21 +13,8 @@ import { Octokit } from "@octokit/core";
 export default {
   props: ["layer"],
   methods: {
-    async getOAuthToken() {
-      const response = await fetch("/users/api/auth");
-      const data = await response.json();
-      return data["token"];
-    },
-
-    async getGHClient() {
-      // const oauth_token = await getOAuthToken();
-      const oauth_token = "b0928c5b358cd890f42e44bd29c5de68e52fc267";
-      const octokit = new Octokit({ auth: oauth_token });
-      return octokit;
-    },
-
     async getBranchContent(org, repo, branch) {
-      const ghClient = await this.getGHClient();
+      const ghClient = new Octokit({ auth: this.userAccessToken });
       const response = await ghClient.request(
         "GET /repos/{owner}/{repo}/contents/{path}",
         {
@@ -39,9 +26,12 @@ export default {
       return response.data;
     },
   },
+
   computed: {
     ...mapGetters("editor", ["org", "repo"]),
+    ...mapGetters("app", ["userAccessToken"]),
   },
+
   asyncComputed: {
     textList() {
       return this.getBranchContent(this.org, this.repo, this.layer);

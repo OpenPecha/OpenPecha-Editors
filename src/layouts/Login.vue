@@ -60,7 +60,7 @@ export default {
   },
 
   methods: {
-    ...mapActions("app", ["login", "logout"]),
+    ...mapActions("app", ["login", "logout", "getUserAccessToken"]),
 
     oauthPopupFlow() {
       const newWindow = openWindow("", this.$t("login"));
@@ -68,7 +68,6 @@ export default {
     },
 
     async login(newwindow) {
-      console.log(this.authUrl, this.accessTokenUrl);
       openWindow(this.authUrl, this.$t("login"));
     },
 
@@ -76,11 +75,10 @@ export default {
       if (e.origin !== window.origin || !e.data.code) {
         return;
       }
-      this.getAcessToken(e.data.code);
-    },
 
-    getAcessToken(code) {
-      console.log(code);
+      this.$store.dispatch("app/getUserAccessToken", {
+        code: e.data.code,
+      });
     },
   },
 };

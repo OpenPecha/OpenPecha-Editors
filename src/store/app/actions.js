@@ -16,4 +16,5 @@ export async function getUserAccessToken({ commit, getters }, payload) {
     });
     commit("setUserAccessToken", response.data.access_token)
     commit('setIsAuthenticated', true)
+    this.$router.push("/")
 }

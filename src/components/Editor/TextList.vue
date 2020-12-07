@@ -1,6 +1,13 @@
 <template>
   <q-list>
-    <q-item dense clickable v-for="text in textList" :key="text.name">
+    <q-item
+      dense
+      clickable
+      v-for="(text, index) in textList"
+      :key="text.name"
+      @click="open(text)"
+      :ref="'text' + index"
+    >
       <q-item-section class="text-grey-7">{{ text.name }}</q-item-section>
     </q-item>
   </q-list>
@@ -25,6 +32,11 @@ export default {
       );
       return response.data;
     },
+
+    open(text) {
+      console.log(text.name);
+      this.$emit("open-text", text);
+    },
   },
 
   computed: {
@@ -36,6 +48,10 @@ export default {
     textList() {
       return this.getBranchContent(this.org, this.repo, this.layer);
     },
+  },
+
+  updated() {
+    this.$refs["text0"][0].$el.click();
   },
 };
 </script>

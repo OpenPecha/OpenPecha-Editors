@@ -67,7 +67,7 @@
     </div>
     <div class="editorContainer row">
       <div v-show="showTextList" class="text-navigation col-2">
-        <TextList :layer="currentLayer" />
+        <TextList :layer="currentLayer" @open-text="openText" />
       </div>
       <div class="textarea col">
         <textarea id="editorTextarea" cols="30" rows="10"></textarea>
@@ -78,6 +78,7 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import { Loading } from "quasar";
 import CodeMirror from "codemirror";
 import { Octokit } from "@octokit/core";
 
@@ -125,7 +126,40 @@ export default {
     selectTheme(theme) {
       this.currentTheme = theme;
     },
+
+    base64ToUtf8(str) {
+      return decodeURIComponent(escape(window.atob(str)));
+    },
+
+    utf8ToBase64(str) {
+      return window.btoa(unescape(encodeURIComponent(str)));
+    },
+
+    async getText(owner, repo, sha) {
+      const ghClient = new Octokit({ auth: this.userAccessToken });
+      const gh_response = await ghClient.request(
+        "GET /repos/{owner}/{repo}/git/blobs/{file_sha}",
+        {
+          owner: owner,
+          repo: repo,
+          file_sha: sha,
+        }
+      );
+
+      const response = await fetch(gh_response["url"]);
+      const data = await response.json();
+      return this.base64ToUtf8(data["content"]);
+    },
+
+    async openText(textFile) {
+      Loading.show();
+      const text = await this.getText(this.org, this.repo, textFile.sha);
+      Loading.hide();
+      this.editor.doc.setValue(text);
+      this.showTextList = false;
+    },
   },
+
   mounted: function () {
     this.editor = CodeMirror.fromTextArea(
       document.getElementById("editorTextarea"),

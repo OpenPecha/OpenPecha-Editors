@@ -34,7 +34,6 @@ export default {
     },
 
     open(text) {
-      console.log(text.name);
       this.$emit("open-text", text);
     },
   },

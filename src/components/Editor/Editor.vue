@@ -62,6 +62,15 @@
         </q-btn-dropdown>
       </div>
       <div class="toolbar-group">
+        <q-btn
+          flat
+          round
+          dense
+          @click="saveText"
+          icon="save"
+          color="grey-7"
+          size="sm"
+        />
         <q-btn flat round dense icon="get_app" color="grey-7" size="sm" />
       </div>
     </div>
@@ -103,19 +112,15 @@ export default {
       currentTheme: "Default",
       currentLayer: "BaseText",
       showTextList: false,
+      currentTextFile: null,
     };
   },
   components: {
     TextList: require("components/Editor/TextList").default,
   },
   computed: {
-    ...mapGetters("editor", [
-      "getContent",
-      "getEditor",
-      "getOptions",
-      "org",
-      "repo",
-    ]),
+    ...mapGetters("editor", ["getEditor", "getOptions", "org", "repo"]),
+    ...mapGetters("app", ["userAccessToken"]),
   },
   methods: {
     ...mapActions("editor", ["setOrg", "setRepo"]),
@@ -135,12 +140,12 @@ export default {
       return window.btoa(unescape(encodeURIComponent(str)));
     },
 
-    async getText(owner, repo, sha) {
+    async getText(org, repo, sha) {
       const ghClient = new Octokit({ auth: this.userAccessToken });
       const gh_response = await ghClient.request(
         "GET /repos/{owner}/{repo}/git/blobs/{file_sha}",
         {
-          owner: owner,
+          owner: org,
           repo: repo,
           file_sha: sha,
         }
@@ -157,6 +162,47 @@ export default {
       Loading.hide();
       this.editor.doc.setValue(text);
       this.showTextList = false;
+      this.currentTextFile = textFile;
+    },
+
+    async saveText() {
+      const ghClient = new Octokit({ auth: this.userAccessToken });
+      Loading.show();
+      const response = await ghClient.request(
+        "PUT /repos/{owner}/{repo}/contents/{path}",
+        {
+          owner: this.org,
+          repo: this.repo,
+          branch: this.currentLayer,
+          path: this.currentTextFile.path,
+          message: "update",
+          content: this.utf8ToBase64(this.editor.doc.getValue()),
+          sha: this.currentTextFile.sha,
+        }
+      );
+      // const fileUpdateUrl = `https://api.github.com/repos/${this.org}/${this.repo}/contents/${this.currentTextFile.path}`;
+      // console.log(fileUpdateUrl);
+      // const response = await this.$axios.put(fileUpdateUrl, {
+      //   headers: {
+      //     Authorization: `token ${this.userAccessToken}`,
+      //   },
+      //   data: {
+      //     path: this.currentTextFile.path,
+      //     branch: this.currentLayer,
+      //     message: "update",
+      //     content: this.utf8ToBase64(this.editor.doc.getValue()),
+      //     sha: this.currentLayer.sha,
+      //   },
+      // });
+      Loading.hide();
+
+      if (response["status"] == 200) {
+        alert("Changes saved!");
+        const new_sha = response["data"]["content"]["sha"];
+        $(editorForm).children("#sha").val(new_sha);
+      } else {
+        alert("Changes cannot be saved");
+      }
     },
   },
 
@@ -165,6 +211,12 @@ export default {
       document.getElementById("editorTextarea"),
       this.options
     );
+  },
+
+  beforeMount() {
+    if (this.userAccessToken == null) {
+      // this.$router.push("/login");
+    }
   },
 };
 </script>
@@ -187,7 +239,7 @@ export default {
   margin: 0 4px;
 }
 
-.toolbar-group:before {
+.toolbar-group:not(:first-child)::before {
   content: "";
   position: absolute;
   left: -4px;

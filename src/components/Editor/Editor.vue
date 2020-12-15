@@ -13,7 +13,7 @@
         />
       </div>
 
-      <div class="toolbar-group">
+      <div v-if="extraTools" class="toolbar-group">
         <q-btn-dropdown
           flat
           dense
@@ -63,7 +63,7 @@
         </q-btn-dropdown>
       </div>
 
-      <div class="toolbar-group">
+      <div v-if="extraTools" class="toolbar-group">
         <q-btn
           flat
           round
@@ -131,6 +131,10 @@ export default {
     saveText: {
       type: Function,
     },
+    extraTools: {
+      type: Boolean,
+      default: true,
+    },
   },
 
   data() {
@@ -138,7 +142,7 @@ export default {
       editor: null,
       options: {
         mode: "hfml",
-        lineNumbers: true,
+        lineNumbers: false,
         viewportMargin: Infinity,
         lineWrapping: true,
         theme: "default",

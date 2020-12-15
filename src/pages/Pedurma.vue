@@ -6,11 +6,34 @@
       />
     </q-card>
 
-    <div class="editor">
+    <div class="edit">
+      <div class="edit__select">
+        <q-btn-group outline>
+          <q-btn outline no-caps size="0.75rem" color="grey-6" label="Google" />
+          <q-btn outline no-caps size="0.75rem" color="grey-6" label="Namsel" />
+        </q-btn-group>
+        <q-btn-group outline>
+          <q-btn
+            outline
+            no-caps
+            size="0.75rem"
+            color="grey-6"
+            label="Google Note"
+          />
+          <q-btn
+            outline
+            no-caps
+            size="0.75rem"
+            color="grey-6"
+            label="Namsel Note"
+          />
+        </q-btn-group>
+      </div>
       <editor
-        class="editor__editor"
+        class="edit__editor"
         :loadText="loadText"
         :getTextList="getTextList"
+        :extraTools="false"
       />
     </div>
     <div class="preview">Preview</div>
@@ -23,25 +46,50 @@ export default {
   data() {
     return {
       currentPageIdx: 1,
-      pages: [
-        {
-          id: 1,
-          name: "Page 1",
-          page_no: 1,
-          content: "Page 1 example text",
-          durchen_id: 1,
-        },
-        {
-          id: 2,
-          name: "Page 2",
-          content: "Page 2 example text",
-          durchen_id: 1,
-        },
-      ],
+      pages: {
+        google: [
+          {
+            id: 1,
+            name: "Page 1",
+            page_no: 1,
+            content: "Google Page 1 example text",
+            durchen_id: 1,
+          },
+          {
+            id: 2,
+            name: "Page 2",
+            content: "Google Page 2 example text",
+            durchen_id: 1,
+          },
+        ],
+        namsel: [
+          {
+            id: 1,
+            name: "Page 1",
+            page_no: 1,
+            content: "Namsel Page 1 example text",
+            durchen_id: 1,
+          },
+          {
+            id: 2,
+            name: "Page 2",
+            content: "Namsel Page 2 example text",
+            durchen_id: 1,
+          },
+        ],
+      },
       durchens: {
-        1: {
-          page_no: 100,
-          content: "Durchen page 1 example",
+        google: {
+          1: {
+            page_no: 100,
+            content: "Durchen page 1 example",
+          },
+        },
+        namsel: {
+          1: {
+            page_no: 100,
+            content: "Durchen page 1 example",
+          },
         },
       },
     };
@@ -52,12 +100,12 @@ export default {
   },
 
   methods: {
-    async getTextList(layer) {
-      return this.pages;
+    async getTextList(textType) {
+      return this.pages[textType];
     },
 
-    loadText(textFile) {
-      return "this is example text";
+    loadText(page) {
+      return page.content;
     },
 
     saveText() {
@@ -80,12 +128,18 @@ export default {
   margin-right: 0.625rem;
 }
 
-.editor {
+.edit {
   width: 50%;
   margin-right: 0.625rem;
 
+  &__select {
+    display: flex;
+    justify-content: space-between;
+  }
+
   &__editor {
     width: 100%;
+    margin-top: 5px;
   }
 }
 

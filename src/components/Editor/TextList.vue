@@ -6,7 +6,7 @@
       v-for="(text, index) in textList"
       :key="text.name"
       @click="open(text)"
-      :ref="'text' + index"
+      :id="'text' + index"
     >
       <q-item-section class="text-grey-7">{{ text.name }}</q-item-section>
     </q-item>
@@ -18,21 +18,18 @@ import { mapGetters } from "vuex";
 import { Octokit } from "@octokit/core";
 
 export default {
-  props: ["layer"],
-  methods: {
-    async getBranchContent(org, repo, branch) {
-      const ghClient = new Octokit({ auth: this.userAccessToken });
-      const response = await ghClient.request(
-        "GET /repos/{owner}/{repo}/contents/{path}",
-        {
-          owner: org,
-          repo: repo,
-          ref: branch,
-        }
-      );
-      return response.data;
+  props: {
+    layer: {
+      type: String,
+      default: "BaseText",
     },
+    getTextList: {
+      type: Function,
+      required: true,
+    },
+  },
 
+  methods: {
     open(text) {
       this.$emit("open-text", text);
     },
@@ -45,12 +42,8 @@ export default {
 
   asyncComputed: {
     textList() {
-      return this.getBranchContent(this.org, this.repo, this.layer);
+      return this.getTextList(this.org, this.repo, this.layer);
     },
-  },
-
-  updated() {
-    this.$refs["text0"][0].$el.click();
   },
 };
 </script>

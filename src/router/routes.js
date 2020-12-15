@@ -9,8 +9,12 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       {
-        path: '/basic/:pechaId',
+        path: '/',
         component: () => import('pages/Index.vue'),
+      },
+      {
+        path: '/basic/:pechaId',
+        component: () => import('pages/Basic.vue'),
       },
       {
         path: '/pedurma/:pechaId',

@@ -37,6 +37,7 @@
             </q-item>
           </q-list>
         </q-btn-dropdown>
+
         <q-btn-dropdown
           flat
           dense
@@ -61,6 +62,7 @@
           </q-list>
         </q-btn-dropdown>
       </div>
+
       <div class="toolbar-group">
         <q-btn
           flat
@@ -74,10 +76,23 @@
         <q-btn flat round dense icon="get_app" color="grey-7" size="sm" />
       </div>
     </div>
+
     <div class="editorContainer row">
       <div v-show="showTextList" class="text-navigation col-2">
-        <TextList :layer="currentLayer" @open-text="openText" />
+        <q-list>
+          <q-item
+            dense
+            clickable
+            v-for="(text, index) in textList"
+            :key="text.name"
+            @click="open(text)"
+            :ref="'text' + index"
+          >
+            <q-item-section class="text-grey-7">{{ text.name }}</q-item-section>
+          </q-item>
+        </q-list>
       </div>
+
       <div class="textarea col">
         <textarea id="editorTextarea" cols="30" rows="10"></textarea>
       </div>
@@ -86,10 +101,9 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 import { Loading } from "quasar";
 import CodeMirror from "codemirror";
-import { Octokit } from "@octokit/core";
 
 // basic
 import "codemirror/lib/codemirror.css";
@@ -105,104 +119,77 @@ import "./mode/hfml.js";
 // theme style
 
 export default {
+  props: {
+    loadText: {
+      type: Function,
+      required: true,
+    },
+    getTextList: {
+      type: Function,
+      required: true,
+    },
+    saveText: {
+      type: Function,
+    },
+  },
+
   data() {
     return {
+      editor: null,
+      options: {
+        mode: "hfml",
+        lineNumbers: true,
+        viewportMargin: Infinity,
+        lineWrapping: true,
+        theme: "default",
+        extraKeys: {
+          F11: function (cm) {
+            cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+          },
+          Esc: function (cm) {
+            if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+          },
+        },
+      },
       layers: ["BaseText", "Citation", "Sabche", "Yigchung"],
       themes: ["Default", "Darcula", "Monospace"],
       currentTheme: "Default",
       currentLayer: "BaseText",
-      showTextList: false,
       currentTextFile: null,
+      showTextList: false,
+      hasLayerChanged: true,
     };
   },
+
   components: {
     TextList: require("components/Editor/TextList").default,
   },
+
   computed: {
-    ...mapGetters("editor", ["getEditor", "getOptions", "org", "repo"]),
     ...mapGetters("app", ["userAccessToken"]),
   },
+
+  asyncComputed: {
+    textList() {
+      return this.getTextList(this.currentLayer);
+    },
+  },
+
   methods: {
-    ...mapActions("editor", ["setOrg", "setRepo"]),
     selectLayer(layer) {
       this.currentLayer = layer;
+      this.hasLayerChanged = true;
     },
 
     selectTheme(theme) {
       this.currentTheme = theme;
     },
 
-    base64ToUtf8(str) {
-      return decodeURIComponent(escape(window.atob(str)));
-    },
-
-    utf8ToBase64(str) {
-      return window.btoa(unescape(encodeURIComponent(str)));
-    },
-
-    async getText(org, repo, sha) {
-      const ghClient = new Octokit({ auth: this.userAccessToken });
-      const gh_response = await ghClient.request(
-        "GET /repos/{owner}/{repo}/git/blobs/{file_sha}",
-        {
-          owner: org,
-          repo: repo,
-          file_sha: sha,
-        }
-      );
-
-      const response = await fetch(gh_response["url"]);
-      const data = await response.json();
-      return this.base64ToUtf8(data["content"]);
-    },
-
-    async openText(textFile) {
-      Loading.show();
-      const text = await this.getText(this.org, this.repo, textFile.sha);
-      Loading.hide();
+    async open(textFile) {
+      const text = await this.loadText(textFile);
       this.editor.doc.setValue(text);
       this.showTextList = false;
       this.currentTextFile = textFile;
-    },
-
-    async saveText() {
-      const ghClient = new Octokit({ auth: this.userAccessToken });
-      Loading.show();
-      const response = await ghClient.request(
-        "PUT /repos/{owner}/{repo}/contents/{path}",
-        {
-          owner: this.org,
-          repo: this.repo,
-          branch: this.currentLayer,
-          path: this.currentTextFile.path,
-          message: "update",
-          content: this.utf8ToBase64(this.editor.doc.getValue()),
-          sha: this.currentTextFile.sha,
-        }
-      );
-      // const fileUpdateUrl = `https://api.github.com/repos/${this.org}/${this.repo}/contents/${this.currentTextFile.path}`;
-      // console.log(fileUpdateUrl);
-      // const response = await this.$axios.put(fileUpdateUrl, {
-      //   headers: {
-      //     Authorization: `token ${this.userAccessToken}`,
-      //   },
-      //   data: {
-      //     path: this.currentTextFile.path,
-      //     branch: this.currentLayer,
-      //     message: "update",
-      //     content: this.utf8ToBase64(this.editor.doc.getValue()),
-      //     sha: this.currentLayer.sha,
-      //   },
-      // });
-      Loading.hide();
-
-      if (response["status"] == 200) {
-        alert("Changes saved!");
-        const new_sha = response["data"]["content"]["sha"];
-        $(editorForm).children("#sha").val(new_sha);
-      } else {
-        alert("Changes cannot be saved");
-      }
     },
   },
 
@@ -216,6 +203,13 @@ export default {
   beforeMount() {
     if (this.userAccessToken == null) {
       // this.$router.push("/login");
+    }
+  },
+
+  updated() {
+    if (this.hasLayerChanged) {
+      this.$refs["text0"][0].$el.click();
+      this.hasLayerChanged = false;
     }
   },
 };

@@ -7,7 +7,11 @@
     </q-card>
 
     <div class="editor">
-      <editor class="editor__editor" />
+      <editor
+        class="editor__editor"
+        :loadText="loadText"
+        :getTextList="getTextList"
+      />
     </div>
     <div class="preview">Preview</div>
   </div>
@@ -15,19 +19,21 @@
 
 <script>
 export default {
-  name: "Pedurma",
+  name: "PedurmaEditorPage",
   data() {
     return {
       currentPageIdx: 1,
       pages: [
         {
           id: 1,
+          name: "Page 1",
           page_no: 1,
           content: "Page 1 example text",
           durchen_id: 1,
         },
         {
           id: 2,
+          name: "Page 2",
           content: "Page 2 example text",
           durchen_id: 1,
         },
@@ -43,6 +49,20 @@ export default {
 
   components: {
     editor: require("components/Editor/Editor.vue").default,
+  },
+
+  methods: {
+    async getTextList(layer) {
+      return this.pages;
+    },
+
+    loadText(textFile) {
+      return "this is example text";
+    },
+
+    saveText() {
+      console.log("Save text");
+    },
   },
 };
 </script>

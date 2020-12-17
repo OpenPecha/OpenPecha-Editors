@@ -9,6 +9,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import { Loading } from "quasar";
 import { Octokit } from "@octokit/core";
 
@@ -23,6 +24,10 @@ export default {
       org: "OpenPecha",
       repo: "P000100",
     };
+  },
+
+  computed: {
+    ...mapState("app", ["userAccessToken"]),
   },
 
   methods: {
@@ -48,8 +53,9 @@ export default {
     },
 
     async getRepoFileContent(org, repo, sha) {
-      const ghClient = new Octokit({ auth: this.userAccessToken });
-      const gh_response = await ghClient.request(
+      // const ghClient = new Octokit({ auth: this.userAccessToken });
+      const ghClient = new Octokit();
+      const response = await ghClient.request(
         "GET /repos/{owner}/{repo}/git/blobs/{file_sha}",
         {
           owner: org,
@@ -57,10 +63,7 @@ export default {
           file_sha: sha,
         }
       );
-
-      const response = await fetch(gh_response["url"]);
-      const data = await response.json();
-      return this.base64ToUtf8(data["content"]);
+      return this.base64ToUtf8(response["data"]["content"]);
     },
 
     async loadText(textFile) {

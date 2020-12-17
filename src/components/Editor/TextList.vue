@@ -3,47 +3,31 @@
     <q-item
       dense
       clickable
-      v-for="(text, index) in textList"
-      :key="text.name"
-      @click="open(text)"
-      :id="'text' + index"
+      v-for="(item, index) in list"
+      :key="item.name"
+      @click="click(item)"
+      :ref="'text' + index"
     >
-      <q-item-section class="text-grey-7">{{ text.name }}</q-item-section>
+      <q-item-section class="text-grey-7">{{ item.name }}</q-item-section>
     </q-item>
   </q-list>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import { Octokit } from "@octokit/core";
-
 export default {
   props: {
-    layer: {
-      type: String,
-      default: "BaseText",
+    list: {
+      type: Array,
+      require: true,
     },
-    getTextList: {
+    click: {
       type: Function,
-      required: true,
+      require: true,
     },
   },
 
-  methods: {
-    open(text) {
-      this.$emit("open-text", text);
-    },
-  },
-
-  computed: {
-    ...mapGetters("editor", ["org", "repo"]),
-    ...mapGetters("app", ["userAccessToken"]),
-  },
-
-  asyncComputed: {
-    textList() {
-      return this.getTextList(this.org, this.repo, this.layer);
-    },
+  updated() {
+    this.$refs["text0"][0].$el.click();
   },
 };
 </script>

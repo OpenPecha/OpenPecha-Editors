@@ -79,22 +79,11 @@
 
     <div class="editorContainer row">
       <div v-show="showTextList" class="text-navigation col-2">
-        <q-list>
-          <q-item
-            dense
-            clickable
-            v-for="(text, index) in textList"
-            :key="text.name"
-            @click="open(text)"
-            :ref="'text' + index"
-          >
-            <q-item-section class="text-grey-7">{{ text.name }}</q-item-section>
-          </q-item>
-        </q-list>
+        <TextList :list="textList" :click="open" />
       </div>
 
       <div class="textarea col">
-        <textarea id="editorTextarea" cols="30" rows="10"></textarea>
+        <textarea :id="textAreaId" cols="30" rows="10"></textarea>
       </div>
     </div>
   </div>
@@ -120,6 +109,14 @@ import "./mode/hfml.js";
 
 export default {
   props: {
+    currentLayerProp: {
+      type: String,
+      default: "BaseText",
+    },
+    textAreaIdProp: {
+      type: String,
+      default: "textarea",
+    },
     loadText: {
       type: Function,
       required: true,
@@ -155,13 +152,13 @@ export default {
           },
         },
       },
+      textAreaId: this.textAreaIdProp,
       layers: ["BaseText", "Citation", "Sabche", "Yigchung"],
       themes: ["Default", "Darcula", "Monospace"],
       currentTheme: "Default",
-      currentLayer: "BaseText",
+      currentLayer: this.currentLayerProp,
       currentTextFile: null,
       showTextList: false,
-      hasLayerChanged: true,
     };
   },
 
@@ -182,7 +179,6 @@ export default {
   methods: {
     selectLayer(layer) {
       this.currentLayer = layer;
-      this.hasLayerChanged = true;
     },
 
     selectTheme(theme) {
@@ -192,14 +188,14 @@ export default {
     async open(textFile) {
       const text = await this.loadText(textFile);
       this.editor.doc.setValue(text);
-      this.showTextList = false;
       this.currentTextFile = textFile;
+      this.showTextList = false;
     },
   },
 
   mounted: function () {
     this.editor = CodeMirror.fromTextArea(
-      document.getElementById("editorTextarea"),
+      document.getElementById(this.textAreaId),
       this.options
     );
   },
@@ -207,13 +203,6 @@ export default {
   beforeMount() {
     if (this.userAccessToken == null) {
       // this.$router.push("/login");
-    }
-  },
-
-  updated() {
-    if (this.hasLayerChanged) {
-      this.$refs["text0"][0].$el.click();
-      this.hasLayerChanged = false;
     }
   },
 };

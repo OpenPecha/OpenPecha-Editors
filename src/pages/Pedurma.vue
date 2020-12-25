@@ -96,62 +96,22 @@
 <script>
 export default {
   name: "PedurmaEditorPage",
+  components: {
+    editor: require("components/Editor/Editor.vue").default,
+  },
   data() {
     return {
       currentPageNo: 1,
       editor: "google",
       pages: {
-        google: [
-          {
-            id: 1,
-            name: "Page 1",
-            page_no: 1,
-            content: "Google Page 1 example text",
-            durchen_id: 1,
-          },
-          {
-            id: 2,
-            name: "Page 2",
-            page_no: 2,
-            content: "Google Page 2 example text",
-            durchen_id: 1,
-          },
-        ],
-        namsel: [
-          {
-            id: 1,
-            name: "Page 1",
-            page_no: 1,
-            content: "Namsel Page 1 example text",
-            durchen_id: 1,
-          },
-          {
-            id: 2,
-            name: "Page 2",
-            content: "Namsel Page 2 example text",
-            durchen_id: 1,
-          },
-        ],
+        google: null,
+        namsel: null,
       },
-      durchens: {
-        google: {
-          1: {
-            page_no: 100,
-            content: "Durchen page 1 example",
-          },
-        },
-        namsel: {
-          1: {
-            page_no: 100,
-            content: "Durchen page 1 example",
-          },
-        },
+      notes: {
+        google: null,
+        namsel: null,
       },
     };
-  },
-
-  components: {
-    editor: require("components/Editor/Editor.vue").default,
   },
 
   methods: {
@@ -195,6 +155,27 @@ export default {
       const toActivateBtn = document.querySelector("#" + btnId);
       toActivateBtn.classList.add(activeCls, activeClsBg);
     },
+  },
+
+  created() {
+    const textId = this.$route.params.textId;
+    const googlePechaId = this.$route.query.google;
+    const namselPechaId = this.$route.query.namsel;
+
+    //load google-ocr pages
+    this.$axios
+      .get("http://127.0.0.1:8000/api/v1/" + googlePechaId + "/texts/" + textId)
+      .then((response) => {
+        this.pages.google = response.data.pages;
+        this.notes.google = response.data.notes;
+      });
+    //load Namsel-ocr pages
+    this.$axios
+      .get("http://127.0.0.1:8000/api/v1/" + namselPechaId + "/texts/" + textId)
+      .then((response) => {
+        this.pages.namsel = response.data.pages;
+        this.notes.namsel = response.data.notes;
+      });
   },
 };
 </script>

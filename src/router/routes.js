@@ -17,7 +17,7 @@ const routes = [
         component: () => import('pages/Basic.vue'),
       },
       {
-        path: '/pedurma/:pechaId',
+        path: '/pedurma/:textId',
         component: () => import('pages/Pedurma.vue'),
       }
     ]

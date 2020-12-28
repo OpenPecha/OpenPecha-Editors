@@ -178,7 +178,9 @@ export default {
 
   asyncComputed: {
     textList() {
-      return this.getTextList(this.currentLayer);
+      if (this.hasList) {
+        return this.getTextList(this.currentLayer);
+      }
     },
   },
 
@@ -205,7 +207,7 @@ export default {
       document.getElementById(this.textAreaId),
       this.options
     );
-    if (!this.showList) {
+    if (!this.hasList) {
       this.editor.doc.setValue(this.content);
     }
   },

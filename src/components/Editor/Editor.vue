@@ -1,7 +1,7 @@
 <template>
   <div class="editor">
     <div id="editor-toolbar">
-      <div class="toolbar-group">
+      <div v-if="hasList" class="toolbar-group">
         <q-btn
           flat
           dense
@@ -79,7 +79,7 @@
 
     <div class="editorContainer row">
       <div v-show="showTextList" class="text-navigation col-2">
-        <TextList :list="textList" :click="open" />
+        <TextList v-if="hasList" :list="textList" :click="open" />
       </div>
 
       <div class="textarea col">
@@ -119,11 +119,9 @@ export default {
     },
     loadText: {
       type: Function,
-      required: true,
     },
     getTextList: {
       type: Function,
-      required: true,
     },
     saveText: {
       type: Function,
@@ -131,6 +129,14 @@ export default {
     extraTools: {
       type: Boolean,
       default: true,
+    },
+    hasList: {
+      type: Boolean,
+      default: true,
+    },
+    content: {
+      type: String,
+      default: "empty notes",
     },
   },
 
@@ -190,6 +196,7 @@ export default {
       this.editor.doc.setValue(text);
       this.currentTextFile = textFile;
       this.showTextList = false;
+      this.$emit("openPage", textFile);
     },
   },
 
@@ -198,6 +205,9 @@ export default {
       document.getElementById(this.textAreaId),
       this.options
     );
+    if (!this.showList) {
+      this.editor.doc.setValue(this.content);
+    }
   },
 
   beforeMount() {

@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div v-if="isPagesLoaded" class="container">
     <q-card class="image-card">
       <img
         src="https://i0.wp.com/www.dontwasteyourtime.co.uk/wp-content/uploads/2012/07/screenshot_2012-07-26T15_37_48-0100.gif?ssl=1"
@@ -73,19 +73,17 @@
           id="google-note"
           textAreaIdProp="google-note-textarea"
           class="edit__editor"
-          currentLayerProp="google"
-          :loadText="loadText"
-          :getTextList="getTextList"
           :extraTools="false"
+          :hasList="false"
+          :content="getNote('google', currentPageNo)"
         />
         <editor
           id="namsel-note"
           class="edit__editor"
           textAreaIdProp="namsel-note-textarea"
-          currentLayerProp="namsel"
-          :loadText="loadText"
-          :getTextList="getTextList"
           :extraTools="false"
+          :hasList="false"
+          :content="getNote('namsel', currentPageNo)"
         />
       </div>
     </div>
@@ -103,14 +101,9 @@ export default {
     return {
       currentPageNo: 1,
       editor: "google",
-      pages: {
-        google: null,
-        namsel: null,
-      },
-      notes: {
-        google: null,
-        namsel: null,
-      },
+      isPagesLoaded: false,
+      pages: {},
+      notes: {},
     };
   },
 
@@ -155,27 +148,43 @@ export default {
       const toActivateBtn = document.querySelector("#" + btnId);
       toActivateBtn.classList.add(activeCls, activeClsBg);
     },
+
+    getNote(textType, currentPageNo) {
+      const notesPageId = this.pages[textType][currentPageNo - 1][
+        "notes_page_id"
+      ];
+
+      for (var notesPage in this.notes[textType]) {
+        if (notesPage.id == notesPageId) {
+          return notesPage.content;
+        }
+      }
+    },
   },
 
-  created() {
+  async created() {
     const textId = this.$route.params.textId;
     const googlePechaId = this.$route.query.google;
     const namselPechaId = this.$route.query.namsel;
 
     //load google-ocr pages
-    this.$axios
+    await this.$axios
       .get("http://127.0.0.1:8000/api/v1/" + googlePechaId + "/texts/" + textId)
-      .then((response) => {
-        this.pages.google = response.data.pages;
-        this.notes.google = response.data.notes;
+      .then((response) => response.data)
+      .then((data) => {
+        this.pages.google = data.pages;
+        this.notes.google = data.notes;
       });
     //load Namsel-ocr pages
-    this.$axios
+    await this.$axios
       .get("http://127.0.0.1:8000/api/v1/" + namselPechaId + "/texts/" + textId)
-      .then((response) => {
-        this.pages.namsel = response.data.pages;
-        this.notes.namsel = response.data.notes;
+      .then((response) => response.data)
+      .then((data) => {
+        this.pages.namsel = data.pages;
+        this.notes.namsel = data.notes;
       });
+
+    this.isPagesLoaded = true;
   },
 };
 </script>

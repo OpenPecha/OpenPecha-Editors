@@ -87,7 +87,9 @@
         />
       </div>
     </div>
-    <div class="preview">Preview</div>
+    <div class="preview">
+      <p>{{ currentPreview }}</p>
+    </div>
   </div>
 </template>
 
@@ -100,6 +102,7 @@ export default {
   data() {
     return {
       currentPageNo: 1,
+      currentPreview: "",
       editor: "google",
       isPagesLoaded: false,
       pages: {},
@@ -114,6 +117,7 @@ export default {
 
     loadText(page) {
       this.currentPageNo = page.page_no;
+      this.getPreview();
       return page.content;
     },
 
@@ -159,6 +163,35 @@ export default {
           return notesPage.content;
         }
       }
+    },
+
+    getCurrentPage(textType) {
+      return this.pages[textType][this.currentPageNo - 1];
+    },
+
+    getPageNote(textType, page) {
+      return this.notes[textType].find(
+        (notesPage) => notesPage.id == page.notes_page_id
+      );
+    },
+
+    async getPreview() {
+      const googleCurrentPage = this.getCurrentPage("google");
+      const namselCurrentPage = this.getCurrentPage("namsel");
+      const googlePageNote = this.getPageNote("google", googleCurrentPage);
+      const namselPageNote = this.getPageNote("namsel", namselCurrentPage);
+
+      await this.$axios
+        .post("http://127.0.0.1:8000/api/v1/pedurma/preview", {
+          google_page: googleCurrentPage,
+          google_page_note: googlePageNote,
+          namsel_page: namselCurrentPage,
+          namsel_page_note: namselPageNote,
+        })
+        .then((response) => response.data)
+        .then((data) => {
+          this.currentPreview = data.content;
+        });
     },
   },
 

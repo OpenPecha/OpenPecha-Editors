@@ -7,84 +7,78 @@
     </q-card>
 
     <div class="edit">
-      <div class="edit__select">
-        <q-btn-group outline>
-          <q-btn
-            outline
-            no-caps
-            size="0.75rem"
-            color="grey-9"
-            label="Google"
-            id="google-btn"
-            class="bg-blue-3"
-            @click="selectEditor('google', 'google-btn')"
-          />
-          <q-btn
-            outline
-            no-caps
-            size="0.75rem"
-            color="grey-6"
-            label="Namsel"
-            id="namsel-btn"
-            @click="selectEditor('namsel', 'namsel-btn')"
-          />
-        </q-btn-group>
-        <q-btn-group outline>
-          <q-btn
-            outline
-            no-caps
-            size="0.75rem"
-            color="grey-6"
-            label="Google Note"
-            id="google-note-btn"
-            @click="selectEditor('google-note', 'google-note-btn')"
-          />
-          <q-btn
-            outline
-            no-caps
-            size="0.75rem"
-            color="grey-6"
-            label="Namsel Note"
-            id="namsel-note-btn"
-            @click="selectEditor('namsel-note', 'namsel-note-btn')"
-          />
-        </q-btn-group>
-      </div>
       <div class="edit__editors">
-        <editor
-          id="google"
-          class="edit__editor active"
-          textAreaIdProp="google-textarea"
-          currentLayerProp="google"
-          :loadText="loadText"
-          :getTextList="getTextList"
-          :extraTools="false"
-        />
-        <editor
-          id="namsel"
-          class="edit__editor"
-          textAreaIdProp="namsel-textarea"
-          currentLayerProp="namsel"
-          :loadText="loadText"
-          :getTextList="getTextList"
-          :extraTools="false"
-        />
-        <editor
-          id="google-note"
-          textAreaIdProp="google-note-textarea"
-          class="edit__editor"
-          :extraTools="false"
-          :hasList="false"
-          :content="getNote('google', currentPageNo)"
-        />
-        <editor
-          id="namsel-note"
-          class="edit__editor"
-          textAreaIdProp="namsel-note-textarea"
-          :extraTools="false"
-          :hasList="false"
-          :content="getNote('namsel', currentPageNo)"
-        />
+        <div class="tabs row justify-between">
+          <q-tabs
+            v-model="editorTab"
+            dense
+            class="text-grey"
+            active-color="primary"
+            indicator-color="primary"
+            align="justify"
+            narrow-indicator
+          >
+            <q-tab name="google" label="Google"></q-tab>
+            <q-tab name="namsel" label="Namsel"></q-tab>
+          </q-tabs>
+
+          <q-tabs
+            v-model="editorTab"
+            dense
+            class="text-grey"
+            active-color="primary"
+            indicator-color="primary"
+            align="justify"
+            narrow-indicator
+          >
+            <q-tab name="google-notes" label="Google Note"></q-tab>
+            <q-tab name="namsel-notes" label="Namsel Note"></q-tab>
+          </q-tabs>
+        </div>
+
+        <q-tab-panels v-model="editorTab" animated>
+          <q-tab-panel name="google">
+            <editor
+              id="google"
+              textAreaIdProp="google-textarea"
+              currentLayerProp="google"
+              :loadText="loadText"
+              :getTextList="getTextList"
+              :extraTools="false"
+            />
+          </q-tab-panel>
+
+          <q-tab-panel name="namsel">
+            <editor
+              id="namsel"
+              textAreaIdProp="namsel-textarea"
+              currentLayerProp="namsel"
+              :loadText="loadText"
+              :getTextList="getTextList"
+              :extraTools="false"
+            />
+          </q-tab-panel>
+
+          <q-tab-panel name="google-notes">
+            <editor
+              id="google-note"
+              textAreaIdProp="google-note-textarea"
+              :extraTools="false"
+              :hasList="false"
+              :content="getNote('google', currentPageNo)"
+            />
+          </q-tab-panel>
+
+          <q-tab-panel name="namsel-notes">
+            <editor
+              id="namsel-note"
+              textAreaIdProp="namsel-note-textarea"
+              :extraTools="false"
+              :hasList="false"
+              :content="getNote('namsel', currentPageNo)"
+            />
+          </q-tab-panel>
+        </q-tab-panels>
       </div>
     </div>
     <div class="preview">
@@ -103,6 +97,7 @@ export default {
     return {
       currentPageNo: 1,
       currentPreview: "",
+      editorTab: "google",
       editor: "google",
       isPagesLoaded: false,
       pages: {},
@@ -123,34 +118,6 @@ export default {
 
     saveText() {
       console.log("Save text");
-    },
-
-    selectEditor(editorName, btnId) {
-      // active the editor
-      const currentActivedEditor = document.querySelector(
-        ".edit__editor.active"
-      );
-      currentActivedEditor.classList.remove("active");
-      const toActivateEditor = document.querySelector("#" + editorName);
-      toActivateEditor.classList.add("active");
-
-      // add ative style to button
-      const nonActiveCls = "text-grey-6";
-      const activeCls = "text-grey-9";
-      const activeClsBg = "bg-blue-3";
-      const btnGroups = document
-        .querySelector(".edit__select")
-        .querySelectorAll(".q-btn-group");
-      btnGroups.forEach(function (btnGroup) {
-        const currentActivedBtn = btnGroup.querySelector(".q-btn.bg-blue-3");
-        if (currentActivedBtn) {
-          currentActivedBtn.classList.remove(activeCls, activeClsBg);
-          currentActivedBtn.classList.add(nonActiveCls);
-        }
-      });
-
-      const toActivateBtn = document.querySelector("#" + btnId);
-      toActivateBtn.classList.add(activeCls, activeClsBg);
     },
 
     getNote(textType, currentPageNo) {
@@ -239,24 +206,6 @@ export default {
 .edit {
   width: 50%;
   margin-right: 0.625rem;
-
-  &__select {
-    display: flex;
-    justify-content: space-between;
-  }
-
-  &__editors {
-    width: 100%;
-    margin-top: 5px;
-  }
-
-  &__editor {
-    display: none;
-
-    &.active {
-      display: block;
-    }
-  }
 }
 
 .preview {

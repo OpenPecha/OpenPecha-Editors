@@ -82,7 +82,10 @@
       </div>
     </div>
     <div class="preview">
-      <p>{{ currentPreview }}</p>
+      <div class="preview__btn">
+        <q-btn color="secondary" label="Preview" @click="getPreview" />
+      </div>
+      <div class="preview__content q-mt-md" v-html="currentPreview"></div>
     </div>
   </div>
 </template>
@@ -143,6 +146,7 @@ export default {
     },
 
     async getPreview() {
+      console.log("click");
       const googleCurrentPage = this.getCurrentPage("google");
       const namselCurrentPage = this.getCurrentPage("namsel");
       const googlePageNote = this.getPageNote("google", googleCurrentPage);
@@ -210,5 +214,10 @@ export default {
 
 .preview {
   width: 25%;
+
+  &__content {
+    padding: 5px;
+    border: 1px solid #ccc;
+  }
 }
 </style>

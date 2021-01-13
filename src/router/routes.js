@@ -21,7 +21,7 @@ const routes = [
         component: () => import('pages/Pedurma.vue'),
       },
       {
-        path: '/pedurma/notes/:textId',
+        path: '/pedurma/:textId/notes',
         component: () => import('pages/PedurmaNotes.vue'),
       }
     ]

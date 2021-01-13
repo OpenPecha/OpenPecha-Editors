@@ -39,7 +39,7 @@
         <q-tab-panels v-model="editorTab" animated>
           <q-tab-panel name="google">
             <editor
-              id="google"
+              ref="google"
               textAreaIdProp="google-textarea"
               currentLayerProp="google"
               :loadText="loadText"
@@ -50,7 +50,7 @@
 
           <q-tab-panel name="namsel">
             <editor
-              id="namsel"
+              ref="namsel"
               textAreaIdProp="namsel-textarea"
               currentLayerProp="namsel"
               :loadText="loadText"
@@ -61,7 +61,7 @@
 
           <q-tab-panel name="google-notes">
             <editor
-              id="google-note"
+              ref="google-note"
               textAreaIdProp="google-note-textarea"
               :extraTools="false"
               :hasList="false"
@@ -71,7 +71,7 @@
 
           <q-tab-panel name="namsel-notes">
             <editor
-              id="namsel-note"
+              ref="namsel-note"
               textAreaIdProp="namsel-note-textarea"
               :extraTools="false"
               :hasList="false"
@@ -208,12 +208,12 @@ export default {
 }
 
 .edit {
-  width: 50%;
+  width: 40%;
   margin-right: 0.625rem;
 }
 
 .preview {
-  width: 25%;
+  width: 35%;
 
   &__content {
     padding: 5px;

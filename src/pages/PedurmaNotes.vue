@@ -43,6 +43,7 @@
         type="number"
         label="Note Page No."
       />
+      <q-btn label="submit" color="secondary" class="q-mt-xl" @click="submit" />
     </div>
   </div>
 </template>
@@ -68,6 +69,16 @@ export default {
         this.currentNote = this.notes[0];
       });
     this.pageReady = true;
+  },
+
+  methods: {
+    async submit() {
+      const textId = this.$route.params.textId;
+      await this.$axios.post(
+        "http://127.0.0.1:8000/api/v1/pedurma/" + textId + "/notes",
+        this.notes
+      );
+    },
   },
 };
 </script>

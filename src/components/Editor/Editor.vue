@@ -174,6 +174,10 @@ export default {
 
   computed: {
     ...mapGetters("app", ["userAccessToken"]),
+
+    input() {
+      return this.editor.doc.getValue();
+    },
   },
 
   asyncComputed: {

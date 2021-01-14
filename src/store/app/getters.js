@@ -3,7 +3,7 @@ export function isAuthenticated(state) {
 }
 
 export function authUrl(state) {
-    return state.authUrlBase + "?client_id=" + state.oauthClientId;
+    return process.env.OPENPECHA_API_URL + "/api/v1/login/oauth/access_token?client_id=" + state.oauthClientId;
 }
 
 export function accessTokenUrl(state) {

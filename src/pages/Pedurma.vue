@@ -153,7 +153,7 @@ export default {
       const namselPageNote = this.getPageNote("namsel", namselCurrentPage);
 
       await this.$axios
-        .post("http://127.0.0.1:8000/api/v1/pedurma/preview", {
+        .post(process.env.OPENPECHA_API_URL + "/api/v1/pedurma/preview", {
           google_page: googleCurrentPage,
           google_page_note: googlePageNote,
           namsel_page: namselCurrentPage,
@@ -173,7 +173,13 @@ export default {
 
     //load google-ocr pages
     await this.$axios
-      .get("http://127.0.0.1:8000/api/v1/" + googlePechaId + "/texts/" + textId)
+      .get(
+        process.env.OPENPECHA_API_URL +
+          "/api/v1/" +
+          googlePechaId +
+          "/texts/" +
+          textId
+      )
       .then((response) => response.data)
       .then((data) => {
         this.pages.google = data.pages;
@@ -181,7 +187,13 @@ export default {
       });
     //load Namsel-ocr pages
     await this.$axios
-      .get("http://127.0.0.1:8000/api/v1/" + namselPechaId + "/texts/" + textId)
+      .get(
+        process.env.OPENPECHA_API_URL +
+          "/api/v1/" +
+          namselPechaId +
+          "/texts/" +
+          textId
+      )
       .then((response) => response.data)
       .then((data) => {
         this.pages.namsel = data.pages;

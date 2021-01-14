@@ -62,7 +62,9 @@ export default {
   async created() {
     const textId = this.$route.params.textId;
     await this.$axios
-      .get("http://127.0.0.1:8000/api/v1/pedurma/" + textId + "/notes")
+      .get(
+        process.env.OPENPECHA_API_URL + "/api/v1/pedurma/" + textId + "/notes"
+      )
       .then((response) => response.data)
       .then((data) => {
         this.notes = data;
@@ -75,7 +77,7 @@ export default {
     async submit() {
       const textId = this.$route.params.textId;
       await this.$axios.post(
-        "http://127.0.0.1:8000/api/v1/pedurma/" + textId + "/notes",
+        process.env.OPENPECHA_API_URL + "/api/v1/pedurma/" + textId + "/notes",
         this.notes
       );
     },

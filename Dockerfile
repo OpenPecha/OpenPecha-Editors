@@ -11,7 +11,7 @@ RUN yarn
 RUN quasar build
 
 # production stage
-FROM nginx:1.17.5-alpine as production-stage
-COPY --from=build-stage /app/dist/spa /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+FROM nginx:1.17.10 as production-stage
+RUN mkdir /app
+COPY --from=build-stage /app/dist/spa /app
+COPY nginx.conf /etc/nginx/nginx.conf

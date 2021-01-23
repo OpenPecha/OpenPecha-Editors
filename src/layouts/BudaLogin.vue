@@ -19,7 +19,7 @@
             />
           </q-card-actions>
           <q-card-section class="q-pt-none">
-            <a href="https://github.com/join"> Not Registered? </a>
+            <a href="https://library.bdrc.io/"> Not Registered? </a>
           </q-card-section>
         </q-card>
       </q-page>
@@ -32,7 +32,7 @@ import { mapGetters } from "vuex";
 import { mapActions } from "vuex";
 
 export default {
-  name: "LoginWithGithub",
+  name: "LoginWithBuda",
 
   created() {
     if (window.opener) {
@@ -48,11 +48,12 @@ export default {
   },
 
   computed: {
-    ...mapGetters("app", ["githubAuthUrl", "accessTokenUrl"]),
+    ...mapGetters("app", ["budaAuthUrl", "accessTokenUrl"]),
   },
 
   mounted() {
     window.addEventListener("message", this.onMessage, false);
+    console.log(this.budaAuthUrl);
   },
 
   beforeDestroy() {
@@ -68,7 +69,7 @@ export default {
     },
 
     async login(newwindow) {
-      openWindow(this.githubAuthUrl, this.$t("login"));
+      openWindow(this.authUrl, this.$t("login"));
     },
 
     onMessage(e) {

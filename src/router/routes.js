@@ -5,6 +5,10 @@ const routes = [
     component: () => import('layouts/Login.vue'),
   },
   {
+    path: '/login/buda',
+    component: () => import('layouts/BudaLogin.vue'),
+  },
+  {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [

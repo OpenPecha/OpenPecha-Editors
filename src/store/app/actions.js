@@ -9,10 +9,8 @@ export function logout({ commit }, payload) {
 }
 
 export async function getUserAccessToken({ commit, getters }, payload) {
-    const response = await axios.get(getters.accessTokenUrl, {
-        params: {
-            code: payload.code,
-        },
+    const response = await axios.get(getters.accessTokenUrl + "/api/v1/login/oauth/access_token", {
+        params: payload
     });
     commit("setUserAccessToken", response.data.access_token)
     commit('setIsAuthenticated', true)

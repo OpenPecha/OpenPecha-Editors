@@ -2,12 +2,20 @@ export function isAuthenticated(state) {
     return state.isAuthenticated;
 }
 
-export function authUrl(state) {
-    return process.env.OPENPECHA_API_URL + "/api/v1/login/oauth/access_token?client_id=" + state.oauthClientId;
+export function githubAuthUrl(state) {
+    return state.github.authUrl + "?client_id=" + state.github.clientId;
+}
+
+export function budaAuthUrl(state) {
+    return state.buda.authUrl +
+            "?client_id=" + state.buda.clientId +
+            // "&response_type=" + state.buda.response_type +
+            // "&scope=" + state.buda.scope +
+            "&redirect_uri=" + state.buda.redirect_uri
 }
 
 export function accessTokenUrl(state) {
-    return state.accessTokenUrlBase;
+    return process.env.OPENPECHA_API_URL
 }
 
 export function userAccessToken(state) {

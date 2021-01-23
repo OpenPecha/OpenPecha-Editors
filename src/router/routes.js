@@ -23,7 +23,11 @@ const routes = [
       {
         path: '/pedurma/:textId/notes',
         component: () => import('pages/PedurmaNotes.vue'),
-      }
+      },
+      {
+        path: '/annotate',
+        component: () => import('pages/Annotation.vue'),
+      },
     ]
   },
 

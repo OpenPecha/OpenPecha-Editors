@@ -1,17 +1,22 @@
 <template>
-  <span v-if="entityLabel" class="cursor-pointer">
-    <span class="labeled-entity">
+  <span v-if="label" :style="{ borderColor: color }" class="highlight">
+    <span class="highlight__content">
       {{ content }}
+      <q-btn
+        dense
+        outline
+        round
+        icon="clear"
+        size="5px"
+        color="grey"
+        @click.stop="remove"
+      />
     </span>
-    <q-menu v-model="showMenu">
-      <q-list dense>
-        <q-item v-for="(label, i) in labels" :key="i" clickable v-close-popup>
-          <q-item-section>
-            <q-item-label v-text="label.text" />
-          </q-item-section>
-        </q-item>
-      </q-list>
-    </q-menu>
+    <span
+      :data-label="label"
+      :style="{ backgroundColor: color, color: textColor }"
+      class="highlight__label"
+    />
   </span>
   <span v-else :class="[newline ? 'newline' : '']">{{ content }}</span>
 </template>
@@ -42,13 +47,11 @@ export default {
     },
   },
   data() {
-    return {
-      showMenu: false,
-    };
+    return {};
   },
   computed: {
     textColor() {
-      return idealColor(this.color);
+      return this.idealColor(this.color);
     },
   },
   methods: {
@@ -73,18 +76,13 @@ export default {
 </script>
 
 <style scoped>
-.highlight.blue {
-  background: #edf4fa !important;
-}
-.highlight.bottom {
-  display: block;
-  white-space: normal;
-}
 .highlight:first-child {
   margin-left: 0;
 }
+
 .highlight {
   border: 2px solid;
+  border-radius: 5px;
   margin: 4px 6px 4px 3px;
   vertical-align: middle;
   box-shadow: 2px 4px 20px rgba(0, 0, 0, 0.1);
@@ -92,48 +90,8 @@ export default {
   cursor: default;
   min-width: 26px;
   line-height: 22px;
-  display: flex;
 }
-.highlight .delete {
-  top: -15px;
-  left: -13px;
-  position: absolute;
-  display: none;
-}
-.highlight:hover .delete {
-  display: block;
-}
-.highlight__content {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  padding: 2px 2px 0px 6px;
-}
-.highlight.bottom .highlight__content:after {
-  content: " ";
-  padding-right: 3px;
-}
-.highlight__label {
-  line-height: 14px;
-  padding-top: 1px;
-  align-items: center;
-  justify-content: center;
-  display: flex;
-  padding: 0 8px;
-  text-align: center;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  color: white;
-}
-.highlight__label::after {
-  content: attr(data-label);
-  display: block;
-  font-size: 14px;
-  -webkit-font-smoothing: subpixel-antialiased;
-  letter-spacing: 0.1em;
-}
+
 .newline {
   width: 100%;
 }

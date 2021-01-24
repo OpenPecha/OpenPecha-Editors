@@ -1,34 +1,52 @@
 <template>
-  <div>
-    <entity-item
-      v-for="(chunk, i) in chunks"
-      :key="i"
-      :content="chunk.text"
-      :newline="chunk.newline"
-      :label="chunk.label"
-      :color="chunk.color"
-      :labels="labels"
-      @remove="deleteAnnotation(chunk.id)"
-      @update="updateEntity($event.id, chunk.id)"
-    />
-    <q-menu :value="showMenu">
-      <q-list dense>
-        <q-item
-          clickable
-          v-close-popup
-          v-for="(label, i) in labels"
+  <q-card bordered flat>
+    <q-toolbar>
+      <q-btn flat round dense icon="menu" class="q-mr-sm" />
+      <q-separator vertical inset />
+
+      <q-btn-dropdown
+        flat
+        no-caps
+        dense
+        icon="layers"
+        :color="currentLayer.background_color"
+        :label="currentLayer.text"
+        class="q-ml-sm"
+      >
+        <q-list>
+          <q-item
+            v-for="label in labels"
+            :key="label.id"
+            clickable
+            v-close-popup
+            @click="selectLayer(label)"
+          >
+            <q-item-section>
+              <q-item-label>{{ label.text }}</q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </q-btn-dropdown>
+    </q-toolbar>
+
+    <q-separator />
+
+    <div class="row q-pa-md">
+      <div @click="open">
+        <entity-item
+          v-for="(chunk, i) in chunks"
           :key="i"
-          v-shortkey="[label.suffix_key]"
-          @shortkey="assignLabel(label.id)"
-          @click="assignLabel(label.id)"
-        >
-          <q-item-section>
-            <q-item-label v-text="label.text" />
-          </q-item-section>
-        </q-item>
-      </q-list>
-    </q-menu>
-  </div>
+          :content="chunk.text"
+          :newline="chunk.newline"
+          :label="chunk.label"
+          :color="chunk.color"
+          :labels="labels"
+          @remove="deleteAnnotation(chunk.id)"
+          @update="updateEntity($event.id, chunk.id)"
+        />
+      </div>
+    </div>
+  </q-card>
 </template>
 
 <script>
@@ -77,6 +95,7 @@ export default {
       y: 0,
       start: 0,
       end: 0,
+      currentLayer: null,
     };
   },
   computed: {
@@ -110,6 +129,7 @@ export default {
       chunks = chunks.concat(
         this.makeChunks(this.text.slice(startOffset, this.text.length))
       );
+      console.log(chunks);
       return chunks;
     },
 
@@ -147,6 +167,7 @@ export default {
       });
       return chunks;
     },
+
     show(e) {
       e.preventDefault();
       this.showMenu = false;
@@ -156,6 +177,7 @@ export default {
         this.showMenu = true;
       });
     },
+
     setSpanInfo() {
       let selection;
       // Modern browsers.
@@ -168,6 +190,7 @@ export default {
       if (selection.rangeCount <= 0) {
         return;
       }
+      console.log(selection);
       const range = selection.getRangeAt(0);
       const preSelectionRange = range.cloneRange();
       preSelectionRange.selectNodeContents(this.$el);
@@ -201,12 +224,14 @@ export default {
       }
       return true;
     },
+
     open(e) {
       this.setSpanInfo();
       if (this.validateSpan()) {
         this.show(e);
       }
     },
+
     assignLabel(labelId) {
       if (this.validateSpan()) {
         this.addEntity(this.start, this.end, labelId);
@@ -215,11 +240,19 @@ export default {
         this.end = 0;
       }
     },
+
+    selectLayer(layer) {
+      this.currentLayer = layer;
+    },
+  },
+
+  created() {
+    this.currentLayer = { id: 0, text: "All" };
   },
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .highlight-container.highlight-container--bottom-labels {
   align-items: flex-start;
 }

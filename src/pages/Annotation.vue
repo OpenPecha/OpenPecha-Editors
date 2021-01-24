@@ -1,12 +1,14 @@
 <template>
-  <entity-item-box
-    :labels="items"
-    :text="currentDoc.text"
-    :entities="currentDoc.annotations"
-    :delete-annotation="removeEntity"
-    :update-entity="updateEntity"
-    :add-entity="addEntity"
-  />
+  <q-page padding>
+    <entity-item-box
+      :labels="layers"
+      :text="currentDoc.text"
+      :entities="currentDoc.annotations"
+      :delete-annotation="removeEntity"
+      :update-entity="updateEntity"
+      :add-entity="addEntity"
+    />
+  </q-page>
 </template>
 
 <script>
@@ -21,18 +23,18 @@ export default {
 
   data() {
     return {
-      items: [
+      layers: [
         {
           id: 4,
-          text: "LOC",
+          text: "Citation",
           prefix_key: null,
-          suffix_key: "l",
+          suffix_key: "c",
           background_color: "#7c20e0",
           text_color: "#ffffff",
         },
         {
           id: 5,
-          text: "MISC",
+          text: "Sabche",
           prefix_key: null,
           suffix_key: "m",
           background_color: "#fbb028",
@@ -40,7 +42,7 @@ export default {
         },
         {
           id: 6,
-          text: "ORG",
+          text: "Yigchug",
           prefix_key: null,
           suffix_key: "o",
           background_color: "#e6d176",
@@ -66,8 +68,6 @@ export default {
             label: 4,
             start_offset: 60,
             end_offset: 70,
-            user: 1,
-            document: 8,
           },
           {
             id: 19,
@@ -75,8 +75,6 @@ export default {
             label: 4,
             start_offset: 165,
             end_offset: 172,
-            user: 1,
-            document: 8,
           },
           {
             id: 16,
@@ -84,8 +82,6 @@ export default {
             label: 6,
             start_offset: 14,
             end_offset: 22,
-            user: 1,
-            document: 8,
           },
           {
             id: 18,
@@ -93,8 +89,6 @@ export default {
             label: 6,
             start_offset: 73,
             end_offset: 87,
-            user: 1,
-            document: 8,
           },
           {
             id: 20,
@@ -102,8 +96,6 @@ export default {
             label: 7,
             start_offset: 181,
             end_offset: 193,
-            user: 1,
-            document: 8,
           },
         ],
         meta: '{"wikiPageId":2}',

@@ -9,7 +9,10 @@
         no-caps
         dense
         icon="layers"
-        :color="currentLayer.background_color"
+        :style="{
+          background: currentLayer.color,
+          color: idealColor(currentLayer.color),
+        }"
         :label="currentLayer.text"
         class="q-ml-sm"
       >
@@ -20,6 +23,10 @@
             clickable
             v-close-popup
             @click="selectLayer(label)"
+            :style="{
+              background: label.color,
+              color: idealColor(label.color),
+            }"
           >
             <q-item-section>
               <q-item-label>{{ label.text }}</q-item-label>
@@ -40,7 +47,6 @@
           :newline="chunk.newline"
           :label="filterLayer(chunk)"
           :color="chunk.color"
-          :labels="labels"
           @remove="deleteAnnotation(chunk.id)"
           @update="updateEntity($event.id, chunk.id)"
         />
@@ -121,7 +127,7 @@ export default {
         chunks.push({
           id: entity.id,
           label: label.text,
-          color: label.background_color,
+          color: label.color,
           text: this.text.slice(entity.start_offset, entity.end_offset),
         });
       }
@@ -255,6 +261,15 @@ export default {
       } else {
         return "";
       }
+    },
+
+    idealColor(hexString) {
+      // W3c offers a formula for calculating ideal color:
+      // https://www.w3.org/TR/AERT/#color-contrast
+      const r = parseInt(hexString.substr(1, 2), 16);
+      const g = parseInt(hexString.substr(3, 2), 16);
+      const b = parseInt(hexString.substr(5, 2), 16);
+      return (r * 299 + g * 587 + b * 114) / 1000 < 128 ? "#ffffff" : "#000000";
     },
   },
 

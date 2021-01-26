@@ -12,11 +12,6 @@
         @click.stop="remove"
       />
     </span>
-    <span
-      :data-label="label"
-      :style="{ backgroundColor: color, color: textColor }"
-      class="highlight__label"
-    />
   </span>
   <span v-else :class="[newline ? 'newline' : '']">{{ content }}</span>
 </template>
@@ -37,22 +32,12 @@ export default {
       type: String,
       default: "#64FFDA",
     },
-    labels: {
-      type: Array,
-      default: () => [],
-      required: true,
-    },
     newline: {
       type: Boolean,
     },
   },
   data() {
     return {};
-  },
-  computed: {
-    textColor() {
-      return this.idealColor(this.color);
-    },
   },
   methods: {
     update(label) {
@@ -61,15 +46,6 @@ export default {
     },
     remove() {
       this.$emit("remove");
-    },
-
-    idealColor(hexString) {
-      // W3c offers a formula for calculating ideal color:
-      // https://www.w3.org/TR/AERT/#color-contrast
-      const r = parseInt(hexString.substr(1, 2), 16);
-      const g = parseInt(hexString.substr(3, 2), 16);
-      const b = parseInt(hexString.substr(5, 2), 16);
-      return (r * 299 + g * 587 + b * 114) / 1000 < 128 ? "#ffffff" : "#000000";
     },
   },
 };
@@ -86,10 +62,7 @@ export default {
   margin: 4px 6px 4px 3px;
   vertical-align: middle;
   box-shadow: 2px 4px 20px rgba(0, 0, 0, 0.1);
-  position: relative;
   cursor: default;
-  min-width: 26px;
-  line-height: 22px;
 }
 
 .newline {

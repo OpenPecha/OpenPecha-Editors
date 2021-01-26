@@ -5,6 +5,15 @@ import app from './app'
 
 Vue.use(Vuex)
 
+const Store = new Vuex.Store({
+  modules: {
+    app,
+  },
+
+  // enable strict mode (adds overhead!)
+  // for dev mode only
+  strict: process.env.DEBUGGING
+})
 /*
  * If not building with SSR mode, you can
  * directly export the Store instantiation;
@@ -15,15 +24,8 @@ Vue.use(Vuex)
  */
 
 export default function (/* { ssrContext } */) {
-  const Store = new Vuex.Store({
-    modules: {
-      app,
-    },
-
-    // enable strict mode (adds overhead!)
-    // for dev mode only
-    strict: process.env.DEBUGGING
-  })
-
   return Store
 }
+
+export { Store }
+

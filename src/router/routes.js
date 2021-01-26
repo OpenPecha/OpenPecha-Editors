@@ -27,6 +27,10 @@ const routes = [
       {
         path: '/pedurma/:textId/notes',
         component: () => import('pages/PedurmaNotes.vue'),
+        meta: {
+          requiresAuth: true,
+          authService: "buda"
+         }
       }
     ]
   },

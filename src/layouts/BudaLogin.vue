@@ -11,7 +11,7 @@
           </q-card-section>
           <q-card-actions class="q-px-md">
             <q-btn
-              @click="oauthPopupFlow"
+              @click="login"
               size="lg"
               color="primary"
               class="full-width"
@@ -28,99 +28,24 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapState } from "vuex";
 import { mapActions } from "vuex";
 
 export default {
   name: "LoginWithBuda",
-
-  created() {
-    if (window.opener) {
-      const code = window.location
-        .toString()
-        .replace(/.+code=/, "")
-        .replace(/#.+/, "");
-      if (code) {
-        window.opener.postMessage({ code: code }, window.location);
-        window.close();
-      }
-    }
-  },
-
-  computed: {
-    ...mapGetters("app", ["budaAuthUrl", "accessTokenUrl"]),
-  },
-
-  mounted() {
-    window.addEventListener("message", this.onMessage, false);
-    console.log(this.budaAuthUrl);
-  },
-
-  beforeDestroy() {
-    window.removeEventListener("message", this.onMessage);
+  data() {
+    return {
+      auth0: null,
+      auth0Config: this.$store.state.app.buda,
+    };
   },
 
   methods: {
-    ...mapActions("app", ["login", "logout", "getUserAccessToken"]),
-
-    oauthPopupFlow() {
-      const newWindow = openWindow("", this.$t("login"));
-      this.login(newWindow);
-    },
-
-    async login(newwindow) {
-      openWindow(this.authUrl, this.$t("login"));
-    },
-
-    onMessage(e) {
-      if (e.origin !== window.origin || !e.data.code) {
-        return;
-      }
-
-      this.$store.dispatch("app/getUserAccessToken", {
-        code: e.data.code,
-      });
+    login() {
+      this.$store.dispatch("app/auth0Login");
     },
   },
 };
-
-function openWindow(url, title, options = {}) {
-  if (typeof url === "object") {
-    options = url;
-    url = "";
-  }
-  options = { url, title, width: 600, height: 720, ...options };
-  const dualScreenLeft =
-    window.screenLeft !== undefined ? window.screenLeft : window.screen.left;
-  const dualScreenTop =
-    window.screenTop !== undefined ? window.screenTop : window.screen.top;
-  const width =
-    window.innerWidth ||
-    document.documentElement.clientWidth ||
-    window.screen.width;
-  const height =
-    window.innerHeight ||
-    document.documentElement.clientHeight ||
-    window.screen.height;
-  options.self = "_self";
-  options.left = width / 2 - options.width / 2 + dualScreenLeft;
-  options.top = height / 2 - options.height / 2 + dualScreenTop;
-  const optionsStr = Object.keys(options)
-    .reduce((acc, key) => {
-      acc.push(`${key}=${options[key]}`);
-      return acc;
-    }, [])
-    .join(",");
-  const newWindow = window.open(url, title, optionsStr);
-  if (!newWindow) {
-    console.log(
-      "Please unblock popups in your browser settings to login with Github"
-    );
-  } else if (window.focus) {
-    newWindow.focus();
-  }
-  return newWindow;
-}
 </script>
 
 <style>

@@ -35,10 +35,10 @@
       <div @click="open">
         <entity-item
           v-for="(chunk, i) in chunks"
-          :key="i"
+          :key="i + currentLayer.id"
           :content="chunk.text"
           :newline="chunk.newline"
-          :label="chunk.label"
+          :label="filterLayer(chunk)"
           :color="chunk.color"
           :labels="labels"
           @remove="deleteAnnotation(chunk.id)"
@@ -129,7 +129,6 @@ export default {
       chunks = chunks.concat(
         this.makeChunks(this.text.slice(startOffset, this.text.length))
       );
-      console.log(chunks);
       return chunks;
     },
 
@@ -141,6 +140,7 @@ export default {
       return obj;
     },
   },
+
   methods: {
     makeChunks(text) {
       const chunks = [];
@@ -190,14 +190,18 @@ export default {
       if (selection.rangeCount <= 0) {
         return;
       }
-      console.log(selection);
       const range = selection.getRangeAt(0);
+      console.log(range);
+      console.log(this.$el);
       const preSelectionRange = range.cloneRange();
       preSelectionRange.selectNodeContents(this.$el);
       preSelectionRange.setEnd(range.startContainer, range.startOffset);
+      preSelectionRange.setStart(range.startContainer, 0);
       this.start = [...preSelectionRange.toString()].length;
       this.end = this.start + [...range.toString()].length;
+      console.log(this.start, this.end);
     },
+
     validateSpan() {
       if (
         typeof this.start === "undefined" ||
@@ -244,10 +248,18 @@ export default {
     selectLayer(layer) {
       this.currentLayer = layer;
     },
+
+    filterLayer(chunk) {
+      if (this.currentLayer.id == -1 || chunk.label == this.currentLayer.text) {
+        return chunk.label;
+      } else {
+        return "";
+      }
+    },
   },
 
   created() {
-    this.currentLayer = { id: 0, text: "All" };
+    this.currentLayer = this.labels[0];
   },
 };
 </script>

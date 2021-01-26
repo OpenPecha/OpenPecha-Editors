@@ -25,6 +25,10 @@ export default {
     return {
       layers: [
         {
+          id: -1,
+          text: "All",
+        },
+        {
           id: 4,
           text: "Citation",
           prefix_key: null,

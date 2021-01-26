@@ -39,7 +39,7 @@
     <q-separator />
 
     <div class="row q-pa-md">
-      <div @click="open">
+      <div id="content-entities" @click="open" @touched="open">
         <entity-item
           v-for="(chunk, i) in chunks"
           :key="i + currentLayer.id"
@@ -182,6 +182,7 @@ export default {
       this.$nextTick(() => {
         this.showMenu = true;
       });
+      this.assignLabel(this.currentLayer.id);
     },
 
     setSpanInfo() {
@@ -197,12 +198,11 @@ export default {
         return;
       }
       const range = selection.getRangeAt(0);
-      console.log(range);
-      console.log(this.$el);
       const preSelectionRange = range.cloneRange();
-      preSelectionRange.selectNodeContents(this.$el);
+      preSelectionRange.selectNodeContents(
+        document.querySelector("#content-entities")
+      );
       preSelectionRange.setEnd(range.startContainer, range.startOffset);
-      preSelectionRange.setStart(range.startContainer, 0);
       this.start = [...preSelectionRange.toString()].length;
       this.end = this.start + [...range.toString()].length;
       console.log(this.start, this.end);

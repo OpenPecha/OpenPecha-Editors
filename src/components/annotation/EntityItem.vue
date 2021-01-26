@@ -1,19 +1,20 @@
 <template>
-  <span v-if="label" :style="{ borderColor: color }" class="highlight">
-    <span class="highlight__content">
-      {{ content }}
-      <q-btn
-        dense
-        outline
-        round
-        icon="clear"
-        size="5px"
-        color="grey"
-        @click.stop="remove"
-      />
-    </span>
-  </span>
-  <span v-else :class="[newline ? 'newline' : '']">{{ content }}</span>
+  <span
+    v-if="label"
+    :style="{ borderColor: color }"
+    class="highlight"
+    @click="remove"
+    >{{ content }}</span
+  ><span v-else :class="[newline ? 'newline' : '']">{{ content }}</span>
+  <!-- <q-btn
+      dense
+      outline
+      round
+      icon="clear"
+      size="5px"
+      color="grey"
+      @click.stop="remove"
+    /> -->
 </template>
 
 <script>

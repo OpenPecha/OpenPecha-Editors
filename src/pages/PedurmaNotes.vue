@@ -19,7 +19,11 @@
     </div>
     <div class="page-image">
       <q-card class="page-image__card">
-        <q-img :src="currentNote.image_link" spinner-color="blue" />
+        <q-img
+          :src="currentNote.image_link"
+          :alt="currentNote.image_link + ' Not found!'"
+          spinner-color="blue"
+        />
       </q-card>
     </div>
     <div class="page-inputs">
@@ -49,6 +53,7 @@
 </template>
 
 <script>
+import { Loading } from "quasar";
 export default {
   data() {
     return {
@@ -61,6 +66,7 @@ export default {
 
   async created() {
     const textId = this.$route.params.textId;
+    Loading.show();
     await this.$axios
       .get(
         process.env.OPENPECHA_API_URL + "/api/v1/pedurma/" + textId + "/notes"
@@ -70,6 +76,7 @@ export default {
         this.notes = data;
         this.currentNote = this.notes[0];
       });
+    Loading.hide();
     this.pageReady = true;
   },
 

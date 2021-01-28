@@ -9,7 +9,3 @@ export function accessTokenUrl(state) {
 export function githubUserAccessToken(state) {
     return state.github.userAccessToken;
 }
-
-export function isAuth0Initialized(state) {
-    return (state.auth0 ? true : false);
-}

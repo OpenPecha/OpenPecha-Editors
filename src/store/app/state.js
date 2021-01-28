@@ -8,10 +8,5 @@ export default function () {
             userAccessToken: null,
             isAuthenticated: false,
         },
-        buda: {
-            userAccessToken: null,
-            isAuthenticated: false,
-        },
-        auth0: null
     }
 }

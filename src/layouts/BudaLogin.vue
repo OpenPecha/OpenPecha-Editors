@@ -28,21 +28,17 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import { mapActions } from "vuex";
-
+import { Loading } from "quasar";
 export default {
   name: "LoginWithBuda",
   data() {
-    return {
-      auth0: null,
-      auth0Config: this.$store.state.app.buda,
-    };
+    return {};
   },
 
   methods: {
     login() {
-      this.$store.dispatch("app/auth0Login");
+      this.$auth.login();
+      Loading.show();
     },
   },
 };

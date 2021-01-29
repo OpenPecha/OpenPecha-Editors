@@ -20,7 +20,7 @@
     <div class="page-image">
       <q-card class="page-image__card">
         <q-img
-          :src="currentNote.image_link"
+          :src="getImage(currentNote.image_link)"
           :alt="currentNote.image_link + ' Not found!'"
           spinner-color="blue"
         />
@@ -49,6 +49,16 @@
       />
       <q-btn label="submit" color="secondary" class="q-mt-xl" @click="submit" />
     </div>
+    <div v-if="imageApiMessage" class="mt-5">
+      <h6 class="muted">Result</h6>
+      <div class="container-fluid">
+        <div class="row">
+          <code class="col-12 text-light bg-dark p-4">
+            {{ JSON.stringify(apiMessage, null, 2) }}
+          </code>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -61,6 +71,7 @@ export default {
       currentNote: null,
       pageReady: false,
       currentIdx: 0,
+      imageApiMessage: null,
     };
   },
 
@@ -87,6 +98,24 @@ export default {
         process.env.OPENPECHA_API_URL + "/api/v1/pedurma/" + textId + "/notes",
         this.notes
       );
+    },
+
+    async getImage(link) {
+      const accessToken = await this.$auth.getTokenSilently();
+
+      try {
+        const response = await fetch(link, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        const json = await response.json();
+        this.imageApiMessage = json.message;
+      } catch (e) {
+        console.log(e);
+        this.apiMessage = `Error: the server responded with '${e.response.status}: ${e.response.statusText}'`;
+      }
     },
   },
 };

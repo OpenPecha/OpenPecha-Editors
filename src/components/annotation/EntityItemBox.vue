@@ -57,6 +57,7 @@
 
 <script>
 import EntityItem from "components/annotation/EntityItem";
+import { Notify } from "quasar";
 
 export default {
   components: {
@@ -252,6 +253,11 @@ export default {
       this.setSpanInfo();
       if (this.validateSpan()) {
         this.show(e);
+      } else {
+        this.$q.notify({
+          type: "negative",
+          message: "Annotation overlapping with other annotation",
+        });
       }
     },
 

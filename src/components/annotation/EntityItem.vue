@@ -4,9 +4,9 @@
     :style="{ borderColor: color }"
     class="highlight"
     @click="remove"
-    >{{ content }}</span
-  ><span v-else :class="[newline ? 'newline' : '']">{{ content }}</span>
-  <!-- <q-btn
+  >
+    {{ content }}
+    <q-btn
       dense
       outline
       round
@@ -14,7 +14,8 @@
       size="5px"
       color="grey"
       @click.stop="remove"
-    /> -->
+    /> </span
+  ><span v-else :class="[newline ? 'newline' : '']">{{ content }}</span>
 </template>
 
 <script>

@@ -185,6 +185,18 @@ export default {
       this.assignLabel(this.currentLayer.id);
     },
 
+    countAllPreviousEntities(node) {
+      let currentNode = node.previousSibling;
+      let count = 0;
+      while (currentNode) {
+        if (currentNode.className == "highlight") {
+          count += 1;
+        }
+        currentNode = currentNode.previousSibling;
+      }
+      return count;
+    },
+
     setSpanInfo() {
       let selection;
       // Modern browsers.
@@ -203,9 +215,10 @@ export default {
         document.querySelector("#content-entities")
       );
       preSelectionRange.setEnd(range.startContainer, range.startOffset);
-      this.start = [...preSelectionRange.toString()].length;
+      this.start =
+        [...preSelectionRange.toString()].length -
+        11 * this.countAllPreviousEntities(range.startContainer.parentNode);
       this.end = this.start + [...range.toString()].length;
-      console.log(this.start, this.end);
     },
 
     validateSpan() {

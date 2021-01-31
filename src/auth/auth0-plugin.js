@@ -1,4 +1,5 @@
 import createAuth0Client from "@auth0/auth0-spa-js";
+import axios from "axios";
 import { Loading } from 'quasar';
 import Vue from "vue";
 
@@ -52,12 +53,21 @@ export const useAuth0 = ({
         return this.auth0Client.loginWithRedirect(options);
       },
 
-      logout(options) {
+      async logout(options) {
+        const response = await axios.get(process.env.IFFFServerURL + "/setcookie")
+        console.log("unset cookie", response)
         return this.auth0Client.logout(options);
       },
 
-      getToken(o) {
-        return this.auth0Client.getTokenSilently(o);
+      async getToken(o) {
+        const idToken = await this.auth0Client.getTokenSilently(o);
+        console.log(idToken)
+        console.log(process.env.IFFFServerURL)
+        const headers = { Authorization:"Bearer "+idToken }
+        const params = { credentials: "include" }
+        const response = await axios.get(process.env.IFFFServerURL + "/setcookie", {headers: headers, params: params})
+        console.log("cookie", response)
+        return idToken
       },
     },
 
@@ -66,6 +76,7 @@ export const useAuth0 = ({
         ...pluginOptions,
         domain: pluginOptions.domain,
         client_id: pluginOptions.clientId,
+        audience: pluginOptions.audience,
         redirect_uri: redirectUri,
       });
 
@@ -75,9 +86,6 @@ export const useAuth0 = ({
           window.location.search.includes("state=")
         ) {
           const { appState } = await this.auth0Client.handleRedirectCallback();
-
-          console.log(appState)
-
 
           onRedirectCallback(appState);
         }

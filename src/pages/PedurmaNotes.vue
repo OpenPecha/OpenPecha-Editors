@@ -20,7 +20,7 @@
     <div class="page-image">
       <q-card class="page-image__card">
         <q-img
-          :src="getImage(currentNote.image_link)"
+          :src="currentNote.image_link"
           :alt="currentNote.image_link + ' Not found!'"
           spinner-color="blue"
         />
@@ -75,7 +75,40 @@ export default {
     };
   },
 
+  methods: {
+    async submit() {
+      const textId = this.$route.params.textId;
+      await this.$axios.post(
+        process.env.OPENPECHA_API_URL + "/api/v1/pedurma/" + textId + "/notes",
+        this.notes
+      );
+    },
+
+    async getImage(link) {
+      const accessToken = await this.$auth.getToken();
+      console.log(accessToken);
+
+      try {
+        const response = await fetch(link, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        console.log(response);
+        const json = await response.json();
+        this.imageApiMessage = json.message;
+      } catch (e) {
+        console.log(e);
+        this.imageApiMessage = `Error: the server responded with '${e.response.status}: ${e.response.statusText}'`;
+      }
+    },
+  },
+
   async created() {
+    const idToken = await this.$auth.getToken();
+    console.log(idToken);
+
     const textId = this.$route.params.textId;
     Loading.show();
     await this.$axios
@@ -89,34 +122,6 @@ export default {
       });
     Loading.hide();
     this.pageReady = true;
-  },
-
-  methods: {
-    async submit() {
-      const textId = this.$route.params.textId;
-      await this.$axios.post(
-        process.env.OPENPECHA_API_URL + "/api/v1/pedurma/" + textId + "/notes",
-        this.notes
-      );
-    },
-
-    async getImage(link) {
-      const accessToken = await this.$auth.getTokenSilently();
-
-      try {
-        const response = await fetch(link, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-
-        const json = await response.json();
-        this.imageApiMessage = json.message;
-      } catch (e) {
-        console.log(e);
-        this.apiMessage = `Error: the server responded with '${e.response.status}: ${e.response.statusText}'`;
-      }
-    },
   },
 };
 </script>

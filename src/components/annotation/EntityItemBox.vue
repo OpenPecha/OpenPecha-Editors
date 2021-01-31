@@ -16,7 +16,7 @@
         :label="currentLayer.text"
         class="q-ml-sm"
       >
-        <q-list>
+        <q-list dense>
           <q-item
             v-for="label in labels"
             :key="label.id"
@@ -50,6 +50,27 @@
           @remove="deleteAnnotation(chunk.id)"
           @update="updateEntity($event.id, chunk.id)"
         />
+        <q-dialog v-model="showMenu">
+          <q-card>
+            <q-list dense>
+              <q-item
+                v-for="label in labels.slice(1)"
+                :key="label.id"
+                clickable
+                v-close-popup
+                @click="assignLabel(label.id)"
+                :style="{
+                  background: label.color,
+                  color: idealColor(label.color),
+                }"
+              >
+                <q-item-section>
+                  <q-item-label>{{ label.text }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-card>
+        </q-dialog>
       </div>
     </div>
   </q-card>
@@ -176,14 +197,19 @@ export default {
     },
 
     show(e) {
+      console.log(e);
       e.preventDefault();
       this.showMenu = false;
-      this.x = e.clientX || e.changedTouches[0].clientX;
-      this.y = e.clientY || e.changedTouches[0].clientY;
+      this.x = e.clientX;
+      this.y = e.clientY;
       this.$nextTick(() => {
-        this.showMenu = true;
+        if (this.currentLayer.text === "All") {
+          this.showMenu = true;
+          console.log(this.x, this.y);
+        } else {
+          this.assignLabel(this.currentLayer.id);
+        }
       });
-      this.assignLabel(this.currentLayer.id);
     },
 
     countAllPreviousEntities(node) {

@@ -1,84 +1,42 @@
 <template>
-  <q-card bordered flat>
-    <q-toolbar>
-      <q-btn flat round dense icon="menu" class="q-mr-sm" />
-      <q-separator vertical inset />
-
-      <q-btn-dropdown
-        flat
-        no-caps
-        dense
-        icon="layers"
-        :style="{
-          background: currentLayer.color,
-          color: idealColor(currentLayer.color),
-        }"
-        :label="currentLayer.text"
-        class="q-ml-sm"
-      >
+  <div id="content-entities" @click="open" @touched="open">
+    <entity-item
+      v-for="(chunk, i) in chunks"
+      :key="i + currentLayer.id"
+      :content="chunk.text"
+      :newline="chunk.newline"
+      :label="filterLayer(chunk)"
+      :color="chunk.color"
+      @remove="deleteAnnotation(chunk.id)"
+      @update="updateEntity($event.id, chunk.id)"
+    />
+    <q-dialog v-model="showMenu">
+      <q-card>
         <q-list dense>
           <q-item
-            v-for="label in labels"
-            :key="label.id"
+            v-for="layer in layers.slice(1)"
+            :key="layer.id"
             clickable
             v-close-popup
-            @click="selectLayer(label)"
+            @click="assignLayer(layer.id)"
             :style="{
-              background: label.color,
-              color: idealColor(label.color),
+              background: layer.color,
+              color: textColor(layer.color),
             }"
           >
             <q-item-section>
-              <q-item-label>{{ label.text }}</q-item-label>
+              <q-item-label>{{ layer.text }}</q-item-label>
             </q-item-section>
           </q-item>
         </q-list>
-      </q-btn-dropdown>
-    </q-toolbar>
-
-    <q-separator />
-
-    <div class="row q-pa-md">
-      <div id="content-entities" @click="open" @touched="open">
-        <entity-item
-          v-for="(chunk, i) in chunks"
-          :key="i + currentLayer.id"
-          :content="chunk.text"
-          :newline="chunk.newline"
-          :label="filterLayer(chunk)"
-          :color="chunk.color"
-          @remove="deleteAnnotation(chunk.id)"
-          @update="updateEntity($event.id, chunk.id)"
-        />
-        <q-dialog v-model="showMenu">
-          <q-card>
-            <q-list dense>
-              <q-item
-                v-for="label in labels.slice(1)"
-                :key="label.id"
-                clickable
-                v-close-popup
-                @click="assignLabel(label.id)"
-                :style="{
-                  background: label.color,
-                  color: idealColor(label.color),
-                }"
-              >
-                <q-item-section>
-                  <q-item-label>{{ label.text }}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-card>
-        </q-dialog>
-      </div>
-    </div>
-  </q-card>
+      </q-card>
+    </q-dialog>
+  </div>
 </template>
 
 <script>
 import EntityItem from "components/annotation/EntityItem";
-import { Notify } from "quasar";
+import { idealColor } from "../../utils";
 
 export default {
   components: {
@@ -90,7 +48,7 @@ export default {
       default: "",
       required: true,
     },
-    labels: {
+    layers: {
       type: Array,
       default: () => [],
       required: true,
@@ -115,6 +73,10 @@ export default {
       default: () => [],
       required: true,
     },
+    currentLayer: {
+      type: Object,
+      default: () => {},
+    },
   },
   data() {
     return {
@@ -123,7 +85,6 @@ export default {
       y: 0,
       start: 0,
       end: 0,
-      currentLayer: null,
     };
   },
   computed: {
@@ -145,11 +106,11 @@ export default {
         startOffset = entity.end_offset;
 
         // add entities to chunks.
-        const label = this.labelObject[entity.label];
+        const layer = this.labelObject[entity.layer];
         chunks.push({
           id: entity.id,
-          label: label.text,
-          color: label.color,
+          layer: layer.text,
+          color: layer.color,
           text: this.text.slice(entity.start_offset, entity.end_offset),
         });
       }
@@ -162,8 +123,8 @@ export default {
 
     labelObject() {
       const obj = {};
-      for (const label of this.labels) {
-        obj[label.id] = label;
+      for (const layer of this.layers) {
+        obj[layer.id] = layer;
       }
       return obj;
     },
@@ -175,20 +136,20 @@ export default {
       const snippets = text.split("\n");
       for (const snippet of snippets.slice(0, -1)) {
         chunks.push({
-          label: null,
+          layer: null,
           color: null,
           text: snippet + "\n",
           newline: false,
         });
         chunks.push({
-          label: null,
+          layer: null,
           color: null,
           text: "",
           newline: true,
         });
       }
       chunks.push({
-        label: null,
+        layer: null,
         color: null,
         text: snippets.slice(-1)[0],
         newline: false,
@@ -207,7 +168,7 @@ export default {
           this.showMenu = true;
           console.log(this.x, this.y);
         } else {
-          this.assignLabel(this.currentLayer.id);
+          this.assignLayer(this.currentLayer.id);
         }
       });
     },
@@ -287,39 +248,26 @@ export default {
       }
     },
 
-    assignLabel(labelId) {
+    assignLayer(layerId) {
       if (this.validateSpan()) {
-        this.addEntity(this.start, this.end, labelId);
+        this.addEntity(this.start, this.end, layerId);
         this.showMenu = false;
         this.start = 0;
         this.end = 0;
       }
     },
 
-    selectLayer(layer) {
-      this.currentLayer = layer;
-    },
-
     filterLayer(chunk) {
-      if (this.currentLayer.id == -1 || chunk.label == this.currentLayer.text) {
-        return chunk.label;
+      if (this.currentLayer.id == -1 || chunk.layer == this.currentLayer.text) {
+        return chunk.layer;
       } else {
         return "";
       }
     },
 
-    idealColor(hexString) {
-      // W3c offers a formula for calculating ideal color:
-      // https://www.w3.org/TR/AERT/#color-contrast
-      const r = parseInt(hexString.substr(1, 2), 16);
-      const g = parseInt(hexString.substr(3, 2), 16);
-      const b = parseInt(hexString.substr(5, 2), 16);
-      return (r * 299 + g * 587 + b * 114) / 1000 < 128 ? "#ffffff" : "#000000";
+    textColor(bgColor) {
+      return idealColor(bgColor);
     },
-  },
-
-  created() {
-    this.currentLayer = this.labels[0];
   },
 };
 </script>
@@ -328,6 +276,7 @@ export default {
 .highlight-container.highlight-container--bottom-labels {
   align-items: flex-start;
 }
+
 .highlight-container {
   line-height: 42px !important;
   display: flex;
@@ -335,6 +284,7 @@ export default {
   white-space: pre-wrap;
   cursor: default;
 }
+
 .highlight-container.highlight-container--bottom-labels .highlight.bottom {
   margin-top: 6px;
 }

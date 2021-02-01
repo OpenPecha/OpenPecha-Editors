@@ -106,9 +106,6 @@ export default {
   },
 
   async created() {
-    const idToken = await this.$auth.getToken();
-    console.log(idToken);
-
     const textId = this.$route.params.textId;
     Loading.show();
     await this.$axios

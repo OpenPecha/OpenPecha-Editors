@@ -1,7 +1,6 @@
 import { Auth0Plugin } from "../auth/auth0-plugin";
 
 
-
 export default ({ router, Vue }) => {
   // Install the authentication plugin
   Vue.use(Auth0Plugin, {

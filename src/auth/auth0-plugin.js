@@ -29,6 +29,7 @@ export const useAuth0 = ({
         auth0Client: null,
         isLoading: true,
         isAuthenticated: false,
+        isSessionSet: false,
         user: {},
         error: null,
       };
@@ -54,20 +55,30 @@ export const useAuth0 = ({
       },
 
       async logout(options) {
-        const response = await axios.get(process.env.IFFFServerURL + "/setcookie")
-        console.log("unset cookie", response)
+        // const response = await axios.get(process.env.IFFFServerURL + "/setcookie", {headers: {}})
+        // console.log("unset cookie", response)
         return this.auth0Client.logout(options);
       },
 
-      async getToken(o) {
-        const idToken = await this.auth0Client.getTokenSilently(o);
-        console.log(idToken)
-        console.log(process.env.IFFFServerURL)
-        const headers = { Authorization:"Bearer "+idToken }
-        const params = { credentials: "include" }
-        const response = await axios.get(process.env.IFFFServerURL + "/setcookie", {headers: headers, params: params})
-        console.log("cookie", response)
-        return idToken
+      async getIdToken() {
+        const claims = await this.auth0Client.getIdTokenClaims();
+        return claims.__raw;
+      },
+
+      async setSession() {
+        const idToken = await this.getIdToken()
+        const response = await axios.get(process.env.IFFFServerURL + "/setcookie",
+          {
+            headers: {
+              Authorization: "Bearer " + idToken
+            },
+            credentials: 'include'
+          },
+        )
+      },
+
+      getToken(o) {
+        return this.auth0Client.getTokenSilently(o);
       },
     },
 
@@ -88,6 +99,7 @@ export const useAuth0 = ({
           const { appState } = await this.auth0Client.handleRedirectCallback();
 
           onRedirectCallback(appState);
+          await this.setSession()
         }
       } catch (error) {
         this.error = error;

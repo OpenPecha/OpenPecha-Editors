@@ -64,6 +64,8 @@
 
 <script>
 import { Loading } from "quasar";
+import { getOrigin } from "../utils";
+
 export default {
   data() {
     return {
@@ -71,7 +73,6 @@ export default {
       currentNote: null,
       pageReady: false,
       currentIdx: 0,
-      imageApiMessage: null,
     };
   },
 
@@ -79,29 +80,9 @@ export default {
     async submit() {
       const textId = this.$route.params.textId;
       await this.$axios.post(
-        process.env.OPENPECHA_API_URL + "/api/v1/pedurma/" + textId + "/notes",
+        getOrigin() + "/api/v1/pedurma/" + textId + "/notes",
         this.notes
       );
-    },
-
-    async getImage(link) {
-      const accessToken = await this.$auth.getToken();
-      console.log(accessToken);
-
-      try {
-        const response = await fetch(link, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-
-        console.log(response);
-        const json = await response.json();
-        this.imageApiMessage = json.message;
-      } catch (e) {
-        console.log(e);
-        this.imageApiMessage = `Error: the server responded with '${e.response.status}: ${e.response.statusText}'`;
-      }
     },
   },
 
@@ -109,9 +90,7 @@ export default {
     const textId = this.$route.params.textId;
     Loading.show();
     await this.$axios
-      .get(
-        process.env.OPENPECHA_API_URL + "/api/v1/pedurma/" + textId + "/notes"
-      )
+      .get(getOrigin() + "/api/v1/pedurma/" + textId + "/notes")
       .then((response) => response.data)
       .then((data) => {
         this.notes = data;
@@ -119,6 +98,16 @@ export default {
       });
     Loading.hide();
     this.pageReady = true;
+  },
+
+  methods: {
+    async submit() {
+      const textId = this.$route.params.textId;
+      await this.$axios.post(
+        getOrigin() + "/api/v1/pedurma/" + textId + "/notes",
+        this.notes
+      );
+    },
   },
 };
 </script>

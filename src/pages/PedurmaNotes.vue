@@ -1,29 +1,41 @@
 <template>
   <div v-if="pageReady" class="container">
     <div class="page-list">
-      <q-list bordered separator>
-        <q-item
-          clickable
-          v-ripple
-          v-for="(note, idx) in notes"
-          :key="idx"
-          @click="
-            currentNote = note;
-            currentIdx = idx;
-          "
-          :active="currentIdx == idx"
-        >
-          <q-item-section>Page {{ idx + 1 }}</q-item-section>
-        </q-item>
-      </q-list>
+      <q-scroll-area class="fixed-area">
+        <q-list bordered separator>
+          <q-item
+            clickable
+            v-ripple
+            v-for="(note, idx) in notes"
+            :key="idx"
+            @click="
+              currentNote = note;
+              currentIdx = idx;
+            "
+            :active="currentIdx == idx"
+          >
+            <q-item-section>Page {{ idx + 1 }}</q-item-section>
+          </q-item>
+        </q-list>
+      </q-scroll-area>
     </div>
     <div class="page-image">
-      <q-card class="page-image__card">
-        <q-img
-          :src="currentNote.image_link"
-          :alt="currentNote.image_link + ' Not found!'"
-          spinner-color="blue"
-        />
+      <q-card>
+        <q-scroll-area class="fixed-area">
+          <q-img
+            :src="currentNote.image_link"
+            :alt="currentNote.image_link + ' Not found!'"
+            spinner-color="blue"
+          >
+            <template v-slot:error>
+              <div
+                class="absolute-full flex flex-center bg-negative text-white"
+              >
+                Cannot load image
+              </div>
+            </template>
+          </q-img>
+        </q-scroll-area>
       </q-card>
     </div>
     <div class="page-inputs">
@@ -48,16 +60,6 @@
         label="Note Page No."
       />
       <q-btn label="submit" color="secondary" class="q-mt-xl" @click="submit" />
-    </div>
-    <div v-if="imageApiMessage" class="mt-5">
-      <h6 class="muted">Result</h6>
-      <div class="container-fluid">
-        <div class="row">
-          <code class="col-12 text-light bg-dark p-4">
-            {{ JSON.stringify(apiMessage, null, 2) }}
-          </code>
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -113,6 +115,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.q-header {
+  position: relative imp !important;
+}
+
+.page-container {
+  padding-top: 10px imp !important;
+}
+
+.fixed-area {
+  height: 90vh;
+  width: 100%;
+}
 .container {
   display: flex;
   margin: 1rem;
@@ -123,12 +137,12 @@ export default {
 
 .page-list {
   width: 20%;
-  margin-right: 0.625rem;
+  margin-right: 1rem;
 }
 
 .page-image {
   width: 60%;
-  margin-right: 0.625rem;
+  margin-right: 1rem;
 }
 
 .page-inputs {

@@ -72,7 +72,8 @@ export const useAuth0 = ({
             headers: {
               Authorization: "Bearer " + idToken
             },
-            credentials: 'include'
+            credentials: 'include',
+            withCredentials: true,
           },
         )
       },

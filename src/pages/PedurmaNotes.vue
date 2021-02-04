@@ -54,23 +54,18 @@
   <div v-else-if="done" class="q-ma-auto">
     <q-dialog v-model="done" persistent>
       <q-card>
-        <q-card-section>
-          <div class="text-h6">Status</div>
-        </q-card-section>
-        <q-card-section class="q-pt-none">
+        <q-card-section class="q-pa-xl text-h3">
           <q-icon :name="message.iconName" :color="message.iconColor" />
           {{ message.text }}
         </q-card-section>
-
-        <q-card-actions align="right">
+        <q-separator v-if="message.showActions" />
+        <q-card-actions v-if="message.showActions" align="center">
           <q-btn
-            v-show="message.showActions"
-            flat
-            dense
             no-caps
             :label="message.actionName"
             color="primary"
             @click="loadNotes"
+            class="full-width"
           />
         </q-card-actions>
       </q-card>
@@ -125,7 +120,7 @@ export default {
       this.message.text = this.textId + " Completed!";
       this.message.iconName = "done";
       this.message.iconColor = "green";
-      this.message.actionName = "Edit Anyway";
+      this.message.actionName = "Edit";
       this.done = true;
     },
 
@@ -148,7 +143,8 @@ export default {
     async markCompleted() {
       await this.$axios.post(
         getOrigin() + "/api/v1/pedurma/" + this.taskName + "/completed",
-        this.textId
+        null,
+        { params: { text_id: this.textId } }
       );
     },
 

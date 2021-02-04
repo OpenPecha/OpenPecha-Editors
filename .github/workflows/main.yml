@@ -18,7 +18,7 @@ jobs:
       - uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPOLY_USERNAME }}
+          username: ${{ secrets.DEPLOY_USERNAME }}
           key: ${{ secrets.DEPLOY_KEY }}
           port: ${{ secrets.DEPLOY_PORT }}
           script: |

@@ -1,44 +1,27 @@
 <template>
-  <div v-if="pageReady" class="container">
-    <div class="page-list">
+  <div v-if="pageReady && !done && currentNote" class="container">
+    <div class="page-image">
       <q-scroll-area class="fixed-area">
-        <q-list bordered separator>
-          <q-item
-            clickable
-            v-ripple
-            v-for="(note, idx) in notes"
-            :key="idx"
-            @click="
-              currentNote = note;
-              currentIdx = idx;
-            "
-            :active="currentIdx == idx"
-          >
-            <q-item-section>Page {{ idx + 1 }}</q-item-section>
-          </q-item>
-        </q-list>
+        <q-img
+          :src="resizedImgUrl"
+          :alt="currentNote.image_link"
+          spinner-color="blue"
+        >
+          <template v-slot:error>
+            <div class="absolute-full flex flex-center bg-negative text-white">
+              Cannot load image
+            </div>
+          </template>
+        </q-img>
       </q-scroll-area>
     </div>
-    <div class="page-image">
-      <q-card>
-        <q-scroll-area class="fixed-area">
-          <q-img
-            :src="currentNote.image_link"
-            :alt="currentNote.image_link + ' Not found!'"
-            spinner-color="blue"
-          >
-            <template v-slot:error>
-              <div
-                class="absolute-full flex flex-center bg-negative text-white"
-              >
-                Cannot load image
-              </div>
-            </template>
-          </q-img>
-        </q-scroll-area>
-      </q-card>
-    </div>
-    <div class="page-inputs">
+    <div class="page-data">
+      <q-pagination
+        v-model="currentIdx"
+        :max="notes.length"
+        input
+        class="q-mb-lg"
+      />
       <q-input
         filled
         v-model.number="currentNote.ref_start_page_no"
@@ -59,8 +42,39 @@
         type="number"
         label="Note Page No."
       />
-      <q-btn label="submit" color="secondary" class="q-mt-xl" @click="submit" />
+      <q-btn
+        v-show="currentIdx == notes.length"
+        label="submit"
+        color="secondary"
+        class="q-mt-lg full-width"
+        @click="submit"
+      />
     </div>
+  </div>
+  <div v-else-if="done" class="q-ma-auto">
+    <q-dialog v-model="done" persistent>
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">Status</div>
+        </q-card-section>
+        <q-card-section class="q-pt-none">
+          <q-icon :name="message.iconName" :color="message.iconColor" />
+          {{ message.text }}
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn
+            v-show="message.showActions"
+            flat
+            dense
+            no-caps
+            :label="message.actionName"
+            color="primary"
+            @click="loadNotes"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -72,80 +86,143 @@ export default {
   data() {
     return {
       notes: [],
-      currentNote: null,
       pageReady: false,
-      currentIdx: 0,
+      currentIdx: 1,
+      done: false,
+      taskName: "note_edits",
+      completedText: [],
+      message: {
+        text: "",
+        iconName: "",
+        iconColor: "",
+        showActions: true,
+        actionName: "",
+      },
+      imgHeight: 800,
+      imgWidth: 550,
     };
   },
 
-  methods: {
-    async submit() {
-      const textId = this.$route.params.textId;
-      await this.$axios.post(
-        getOrigin() + "/api/v1/pedurma/" + textId + "/notes",
-        this.notes
+  computed: {
+    textId() {
+      return this.$route.params.textId;
+    },
+
+    currentNote() {
+      return this.notes[this.currentIdx - 1];
+    },
+
+    resizedImgUrl() {
+      return this.currentNote.image_link.replace(
+        "max",
+        `${this.imgWidth},${this.imgHeight}`
       );
     },
   },
 
-  async created() {
-    const textId = this.$route.params.textId;
-    Loading.show();
-    await this.$axios
-      .get(getOrigin() + "/api/v1/pedurma/" + textId + "/notes")
-      .then((response) => response.data)
-      .then((data) => {
-        this.notes = data;
-        this.currentNote = this.notes[0];
-      });
-    Loading.hide();
-    this.pageReady = true;
-  },
-
   methods: {
-    async submit() {
-      const textId = this.$route.params.textId;
+    success() {
+      this.message.text = this.textId + " Completed!";
+      this.message.iconName = "done";
+      this.message.iconColor = "green";
+      this.message.actionName = "Edit Anyway";
+      this.done = true;
+    },
+
+    fail() {
+      console.log(this.textId, "failed");
+      this.message.text = this.textId + " Not found!";
+      this.message.iconName = "clear";
+      this.message.iconColor = "red";
+      this.message.showActions = false;
+      this.done = true;
+    },
+
+    async updateNotes() {
       await this.$axios.post(
-        getOrigin() + "/api/v1/pedurma/" + textId + "/notes",
+        getOrigin() + "/api/v1/pedurma/" + this.textId + "/notes",
         this.notes
       );
     },
+
+    async markCompleted() {
+      await this.$axios.post(
+        getOrigin() + "/api/v1/pedurma/" + this.taskName + "/completed",
+        this.textId
+      );
+    },
+
+    submit() {
+      Loading.show();
+      this.updateNotes();
+      this.markCompleted();
+      Loading.hide();
+      this.done = true;
+    },
+
+    async loadNotes() {
+      this.done = false;
+      Loading.show();
+      await this.$axios
+        .get(getOrigin() + "/api/v1/pedurma/" + this.textId + "/notes")
+        .then((response) => response.data)
+        .then((data) => {
+          if (data.length) {
+            this.notes = data;
+          } else {
+            this.fail();
+          }
+        });
+      Loading.hide();
+      this.pageReady = true;
+    },
+
+    async checkTextCompleted() {
+      Loading.show();
+      await this.$axios
+        .get(getOrigin() + "/api/v1/pedurma/" + this.taskName + "/completed")
+        .then((response) => response.data)
+        .then((data) => {
+          data.find((textId) => {
+            if (textId == this.textId) {
+              this.success();
+              Loading.hide();
+            }
+          });
+        });
+    },
+  },
+
+  created() {
+    this.checkTextCompleted();
+    if (!this.done) {
+      this.loadNotes();
+    }
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.q-header {
-  position: relative imp !important;
-}
-
-.page-container {
-  padding-top: 10px imp !important;
-}
-
 .fixed-area {
   height: 90vh;
   width: 100%;
 }
+
 .container {
   display: flex;
-  margin: 1rem;
+  margin: 1rem auto;
+  max-width: 1023px;
   justify-content: space-between;
   justify-items: center;
   align-items: flex-start;
 }
 
-.page-list {
-  width: 20%;
-  margin-right: 1rem;
-}
-
 .page-image {
-  width: 60%;
+  width: 70%;
   margin-right: 1rem;
 }
 
-.page-inputs {
-  width: 20%;
+.page-data {
+  width: 30%;
 }
 </style>

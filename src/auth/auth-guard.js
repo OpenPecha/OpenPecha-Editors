@@ -1,6 +1,10 @@
 import { getInstance } from "./auth0-plugin";
 
 export const authenticationGuard = (to, from, next) => {
+    if (process.env.DEV) {
+        return next()
+    }
+
     const authService = getInstance();
 
     const gaurdAction = () => {

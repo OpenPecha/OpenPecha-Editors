@@ -2,6 +2,28 @@ import { authenticationGuard } from "../auth/auth-guard"
 
 const routes = [
   {
+    path: '/',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      {
+        path: '/',
+        component: () => import('pages/Home.vue'),
+      },
+      {
+        path: '/features',
+        component: () => import('pages/Features.vue'),
+      },
+      {
+        path: '/about',
+        component: () => import('pages/About.vue'),
+      },
+      {
+        path: '/contact',
+        component: () => import('pages/Contact.vue'),
+      },
+    ]
+  },
+  {
     path: '/login',
     component: () => import('layouts/Login.vue'),
   },
@@ -10,24 +32,20 @@ const routes = [
     component: () => import('layouts/BudaLogin.vue'),
   },
   {
-    path: '/',
-    component: () => import('layouts/MainLayout.vue'),
+    path: '/editor',
+    component: () => import('layouts/EditorLayout.vue'),
     children: [
       {
-        path: '/',
-        component: () => import('pages/Index.vue'),
+        path: '/editor/basic/:pechaId',
+        component: () => import('pages/editor/Basic.vue'),
       },
       {
-        path: '/basic/:pechaId',
-        component: () => import('pages/Basic.vue'),
+        path: '/editor/pedurma/:textId',
+        component: () => import('pages/editor/Pedurma.vue'),
       },
       {
-        path: '/pedurma/:textId',
-        component: () => import('pages/Pedurma.vue'),
-      },
-      {
-        path: '/pedurma/:textId/notes',
-        component: () => import('pages/PedurmaNotes.vue'),
+        path: '/editor/pedurma/:textId/notes',
+        component: () => import('pages/editor/PedurmaNotes.vue'),
         beforeEnter: authenticationGuard
         // meta: {
         //   requiresAuth: true,

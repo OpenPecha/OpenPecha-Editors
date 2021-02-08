@@ -68,7 +68,9 @@
 
 <script>
 import EntityItemBox from "components/annotation/EntityItemBox";
-import { idealColor } from "../utils";
+import { idealColor } from "src/utils";
+import { getFiles, getFileContent } from "src/github";
+import yaml from "js-yaml";
 
 export default {
   name: "Annotation",
@@ -80,84 +82,30 @@ export default {
   data() {
     return {
       currentLayer: null,
+      org: "OpenPecha",
+      pechaId: "P000100",
+      reviewBranch: "review",
+      vol: "v001",
+      layerColor: {
+        BookTitle: "#09ebdf",
+        Chapter: "#09ebdf",
+        Author: "#09ebdf",
+        Citation: "#09ebdf",
+        Sabche: "#fbb028",
+        Yigchung: "#d29eea",
+        Tsawa: "#6a74b9",
+      },
       layers: [
         {
           id: -1,
           text: "All",
           color: "#ffffff",
         },
-        {
-          id: 4,
-          text: "Citation",
-          prefix_key: null,
-          suffix_key: "c",
-          color: "#09ebdf",
-        },
-        {
-          id: 5,
-          text: "Sabche",
-          prefix_key: null,
-          suffix_key: "m",
-          color: "#fbb028",
-        },
-        {
-          id: 6,
-          text: "Yigchug",
-          prefix_key: null,
-          suffix_key: "o",
-          color: "#d29eea",
-        },
-        {
-          id: 7,
-          text: "Tsawa",
-          prefix_key: null,
-          suffix_key: "p",
-          color: "#6a74b9",
-        },
       ],
       currentDoc: {
         id: 8,
-        text:
-          "After bowling Somerset out for 83 on the opening morning at Grace Road , Leicestershire extended their first innings by 94 runs before being bowled out for 296 with England discard Andy Caddick taking three for 83 .",
-        annotations: [
-          {
-            id: 17,
-            prob: 0.0,
-            layer: 4,
-            start_offset: 60,
-            end_offset: 70,
-          },
-          {
-            id: 19,
-            prob: 0.0,
-            layer: 4,
-            start_offset: 165,
-            end_offset: 172,
-          },
-          {
-            id: 16,
-            prob: 0.0,
-            layer: 6,
-            start_offset: 14,
-            end_offset: 22,
-          },
-          {
-            id: 18,
-            prob: 0.0,
-            layer: 6,
-            start_offset: 73,
-            end_offset: 87,
-          },
-          {
-            id: 20,
-            prob: 0.0,
-            layer: 7,
-            start_offset: 181,
-            end_offset: 193,
-          },
-        ],
-        meta: '{"wikiPageId":2}',
-        annotation_approver: null,
+        text: "",
+        annotations: [],
       },
     };
   },
@@ -193,10 +141,78 @@ export default {
     textColor(bgColor) {
       return idealColor(bgColor);
     },
+
+    loadAnn(layer) {
+      for (const [id, ann] of Object.entries(layer.annotations)) {
+        this.currentDoc.annotations.push({
+          id: id,
+          start_offset: ann.span.start,
+          end_offset: ann.span.end,
+          layer: layer.id,
+        });
+      }
+    },
+
+    addLayer(layer) {
+      this.layers.push({
+        id: layer.id,
+        text: layer.annotation_type,
+        color: "#09ebdf",
+        base: this.vol,
+      });
+    },
+
+    async loadVolumeLayer() {
+      const layerFiles = await getFiles(
+        this.org,
+        this.pechaId,
+        this.reviewBranch,
+        `${this.pechaId}.opf/layers/${this.vol}`
+      );
+
+      layerFiles.forEach(async (layerFile) => {
+        const content = await getFileContent(
+          this.org,
+          this.pechaId,
+          layerFile.sha
+        );
+        const layer = yaml.load(content);
+        this.loadAnn(layer);
+        this.addLayer(layer);
+      });
+    },
+
+    async loadVolumeBase() {
+      const baseVols = await getFiles(
+        this.org,
+        this.pechaId,
+        this.reviewBranch,
+        `${this.pechaId}.opf/base`
+      );
+
+      baseVols.forEach(async (baseVol) => {
+        if (baseVol.name == `${this.vol}.txt`) {
+          this.currentDoc.text = await getFileContent(
+            this.org,
+            this.pechaId,
+            baseVol.sha
+          );
+        }
+      });
+    },
   },
 
   created() {
+    this.loadVolumeLayer();
+    this.loadVolumeBase();
     this.currentLayer = this.layers[0];
   },
 };
 </script>
+
+<style scoped>
+.q-card {
+  max-width: 1000px;
+  margin: auto;
+}
+</style>

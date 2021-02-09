@@ -51,7 +51,7 @@
 
       <q-separator />
 
-      <div class="row q-pa-md content">
+      <div class="col q-pa-md content scroll overflow-auto">
         <entity-item-box
           :layers="layers"
           :text="currentDoc.text"
@@ -71,6 +71,7 @@ import EntityItemBox from "components/annotation/EntityItemBox";
 import { idealColor, layerColor } from "src/utils";
 import { getFiles, getFileContent } from "src/github";
 import yaml from "js-yaml";
+import { v4 as uuidv4 } from "uuid";
 
 export default {
   name: "Annotation",
@@ -86,6 +87,7 @@ export default {
       pechaId: "P000100",
       reviewBranch: "review",
       vol: "v001",
+      opfLayers: {},
       layers: [
         {
           id: -1,
@@ -102,27 +104,41 @@ export default {
   },
 
   methods: {
-    removeEntity(annotationId) {
+    removeEntity(ann) {
+      // remove from doc annotations
       this.currentDoc.annotations = this.currentDoc.annotations.filter(
-        (item) => item.id !== annotationId
+        (item) => item.id !== ann.id
       );
+
+      // remove from opf layer
+      this.opfLayers[ann.layerId].annotations[ann.id].deleted = true;
+      this.opfLayers[ann.layerId].annotations[ann.id].reviewed = false;
     },
 
-    updateEntity(layerId, annotationId) {
+    updateEntity(layerId, ann) {
       const index = this.currentDoc.annotations.findIndex(
-        (item) => item.id === annotationId
+        (item) => item.id === ann.id
       );
       this.currentDoc.annotations[index].layer = layerId;
     },
 
     addEntity(startOffset, endOffset, layerId) {
-      const payload = {
-        id: Math.floor(Math.random() * Math.floor(Number.MAX_SAFE_INTEGER)),
-        start_offset: startOffset,
-        end_offset: endOffset,
+      // add to doc annotations
+      const newAnn = {
+        id: uuidv4().replaceAll("-", ""),
+        span: { start: startOffset, end: endOffset },
         layer: layerId,
       };
-      this.currentDoc.annotations.push(payload);
+      this.currentDoc.annotations.push(newAnn);
+
+      // add to opf layer
+      this.opfLayers[layerId].annotations[newAnn.id] = {
+        span: newAnn.span,
+        reviewed: false,
+      };
+
+      console.log(newAnn.id);
+      console.log(this.opfLayers[layerId].annotations[newAnn.id]);
     },
 
     selectLayer(layer) {
@@ -137,14 +153,14 @@ export default {
       for (const [id, ann] of Object.entries(layer.annotations)) {
         this.currentDoc.annotations.push({
           id: id,
-          start_offset: ann.span.start,
-          end_offset: ann.span.end,
+          span: ann.span,
           layer: layer.id,
         });
       }
     },
 
     addLayer(layer) {
+      this.opfLayers[layer.id] = layer;
       this.layers.push({
         id: layer.id,
         text: layer.annotation_type,
@@ -205,6 +221,8 @@ export default {
 .q-card
   max-width: 1000px
   margin: auto
+  // height: 90vh
+  // overflow: hidden
 
 .content
   font-family: 'monlam-ochan2', sans-serif

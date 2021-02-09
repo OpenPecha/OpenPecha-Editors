@@ -7,8 +7,8 @@
       :newline="chunk.newline"
       :label="filterLayer(chunk)"
       :color="chunk.color"
-      @remove="deleteAnnotation(chunk.id)"
-      @update="updateEntity($event.id, chunk.id)"
+      @remove="deleteAnnotation(chunk)"
+      @update="updateEntity($event.id, chunk)"
     />
     <q-dialog v-model="showMenu">
       <q-card>
@@ -89,9 +89,7 @@ export default {
   },
   computed: {
     sortedEntities() {
-      return this.entities
-        .slice()
-        .sort((a, b) => a.start_offset - b.start_offset);
+      return this.entities.slice().sort((a, b) => a.span.start - b.span.start);
     },
 
     chunks() {
@@ -101,17 +99,18 @@ export default {
       for (const entity of entities) {
         // add non-entities to chunks.
         chunks = chunks.concat(
-          this.makeChunks(this.text.slice(startOffset, entity.start_offset))
+          this.makeChunks(this.text.slice(startOffset, entity.span.start))
         );
-        startOffset = entity.end_offset;
+        startOffset = entity.span.end;
 
         // add entities to chunks.
         const layer = this.labelObject[entity.layer];
         chunks.push({
           id: entity.id,
           layer: layer.text,
+          layerId: layer.id,
           color: layer.color,
-          text: this.text.slice(entity.start_offset, entity.end_offset),
+          text: this.text.slice(entity.span.start, entity.span.end),
         });
       }
       // add the rest of text.
@@ -136,12 +135,14 @@ export default {
       const snippets = text.split("\n");
       for (const snippet of snippets.slice(0, -1)) {
         chunks.push({
+          layerId: null,
           layer: null,
           color: null,
           text: snippet + "\n",
           newline: false,
         });
         chunks.push({
+          layerId: null,
           layer: null,
           color: null,
           text: "",
@@ -149,6 +150,7 @@ export default {
         });
       }
       chunks.push({
+        layerId: null,
         layer: null,
         color: null,
         text: snippets.slice(-1)[0],
@@ -158,7 +160,6 @@ export default {
     },
 
     show(e) {
-      console.log(e);
       e.preventDefault();
       this.showMenu = false;
       this.x = e.clientX;
@@ -220,16 +221,13 @@ export default {
         return false;
       }
       for (const entity of this.entities) {
-        if (
-          entity.start_offset <= this.start &&
-          this.start < entity.end_offset
-        ) {
+        if (entity.span.start <= this.start && this.start < entity.span.end) {
           return false;
         }
-        if (entity.start_offset < this.end && this.end <= entity.end_offset) {
+        if (entity.span.start < this.end && this.end <= entity.span.end) {
           return false;
         }
-        if (this.start < entity.start_offset && entity.end_offset < this.end) {
+        if (this.start < entity.span.start && entity.span.end < this.end) {
           return false;
         }
       }
@@ -241,10 +239,14 @@ export default {
       if (this.validateSpan()) {
         this.show(e);
       } else {
-        this.$q.notify({
-          type: "negative",
-          message: "Annotation overlapping with other annotation",
-        });
+        if (this.start !== this.end) {
+          {
+            this.$q.notify({
+              type: "negative",
+              message: "Annotation overlapping with other annotation",
+            });
+          }
+        }
       }
     },
 
@@ -273,6 +275,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.fixed-area {
+  height: 90vh;
+  width: 100%;
+}
+
 .highlight-container.highlight-container--bottom-labels {
   align-items: flex-start;
 }

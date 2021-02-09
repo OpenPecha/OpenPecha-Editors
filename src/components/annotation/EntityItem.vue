@@ -1,7 +1,7 @@
 <template>
   <span
     v-if="label"
-    :style="{ borderColor: color }"
+    :style="{ background: color, color: textColor }"
     class="highlight"
     @click="remove"
   >
@@ -19,6 +19,8 @@
 </template>
 
 <script>
+import { idealColor } from "src/utils";
+
 export default {
   props: {
     content: {
@@ -38,9 +40,13 @@ export default {
       type: Boolean,
     },
   },
-  data() {
-    return {};
+
+  computed: {
+    textColor() {
+      idealColor(this.color);
+    },
   },
+
   methods: {
     update(label) {
       this.$emit("update", label);

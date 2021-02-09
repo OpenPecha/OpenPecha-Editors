@@ -51,7 +51,7 @@
 
       <q-separator />
 
-      <div class="row q-pa-md">
+      <div class="row q-pa-md content">
         <entity-item-box
           :layers="layers"
           :text="currentDoc.text"
@@ -68,7 +68,7 @@
 
 <script>
 import EntityItemBox from "components/annotation/EntityItemBox";
-import { idealColor } from "src/utils";
+import { idealColor, layerColor } from "src/utils";
 import { getFiles, getFileContent } from "src/github";
 import yaml from "js-yaml";
 
@@ -86,15 +86,6 @@ export default {
       pechaId: "P000100",
       reviewBranch: "review",
       vol: "v001",
-      layerColor: {
-        BookTitle: "#09ebdf",
-        Chapter: "#09ebdf",
-        Author: "#09ebdf",
-        Citation: "#09ebdf",
-        Sabche: "#fbb028",
-        Yigchung: "#d29eea",
-        Tsawa: "#6a74b9",
-      },
       layers: [
         {
           id: -1,
@@ -157,7 +148,7 @@ export default {
       this.layers.push({
         id: layer.id,
         text: layer.annotation_type,
-        color: "#09ebdf",
+        color: layerColor[layer.annotation_type],
         base: this.vol,
       });
     },
@@ -210,9 +201,13 @@ export default {
 };
 </script>
 
-<style scoped>
-.q-card {
-  max-width: 1000px;
-  margin: auto;
-}
+<style lang="sass" scoped>
+.q-card
+  max-width: 1000px
+  margin: auto
+
+.content
+  font-family: 'monlam-ochan2', sans-serif
+  font-size: 1.657rem
+  line-heigh: 1.8
 </style>

@@ -17,3 +17,11 @@ export const layerColor = {
         Tsawa: "#8b1409",
         FootNote: "#343233"
       }
+
+export function getOrigin() {
+    if (process.env.DEV) {
+        return process.env.OPENPECHA_API_URL
+    } else {
+        return window.location.origin
+    }
+}

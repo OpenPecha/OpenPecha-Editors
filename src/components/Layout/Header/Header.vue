@@ -3,17 +3,26 @@
     <q-toolbar v-if="$q.platform.is.desktop">
       <q-toolbar-title class="text-bold">OpenPecha Editor</q-toolbar-title>
 
-      <q-btn flat dense icon="exit_to_app" label="Logout" @click="logout" />
+      <q-btn
+        v-if="$auth.isAuthenticated"
+        flat
+        dense
+        icon="exit_to_app"
+        color="danger"
+        label="Logout"
+        @click="logout"
+      />
     </q-toolbar>
   </q-header>
 </template>
 
 <script>
-import { mapActions } from "vuex";
-
 export default {
   methods: {
-    ...mapActions("app", ["logout"]),
+    logout() {
+      this.$auth.logout();
+      this.$router.push({ path: "/" });
+    },
   },
 };
 </script>

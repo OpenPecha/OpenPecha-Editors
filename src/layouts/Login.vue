@@ -48,7 +48,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters("app", ["authUrl", "accessTokenUrl"]),
+    ...mapGetters("app", ["githubAuthUrl", "accessTokenUrl"]),
   },
 
   mounted() {
@@ -68,7 +68,7 @@ export default {
     },
 
     async login(newwindow) {
-      openWindow(this.authUrl, this.$t("login"));
+      openWindow(this.githubAuthUrl, this.$t("login"));
     },
 
     onMessage(e) {

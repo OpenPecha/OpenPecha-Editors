@@ -1,8 +1,13 @@
+import { authenticationGuard } from "../auth/auth-guard"
 
 const routes = [
   {
     path: '/login',
     component: () => import('layouts/Login.vue'),
+  },
+  {
+    path: '/login/buda',
+    component: () => import('layouts/BudaLogin.vue'),
   },
   {
     path: '/',
@@ -23,6 +28,11 @@ const routes = [
       {
         path: '/pedurma/:textId/notes',
         component: () => import('pages/PedurmaNotes.vue'),
+        beforeEnter: authenticationGuard
+        // meta: {
+        //   requiresAuth: true,
+        //   authService: "buda"
+        //  }
       },
       {
         path: '/annotate',

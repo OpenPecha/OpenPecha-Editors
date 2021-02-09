@@ -1,15 +1,11 @@
-export function isAuthenticated(state) {
-    return state.isAuthenticated;
-}
-
-export function authUrl(state) {
-    return process.env.OPENPECHA_API_URL + "/api/v1/login/oauth/access_token?client_id=" + state.oauthClientId;
+export function githubAuthUrl(state) {
+    return state.github.authUrl + "?client_id=" + state.github.clientId;
 }
 
 export function accessTokenUrl(state) {
-    return state.accessTokenUrlBase;
+    return process.env.OPENPECHA_API_URL
 }
 
-export function userAccessToken(state) {
-    return state.userAccessToken;
+export function githubUserAccessToken(state) {
+    return state.github.userAccessToken;
 }

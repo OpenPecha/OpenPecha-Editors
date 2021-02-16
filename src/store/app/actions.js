@@ -10,9 +10,10 @@ export function logout({ commit }, payload) {
 
 export async function getUserAccessToken({ commit, getters }, payload) {
     const response = await axios.get(getters.accessTokenUrl + "/api/v1/login/oauth/access_token", {
-        params: payload
+        params: { code: payload.code }
     });
     commit("setUserAccessToken", response.data.access_token)
     commit('setIsAuthenticated', true)
-    this.$router.push("/basic/P000001")
+    console.log(payload)
+    this.$router.push(payload.nextUrl)
 }

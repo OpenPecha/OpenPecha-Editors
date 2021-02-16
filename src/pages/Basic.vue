@@ -9,9 +9,6 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import { Loading } from "quasar";
-
 export default {
   name: "BasicEditorPage",
   components: {
@@ -23,10 +20,6 @@ export default {
       org: "OpenPecha",
       repo: "P000100",
     };
-  },
-
-  computed: {
-    ...mapState("app", ["userAccessToken"]),
   },
 
   methods: {

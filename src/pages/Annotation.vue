@@ -32,7 +32,7 @@
               }"
             >
               <q-item-section>
-                <q-item-layer>{{ layer.text }}</q-item-layer>
+                <q-item-label>{{ layer.text }}</q-item-label>
               </q-item-section>
             </q-item>
           </q-list>
@@ -40,11 +40,17 @@
 
         <!-- <q-separator vertical inset /> -->
 
-        <q-btn unelevated icon="edit_off" text-color="grey-10" class="q-ml-sm">
+        <q-btn
+          unelevated
+          icon="edit_off"
+          text-color="grey-10"
+          class="q-ml-sm"
+          @click="editingBase = true"
+        >
           <q-tooltip>edit base</q-tooltip>
         </q-btn>
         <q-space />
-        <q-btn unelevated icon="save " text-color="green-5">
+        <q-btn unelevated icon="save" text-color="green-5" @click="save">
           <q-tooltip>save</q-tooltip>
         </q-btn>
       </q-toolbar>
@@ -52,7 +58,14 @@
       <q-separator />
 
       <div class="col q-pa-md content scroll overflow-auto">
+        <textarea
+          v-show="editingBase"
+          type="text"
+          :style="{ width: '100%', height: '80vh' }"
+          >{{ currentDoc.text }} </textarea
+        >
         <entity-item-box
+          v-show="!editingBase"
           :layers="layers"
           :text="currentDoc.text"
           :entities="currentDoc.annotations"
@@ -68,10 +81,14 @@
 
 <script>
 import EntityItemBox from "components/annotation/EntityItemBox";
-import { idealColor, layerColor } from "src/utils";
-import { getFiles, getFileContent } from "src/github";
+import { mapState } from "vuex";
+import { Loading } from "quasar";
+
 import yaml from "js-yaml";
 import { v4 as uuidv4 } from "uuid";
+
+import { idealColor, layerColor, getOrigin } from "src/utils";
+import { getFiles, getFileContent, commit, getUser } from "src/github";
 
 export default {
   name: "Annotation",
@@ -82,12 +99,14 @@ export default {
 
   data() {
     return {
+      user: null,
       currentLayer: null,
       org: "OpenPecha",
       pechaId: "P000100",
       reviewBranch: "review",
       vol: "v001",
-      opfLayers: {},
+      editingBase: false,
+      opfLayers: [], // [{id: layerId, metadata: github-metadata, content: actual-layer}]
       layers: [
         {
           id: -1,
@@ -103,7 +122,19 @@ export default {
     };
   },
 
+  computed: {
+    ...mapState("app", ["userAccessToken"]),
+
+    textId() {
+      return this.$route.params.textId;
+    },
+  },
+
   methods: {
+    getOpfLayerIdx(layerId) {
+      return this.opfLayers.findIndex((layer) => layer.id == layerId);
+    },
+
     removeEntity(ann) {
       // remove from doc annotations
       this.currentDoc.annotations = this.currentDoc.annotations.filter(
@@ -111,8 +142,9 @@ export default {
       );
 
       // remove from opf layer
-      this.opfLayers[ann.layerId].annotations[ann.id].deleted = true;
-      this.opfLayers[ann.layerId].annotations[ann.id].reviewed = false;
+      const opfLayerIdx = this.getOpfLayerIdx(ann.layerId);
+      this.opfLayers[opfLayerIdx].content.annotations[ann.id].deleted = true;
+      this.opfLayers[opfLayerIdx].content.annotations[ann.id].reviewed = false;
     },
 
     updateEntity(layerId, ann) {
@@ -132,16 +164,19 @@ export default {
       this.currentDoc.annotations.push(newAnn);
 
       // add to opf layer
-      this.opfLayers[layerId].annotations[newAnn.id] = {
+      this.opfLayers[this.getOpfLayerIdx(layerId)].content.annotations[
+        newAnn.id
+      ] = {
         span: newAnn.span,
         reviewed: false,
       };
-
-      console.log(newAnn.id);
-      console.log(this.opfLayers[layerId].annotations[newAnn.id]);
     },
 
     selectLayer(layer) {
+      if (this.editingBase) {
+        this.updateBaseLayer();
+        this.editingBase = false;
+      }
       this.currentLayer = layer;
     },
 
@@ -159,13 +194,20 @@ export default {
       }
     },
 
-    addLayer(layer) {
-      this.opfLayers[layer.id] = layer;
+    addLayer(layer, layerFile) {
+      // add layer for annotations
       this.layers.push({
         id: layer.id,
         text: layer.annotation_type,
         color: layerColor[layer.annotation_type],
         base: this.vol,
+      });
+
+      // save opf layers
+      this.opfLayers.push({
+        id: layer.id,
+        metadata: layerFile,
+        content: layer,
       });
     },
 
@@ -174,18 +216,20 @@ export default {
         this.org,
         this.pechaId,
         this.reviewBranch,
-        `${this.pechaId}.opf/layers/${this.vol}`
+        `${this.pechaId}.opf/layers/${this.vol}`,
+        this.userAccessToken
       );
 
       layerFiles.forEach(async (layerFile) => {
         const content = await getFileContent(
           this.org,
           this.pechaId,
-          layerFile.sha
+          layerFile.sha,
+          this.userAccessToken
         );
         const layer = yaml.load(content);
         this.loadAnn(layer);
-        this.addLayer(layer);
+        this.addLayer(layer, layerFile);
       });
     },
 
@@ -194,7 +238,8 @@ export default {
         this.org,
         this.pechaId,
         this.reviewBranch,
-        `${this.pechaId}.opf/base`
+        `${this.pechaId}.opf/base`,
+        this.userAccessToken
       );
 
       baseVols.forEach(async (baseVol) => {
@@ -202,16 +247,54 @@ export default {
           this.currentDoc.text = await getFileContent(
             this.org,
             this.pechaId,
-            baseVol.sha
+            baseVol.sha,
+            this.userAccessToken
           );
         }
       });
+    },
+
+    save() {
+      Loading.show();
+      this.opfLayers.forEach(async (opfLayer) => {
+        const sha = await commit(
+          this.org,
+          this.pechaId,
+          this.reviewBranch,
+          opfLayer.metadata.path,
+          opfLayer.content,
+          opfLayer.metadata.sha,
+          this.userAccessToken
+        );
+
+        opfLayer.metadata.sha = sha;
+      });
+      Loading.hide();
+    },
+
+    async loadUser() {
+      this.user = await getUser(this.userAccessToken);
+    },
+
+    async updateBaseLayer() {
+      console.log("update base");
+      const layers = this.$axios.post(
+        getOrigin() + "/" + this.pechaId + "/update/base",
+        {
+          new_base: {
+            id: this.vol,
+            content: this.currentDoc.text,
+          },
+          layers: this.opfLayers,
+        }
+      );
     },
   },
 
   created() {
     this.loadVolumeLayer();
     this.loadVolumeBase();
+    this.loadUser();
     this.currentLayer = this.layers[0];
   },
 };

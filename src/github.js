@@ -1,7 +1,6 @@
 import { Octokit } from "@octokit/core";
 
 export async function getFiles(org, repo, branch, path, token) {
-    console.log(path)
     const ghClient = new Octokit({ auth: token });
     const response = await ghClient.request(
         "GET /repos/{owner}/{repo}/contents/{path}",
@@ -38,21 +37,30 @@ export async function getFileContent(org, repo, sha, token) {
 }
 
 export async function commit(org, repo, branch, path, content, sha, token) {
-    const ghClient = new Octokit({ auth: token});
-    const response = await ghClient.request(
-        "PUT /repos/{owner}/{repo}/contents/{path}",
-        {
-            owner: org,
-            repo: repo,
-            branch: branch,
-            path: path,
-            message: "update",
-            content: utf8ToBase64(content),
-            sha: sha,
-        }
-    );
+    const ghClient = new Octokit({ auth: token});;
+    try {
+        const response = await ghClient.request(
+            "PUT /repos/{owner}/{repo}/contents/{path}",
+            {
+                owner: org,
+                repo: repo,
+                path: path,
+                message: "update",
+                content: utf8ToBase64(JSON.stringify(content)),
+                sha: sha,
+            }
+        );
+    } catch (error) {
+        console.log(error)
+        return
+    }
 
     return response["data"]["content"]["sha"];
 
 }
 
+export async function getUser(token) {
+    const ghClient = new Octokit({ auth: token});;
+    const user = await ghClient.request("/user")
+    return user
+}

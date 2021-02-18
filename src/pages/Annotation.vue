@@ -128,6 +128,12 @@ export default {
     textId() {
       return this.$route.params.textId;
     },
+
+    opfLayersContent() {
+      return this.opfLayers.map((opfLayer) => {
+        return opfLayer.content;
+      });
+    },
   },
 
   methods: {
@@ -174,6 +180,7 @@ export default {
 
     selectLayer(layer) {
       if (this.editingBase) {
+        console.log("update base");
         this.updateBaseLayer();
         this.editingBase = false;
       }
@@ -279,13 +286,13 @@ export default {
     async updateBaseLayer() {
       console.log("update base");
       const layers = this.$axios.post(
-        getOrigin() + "/" + this.pechaId + "/update/base",
+        getOrigin() + "/api/v1/" + this.pechaId + "/update/base",
         {
           new_base: {
             id: this.vol,
-            content: this.currentDoc.text,
+            content: this.currentDoc.text.slice(0, 100),
           },
-          layers: this.opfLayers,
+          layers: this.opfLayersContent[0],
         }
       );
     },

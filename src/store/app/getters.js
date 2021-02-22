@@ -1,5 +1,5 @@
 export function githubAuthUrl(state) {
-    return state.github.authUrl + "?client_id=" + state.github.clientId;
+    return state.authUrl + "?client_id=" + state.clientId;
 }
 
 export function accessTokenUrl(state) {
@@ -7,5 +7,5 @@ export function accessTokenUrl(state) {
 }
 
 export function githubUserAccessToken(state) {
-    return state.github.userAccessToken;
+    return state.userAccessToken;
 }

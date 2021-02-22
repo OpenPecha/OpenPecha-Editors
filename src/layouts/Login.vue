@@ -78,6 +78,7 @@ export default {
 
       this.$store.dispatch("app/getUserAccessToken", {
         code: e.data.code,
+        nextUrl: this.$route.query.nextUrl,
       });
     },
   },
@@ -122,7 +123,7 @@ function openWindow(url, title, options = {}) {
 }
 </script>
 
-<style>
+<style scoped>
 .q-card {
   width: 360px;
 }

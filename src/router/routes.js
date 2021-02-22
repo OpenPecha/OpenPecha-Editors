@@ -1,3 +1,4 @@
+import { Store } from "src/store"
 import { authenticationGuard } from "../auth/auth-guard"
 
 const routes = [
@@ -51,7 +52,19 @@ const routes = [
         //   requiresAuth: true,
         //   authService: "buda"
         //  }
-      }
+      },
+      {
+        path: '/annotate',
+        component: () => import('pages/Annotation.vue'),
+        beforeEnter: (to, from, next) => {
+          console.log(Store)
+          if (Store.getters['app/githubUserAccessToken']) {
+            next()
+          } else {
+            next("/login?nextUrl=" + to.fullPath)
+          }
+        }
+      },
     ]
   },
 

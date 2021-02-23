@@ -1,6 +1,6 @@
 <template>
   <q-layout>
-    <q-header>
+    <q-header elevated class="theme-color">
       <q-toolbar class="q-mt-md">
         <q-toolbar-title class="cursor-pointer" @click="goToHome">
           <q-img src="/icons/favicon-128x128.png" style="width: 40px" />
@@ -16,6 +16,16 @@
         </q-tabs>
       </q-toolbar>
     </q-header>
+    <q-footer class="q-pa-md theme-color row justify-center">
+      <div class="text-black text-weight-thin">
+        Copyright &copy; {{ new Date().getFullYear() }} openpecha.org
+      </div>
+    </q-footer>
+    <!-- <q-toolbar>
+        <q-toolbar-title
+          >openpecha.org</q-toolbar-title
+        >
+      </q-toolbar> -->
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -33,7 +43,6 @@ export default {
 </script>
 <style scoped>
 .q-header {
-  background-image: linear-gradient(to right, #ffff 3%, #5fdae8, #7465d1);
   height: 5.625rem;
 }
 </style>

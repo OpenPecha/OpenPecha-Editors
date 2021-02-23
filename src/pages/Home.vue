@@ -8,9 +8,14 @@
         Etext archive facilitating cross-disciplinary collaboration in curating
         and enriching etexts
       </div>
-      <q-btn label="Get Started" class="q-mt-lg q-mb-md self-center" />
+      <q-btn
+        label="Get Started"
+        class="q-mt-lg q-mb-md self-center"
+        @click="showAddText = true"
+      />
     </section>
     <section
+      id="features"
       class="feature column q-mt-xl q-ml-auto q-mr-auto"
       style="width: 60%"
     >
@@ -41,14 +46,51 @@
         </div>
       </div>
     </section>
+
+    <section id="about-us" class="row justify-center q-mt-lg">
+      <div class="text-h3">About Us</div>
+      <p>
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Temporibus non
+        suscipit facilis, alias natus explicabo. Unde facere dolores distinctio
+        voluptas impedit velit doloribus nam officiis inventore, iste quibusdam
+        ab quam.
+      </p>
+    </section>
+
+    <section id="contact" class="row justify-center q-mt-lg">
+      <div class="text-h3">Contact</div>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias qui
+        tenetur ex corrupti nesciunt, dignissimos minus praesentium aspernatur
+        obcaecati vitae ipsa fugit placeat molestiae officia nobis esse fugiat
+        eius facere.
+      </p>
+    </section>
+
+    <q-dialog v-model="showAddText" persistent>
+      <add-text @close="showAddText = false" />
+    </q-dialog>
   </q-page>
 </template>
 
 <script>
+import AddText from "src/components/Modals/AddText";
+
 export default {
-  name: "Index",
+  name: "HomePage",
+  components: {
+    AddText,
+  },
+
+  data() {
+    return {
+      showAddText: false,
+    };
+  },
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="sass" scoped>
+.container
+  width: 60%
 </style>

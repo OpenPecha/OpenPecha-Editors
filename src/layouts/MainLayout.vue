@@ -10,9 +10,9 @@
           <span class="text-weight-medium" style="color: #8e57f1">Pecha</span>
         </q-toolbar-title>
         <q-tabs shrink>
-          <q-route-tab label="Featues" to="/features" />
-          <q-route-tab label="About" to="/about" />
-          <q-route-tab label="Contact" to="/contact" />
+          <q-tab label="Featues" @click="scrollToElement('features')" />
+          <q-tab label="About Us" @click="scrollToElement('about-us')" />
+          <q-tab label="Contact" @click="scrollToElement('contact')" />
         </q-tabs>
       </q-toolbar>
     </q-header>
@@ -33,10 +33,21 @@
 </template>
 
 <script>
+import { scroll } from "quasar";
+const { getScrollTarget, setScrollPosition } = scroll;
+
 export default {
   methods: {
     goToHome() {
       this.$router.push("/").catch((error) => {});
+    },
+
+    scrollToElement(id) {
+      let el = document.getElementById(id);
+      const target = getScrollTarget(el);
+      const offset = el.offsetTop + 3;
+      const duration = 900;
+      setScrollPosition(target, offset, duration);
     },
   },
 };

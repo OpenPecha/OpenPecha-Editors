@@ -1,45 +1,105 @@
 <template>
   <q-card>
     <q-card-section class="row">
-      <div class="text-h6">Upload Text</div>
+      <div class="text-h6">Add Text</div>
       <q-space />
       <q-btn v-close-popup flat round dense icon="close" />
     </q-card-section>
-    <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
-      <q-input
-        filled
-        v-model="name"
-        label="Your name *"
-        hint="Name and surname"
-        lazy-rules
-        :rules="[(val) => (val && val.length > 0) || 'Please type something']"
-      />
 
-      <q-input
-        filled
-        type="number"
-        v-model="age"
-        label="Your age *"
-        lazy-rules
-        :rules="[
-          (val) => (val !== null && val !== '') || 'Please type your age',
-          (val) => (val > 0 && val < 100) || 'Please type a real age',
-        ]"
-      />
+    <form @submit.prevent="submitForm">
+      <q-card-section class="q-pt-none">
+        <div class="row q-mb-sm">
+          <q-input
+            clearable
+            clear-icon="close"
+            outlined
+            autofocus
+            v-model="textToSubmit.title"
+            :rules="[(val) => !!val || 'Field is required']"
+            ref="title"
+            label="Title"
+            class="col"
+          />
+        </div>
+        <div class="row q-mb-sm">
+          <q-input
+            clearable
+            clear-icon="close"
+            outlined
+            v-model="textToSubmit.subtitle"
+            ref="subtitle"
+            label="Subtitle"
+            class="col"
+          />
+        </div>
+        <div class="row q-mb-sm">
+          <q-input
+            clearable
+            clear-icon="close"
+            outlined
+            v-model="textToSubmit.author"
+            :rules="[(val) => !!val || 'Field is required']"
+            ref="author"
+            label="Author"
+            class="col"
+          />
+        </div>
+        <div class="row q-mb-sm">
+          <q-input
+            clearable
+            clear-icon="close"
+            outlined
+            v-model="textToSubmit.collection"
+            ref="collection"
+            label="Collection Title"
+            class="col"
+          />
+        </div>
+        <div class="row q-mb-sm">
+          <q-input
+            clearable
+            clear-icon="close"
+            outlined
+            v-model="textToSubmit.publisher"
+            ref="publisher"
+            label="Publisher"
+            class="col"
+          />
+        </div>
+        <div class="row q-mb-sm">
+          <q-file
+            outlined
+            accept="image/*"
+            v-model="textToSubmit.frontCoverImage"
+            label="Front Cover Image"
+            ref="frontCoverImage"
+            :rules="[(val) => !!val || 'Field is required']"
+          >
+            <template v-slot:append>
+              <q-icon name="image" />
+            </template>
+          </q-file>
+        </div>
+        <div class="row q-mb-sm">
+          <q-file
+            outlined
+            accept="image/*"
+            v-model="textToSubmit.publicationDataImage"
+            label="Publication Data Image"
+            ref="publicationDataImage"
+            :rules="[(val) => !!val || 'Field is required']"
+          >
+            <template v-slot:append>
+              <q-icon name="image" />
+            </template>
+          </q-file>
+        </div>
+      </q-card-section>
 
-      <q-toggle v-model="accept" label="I accept the license and terms" />
-
-      <div>
-        <q-btn label="Submit" type="submit" color="primary" />
-        <q-btn
-          label="Reset"
-          type="reset"
-          color="primary"
-          flat
-          class="q-ml-sm"
-        />
-      </div>
-    </q-form>
+      <q-card-actions align="right">
+        <q-btn label="Save" color="primary" type="submit" />
+      </q-card-actions>
+    </form>
   </q-card>
 </template>
 
@@ -47,14 +107,37 @@
 export default {
   data() {
     return {
-      pechaSecretKey: "",
+      textToSubmit: {
+        title: "",
+        subtitle: "",
+        author: "",
+        collection: "",
+        publisher: "",
+        frontCoverImage: null,
+        publicationDataImage: null,
+      },
     };
   },
   methods: {
+    isValid() {
+      let status = true;
+      for (const [key, val] of Object.entries(this.$refs)) {
+        val.validate();
+        if (val.hasError) {
+          status = false;
+        }
+      }
+      return status;
+    },
     submitForm() {
-      console.log("submiteFrom method");
+      console.log("form submit");
+      if (this.isValid()) {
+        this.submitText();
+      }
+    },
+    submitText() {
+      console.log(this.textToSubmit);
       this.$emit("close");
-      this.$router.push("/");
     },
   },
 };

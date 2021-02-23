@@ -75,7 +75,7 @@
 
 <script>
 import { Loading } from "quasar";
-import { getOrigin } from "../utils";
+import { getOrigin } from "src/utils";
 
 export default {
   data() {

@@ -1,3 +1,11 @@
 {
-  "editor.defaultFormatter": "octref.vetur"
+  "editor.defaultFormatter": "octref.vetur",
+  "json.schemas": [
+    {
+      "fileMatch": [
+        "cypress.json"
+      ],
+      "url": "https://on.cypress.io/cypress.schema.json"
+    }
+  ]
 }

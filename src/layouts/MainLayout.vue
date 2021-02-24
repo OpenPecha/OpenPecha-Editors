@@ -12,13 +12,18 @@
         <q-tabs shrink>
           <q-tab label="Featues" @click="scrollToElement('features')" />
           <q-tab label="About Us" @click="scrollToElement('about-us')" />
-          <q-tab label="Contact" @click="scrollToElement('contact')" />
         </q-tabs>
       </q-toolbar>
     </q-header>
     <q-footer class="q-pa-md theme-color row justify-center">
       <div class="text-black text-weight-thin">
-        Copyright &copy; {{ new Date().getFullYear() }} openpecha.org
+        Copyright &copy; {{ new Date().getFullYear() }} openpecha.org |
+        <a
+          class="q-ml-sm"
+          href="mailto:contact@esukhia.org"
+          style="color: inherit"
+          >contact@esukiha.org</a
+        >
       </div>
     </q-footer>
     <!-- <q-toolbar>

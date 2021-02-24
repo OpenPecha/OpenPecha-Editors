@@ -38,7 +38,7 @@
           suggestion to speed up the work.
         </div>
       </div>
-      <div class="item self-starti q-mt-lg" style="width: 40%">
+      <div class="item self-starti q-mt-lg q-mb-xl" style="width: 40%">
         <q-icon name="storage" style="font-size: 2rem" class="text-grey" />
         <div class="text-h5">Catalog</div>
         <div class="text-weight-light">
@@ -47,25 +47,23 @@
       </div>
     </section>
 
-    <section id="about-us" class="row justify-center q-mt-lg">
-      <div class="text-h3">About Us</div>
-      <p>
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Temporibus non
-        suscipit facilis, alias natus explicabo. Unde facere dolores distinctio
-        voluptas impedit velit doloribus nam officiis inventore, iste quibusdam
-        ab quam.
-      </p>
+    <section
+      id="about-us"
+      class="row justify-center"
+      style="background: #f7f7f7"
+    >
+      <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
+        <h5 class="text-center">
+          About Us
+          <br />
+          <span class="text-center text-grey text-h6"
+            >Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span
+          >
+        </h5>
+      </div>
     </section>
 
-    <section id="contact" class="row justify-center q-mt-lg">
-      <div class="text-h3">Contact</div>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias qui
-        tenetur ex corrupti nesciunt, dignissimos minus praesentium aspernatur
-        obcaecati vitae ipsa fugit placeat molestiae officia nobis esse fugiat
-        eius facere.
-      </p>
-    </section>
+    <section id="contact"></section>
 
     <q-dialog v-model="showAddText" persistent>
       <add-text @close="showAddText = false" />
@@ -87,10 +85,28 @@ export default {
       showAddText: false,
     };
   },
+
+  methods: {
+    hoverOver: function (index) {
+      this["about_heading_color_" + index] = this.theme_color;
+      this["about_heading_" + index] = ["animated", "bounceIn"];
+    },
+    hoverOutTimeout: function (index) {
+      this["about_heading_color_" + index] = "#424242";
+      setTimeout(() => {
+        this["about_heading_" + index] = [];
+      }, 1000);
+    },
+  },
 };
 </script>
 
 <style lang="sass" scoped>
 .container
   width: 60%
+
+.my-card
+  width: 350px
+  max-width: 350px
+  margin-top: 10px
 </style>

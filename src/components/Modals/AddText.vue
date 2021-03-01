@@ -181,6 +181,7 @@ export default {
     },
 
     async createPecha() {
+      this.$q.loading.show();
       try {
         const response = await this.$axios.post(
           getOrigin() + "/api/v1" + "/pechas",
@@ -193,11 +194,12 @@ export default {
           }
         );
         if (response.status == 200) {
-          this.$router.push(getOrigin() + "/editor/" + response.data.pecha_id);
+          this.$router.push("/editor/" + response.data.pecha_id);
         }
       } catch (error) {
         console.log("Error", error);
       }
+      this.$q.loading.hide();
       this.$emit("close");
     },
   },

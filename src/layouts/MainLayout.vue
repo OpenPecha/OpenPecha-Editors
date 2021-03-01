@@ -10,7 +10,7 @@
           <span class="text-weight-medium" style="color: #8e57f1">Pecha</span>
         </q-toolbar-title>
         <q-tabs shrink>
-          <q-tab label="Featues" @click="scrollToElement('features')" />
+          <q-tab label="Features" @click="scrollToElement('features')" />
           <q-tab label="About Us" @click="scrollToElement('about-us')" />
         </q-tabs>
       </q-toolbar>

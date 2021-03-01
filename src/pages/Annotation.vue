@@ -102,7 +102,6 @@ export default {
       user: null,
       currentLayer: null,
       org: "OpenPecha",
-      pechaId: "P000100",
       reviewBranch: "review",
       vol: "v001",
       editingBase: false,
@@ -125,8 +124,8 @@ export default {
   computed: {
     ...mapState("app", ["userAccessToken"]),
 
-    textId() {
-      return this.$route.params.textId;
+    pechaId() {
+      return this.$route.params.pechaId;
     },
 
     opfLayersContent() {

@@ -25,8 +25,16 @@ const routes = [
     component: () => import('layouts/EditorLayout.vue'),
     children: [
       {
-        path: '/editor/basic/:pechaId',
-        component: () => import('pages/editor/Basic.vue'),
+        path: '/editor/:pechaId',
+        component: () => import('pages/Annotation.vue'),
+        beforeEnter: (to, from, next) => {
+          console.log(Store)
+          if (Store.getters['app/githubUserAccessToken']) {
+            next()
+          } else {
+            next("/login?nextUrl=" + to.fullPath)
+          }
+        }
       },
       {
         path: '/editor/pedurma/:textId',
@@ -43,15 +51,6 @@ const routes = [
       },
       {
         path: '/annotate',
-        component: () => import('pages/Annotation.vue'),
-        beforeEnter: (to, from, next) => {
-          console.log(Store)
-          if (Store.getters['app/githubUserAccessToken']) {
-            next()
-          } else {
-            next("/login?nextUrl=" + to.fullPath)
-          }
-        }
       },
     ]
   },

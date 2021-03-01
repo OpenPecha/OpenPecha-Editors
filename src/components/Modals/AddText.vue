@@ -1,5 +1,5 @@
 <template>
-  <q-card>
+  <q-card style="width: 700px; max-width: 1000px">
     <q-card-section class="row">
       <div class="text-h6">Add Text</div>
       <q-space />
@@ -14,7 +14,7 @@
             clear-icon="close"
             outlined
             autofocus
-            v-model="textToSubmit.title"
+            v-model="pechaMetadata.title"
             :rules="[(val) => !!val || 'Field is required']"
             ref="title"
             label="Title"
@@ -26,7 +26,7 @@
             clearable
             clear-icon="close"
             outlined
-            v-model="textToSubmit.subtitle"
+            v-model="pechaMetadata.subtitle"
             ref="subtitle"
             label="Subtitle"
             class="col"
@@ -37,7 +37,7 @@
             clearable
             clear-icon="close"
             outlined
-            v-model="textToSubmit.author"
+            v-model="pechaMetadata.author"
             :rules="[(val) => !!val || 'Field is required']"
             ref="author"
             label="Author"
@@ -49,7 +49,7 @@
             clearable
             clear-icon="close"
             outlined
-            v-model="textToSubmit.collection"
+            v-model="pechaMetadata.collection"
             ref="collection"
             label="Collection Title"
             class="col"
@@ -60,9 +60,21 @@
             clearable
             clear-icon="close"
             outlined
-            v-model="textToSubmit.publisher"
+            v-model="pechaMetadata.publisher"
             ref="publisher"
             label="Publisher"
+            class="col"
+          />
+        </div>
+        <div class="row q-mb-sm">
+          <q-input
+            clearable
+            clear-icon="close"
+            outlined
+            v-model="pechaMetadata.sku"
+            :rules="[(val) => !!val || 'Field is required']"
+            ref="sku"
+            label="Book Series Number (SKU)"
             class="col"
           />
         </div>
@@ -70,7 +82,7 @@
           <q-file
             outlined
             accept="image/*"
-            v-model="textToSubmit.frontCoverImage"
+            v-model="pechaAssets.frontCoverImage"
             label="Front Cover Image"
             ref="frontCoverImage"
             :rules="[(val) => !!val || 'Field is required']"
@@ -84,13 +96,27 @@
           <q-file
             outlined
             accept="image/*"
-            v-model="textToSubmit.publicationDataImage"
+            v-model="pechaAssets.publicationDataImage"
             label="Publication Data Image"
             ref="publicationDataImage"
             :rules="[(val) => !!val || 'Field is required']"
           >
             <template v-slot:append>
               <q-icon name="image" />
+            </template>
+          </q-file>
+        </div>
+        <div class="row q-mb-sm">
+          <q-file
+            outlined
+            accept=".txt"
+            v-model="pechaAssets.text_file"
+            label="Upload Text here"
+            ref="text"
+            :rules="[(val) => !!val || 'Field is required']"
+          >
+            <template v-slot:append>
+              <q-icon name="text_snippet" />
             </template>
           </q-file>
         </div>
@@ -104,15 +130,21 @@
 </template>
 
 <script>
+import { getOrigin } from "src/utils";
+
 export default {
   data() {
     return {
-      textToSubmit: {
+      pechaMetadata: {
         title: "",
         subtitle: "",
         author: "",
         collection: "",
         publisher: "",
+        sku: "",
+      },
+      pechaAssets: {
+        text_file: null,
         frontCoverImage: null,
         publicationDataImage: null,
       },
@@ -129,14 +161,43 @@ export default {
       }
       return status;
     },
+
     submitForm() {
       console.log("form submit");
       if (this.isValid()) {
-        this.submitText();
+        this.createPecha();
       }
     },
-    submitText() {
-      console.log(this.textToSubmit);
+
+    getPechaAssets() {
+      let formData = new FormData();
+      formData.append("text_file", this.pechaAssets.text_file);
+      formData.append("front_cover_image", this.pechaAssets.frontCoverImage);
+      formData.append(
+        "publication_data_image",
+        this.pechaAssets.publicationDataImage
+      );
+      return formData;
+    },
+
+    async createPecha() {
+      try {
+        const response = await this.$axios.post(
+          getOrigin() + "/api/v1" + "/pechas",
+          this.getPechaAssets(),
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            params: this.pechaMetadata,
+          }
+        );
+        if (response.status == 200) {
+          this.$router.push(getOrigin() + "/editor/" + response.data.pecha_id);
+        }
+      } catch (error) {
+        console.log("Error", error);
+      }
       this.$emit("close");
     },
   },

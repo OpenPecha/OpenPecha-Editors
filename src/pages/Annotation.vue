@@ -283,17 +283,17 @@ export default {
     },
 
     async updateBaseLayer() {
-      console.log("update base");
-      const layers = this.$axios.post(
+      const response = await this.$axios.post(
         getOrigin() + "/api/v1/" + this.pechaId + "/update/base",
         {
-          new_base: {
+          updated_base: {
             id: this.vol,
             content: this.currentDoc.text.slice(0, 100),
           },
-          layers: this.opfLayersContent[0],
+          layers: this.opfLayersContent,
         }
       );
+      console.log(response["data"]);
     },
   },
 

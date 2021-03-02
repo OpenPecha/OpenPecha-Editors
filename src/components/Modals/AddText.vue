@@ -163,7 +163,6 @@ export default {
     },
 
     submitForm() {
-      console.log("form submit");
       if (this.isValid()) {
         this.createPecha();
       }

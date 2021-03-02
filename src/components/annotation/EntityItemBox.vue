@@ -167,7 +167,6 @@ export default {
       this.$nextTick(() => {
         if (this.currentLayer.text === "All") {
           this.showMenu = true;
-          console.log(this.x, this.y);
         } else {
           this.assignLayer(this.currentLayer.id);
         }

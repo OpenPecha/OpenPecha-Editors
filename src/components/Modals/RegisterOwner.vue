@@ -39,7 +39,6 @@ export default {
   },
   methods: {
     submitForm() {
-      console.log("submiteFrom method");
       this.$emit("close");
       this.$router.push("/");
     },

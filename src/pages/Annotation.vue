@@ -38,8 +38,6 @@
           </q-list>
         </q-btn-dropdown>
 
-        <!-- <q-separator vertical inset /> -->
-
         <q-btn
           unelevated
           icon="edit_off"
@@ -48,6 +46,12 @@
           @click="editingBase = true"
         >
           <q-tooltip>edit base</q-tooltip>
+        </q-btn>
+
+        <q-separator vertical inset />
+
+        <q-btn unelevated icon="get_app" class="q-ml-sm" @click="exportPecha">
+          <q-tooltip>export to ebook</q-tooltip>
         </q-btn>
         <q-space />
         <q-btn unelevated icon="save" text-color="green-5" @click="save">
@@ -64,7 +68,7 @@
           :style="{ width: '100%', height: '80vh' }"
           >{{ currentDoc.text }} </textarea
         >
-        <entity-item-box
+        <!-- <entity-item-box
           v-show="!editingBase"
           :layers="layers"
           :text="currentDoc.text"
@@ -73,14 +77,17 @@
           :delete-annotation="removeEntity"
           :update-entity="updateEntity"
           :add-entity="addEntity"
-        />
+        /> -->
       </div>
     </q-card>
+
+    <q-dialog v-model="showDownloadLink" persistent>
+      <download-link-box :link="download_link" />
+    </q-dialog>
   </q-page>
 </template>
 
 <script>
-import EntityItemBox from "components/annotation/EntityItemBox";
 import { mapState } from "vuex";
 import { Loading } from "quasar";
 
@@ -90,11 +97,15 @@ import { v4 as uuidv4 } from "uuid";
 import { idealColor, layerColor, getOrigin } from "src/utils";
 import { getFiles, getFileContent, commit, getUser } from "src/github";
 
+import EntityItemBox from "components/annotation/EntityItemBox";
+import DownloadLinkBox from "components/Modals/DownloadLinkBox";
+
 export default {
   name: "Annotation",
 
   components: {
     EntityItemBox,
+    DownloadLinkBox,
   },
 
   data() {
@@ -118,6 +129,8 @@ export default {
         text: "",
         annotations: [],
       },
+      showDownloadLink: false,
+      download_link: "",
     };
   },
 
@@ -294,6 +307,27 @@ export default {
         }
       );
       console.log(response["data"]);
+    },
+
+    async exportPecha() {
+      this.$q.loading.show();
+      const response = await this.$axios.get(
+        getOrigin() +
+          "/api/v1/pechas/" +
+          this.pechaId +
+          "/export?branch=" +
+          this.reviewBranch
+      );
+      this.$q.loading.hide();
+      if (response["status"] == 200) {
+        this.showDownloadLink = true;
+        this.download_link = response.data.download_link;
+      } else {
+        this.$q.notify({
+          type: "negative",
+          message: "export failed",
+        });
+      }
     },
   },
 

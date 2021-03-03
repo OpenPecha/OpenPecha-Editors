@@ -49,9 +49,6 @@ const routes = [
         //   authService: "buda"
         //  }
       },
-      {
-        path: '/annotate',
-      },
     ]
   },
 

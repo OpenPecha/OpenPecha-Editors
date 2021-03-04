@@ -68,7 +68,7 @@
           :style="{ width: '100%', height: '80vh' }"
           >{{ currentDoc.text }} </textarea
         >
-        <!-- <entity-item-box
+        <entity-item-box
           v-show="!editingBase"
           :layers="layers"
           :text="currentDoc.text"
@@ -77,7 +77,7 @@
           :delete-annotation="removeEntity"
           :update-entity="updateEntity"
           :add-entity="addEntity"
-        /> -->
+        />
       </div>
     </q-card>
 

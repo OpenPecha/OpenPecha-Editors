@@ -1,23 +1,24 @@
 <template>
-  <q-card style="width: 700px; max-width: 700px">
+  <q-card style="width: 500px; max-width: 700px" class="q-pl-md q-pr-md">
     <q-card-section class="row">
       <q-space />
       <q-btn v-close-popup flat round dense icon="close" />
     </q-card-section>
+    <q-card-section class="row">
+      <q-input class="col-11" filled v-model="link" color="grey" readonly />
+      <q-icon
+        class="col self-center cursor-pointer"
+        right
+        name="content_copy"
+        size="md"
+        color="grey"
+        @click="copy"
+      >
+        <q-tooltip>copy</q-tooltip>
+      </q-icon>
+    </q-card-section>
     <q-card-section class="row justify-center">
-      <div class="link q-pa-md bg-grey-2 text-grey-8">
-        {{ link }}
-        <q-icon
-          right
-          name="content_copy"
-          size="sm"
-          color="grey"
-          class="cursor-pointer"
-          @click="copy"
-        >
-          <q-tooltip>copy</q-tooltip>
-        </q-icon>
-      </div>
+      <div class="text-grey text-weight-light">OR</div>
     </q-card-section>
     <q-card-section class="row justify-center">
       <q-btn
@@ -27,10 +28,10 @@
         label="Download"
         icon="get_app"
         color="green-5"
-        class="q-mb-lg"
         @click="download"
       />
     </q-card-section>
+    <q-card-section> </q-card-section>
   </q-card>
 </template>
 

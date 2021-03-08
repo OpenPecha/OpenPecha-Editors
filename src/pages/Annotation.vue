@@ -89,7 +89,6 @@
 
 <script>
 import { mapState } from "vuex";
-import { Loading } from "quasar";
 
 import yaml from "js-yaml";
 import { v4 as uuidv4 } from "uuid";
@@ -114,7 +113,7 @@ export default {
       currentLayer: null,
       org: "OpenPecha",
       reviewBranch: "review",
-      vol: "v001",
+      currentVol: "v001",
       editingBase: false,
       opfLayers: [], // [{id: layerId, metadata: github-metadata, content: actual-layer}]
       layers: [
@@ -192,7 +191,6 @@ export default {
 
     selectLayer(layer) {
       if (this.editingBase) {
-        console.log("update base");
         this.updateBaseLayer();
         this.editingBase = false;
       }
@@ -219,7 +217,7 @@ export default {
         id: layer.id,
         text: layer.annotation_type,
         color: layerColor[layer.annotation_type],
-        base: this.vol,
+        base: this.currentVol,
       });
 
       // save opf layers
@@ -235,7 +233,7 @@ export default {
         this.org,
         this.pechaId,
         this.reviewBranch,
-        `${this.pechaId}.opf/layers/${this.vol}`,
+        `${this.pechaId}.opf/layers/${this.currentVol}`,
         this.userAccessToken
       );
 
@@ -262,7 +260,7 @@ export default {
       );
 
       baseVols.forEach(async (baseVol) => {
-        if (baseVol.name == `${this.vol}.txt`) {
+        if (baseVol.name == `${this.currentVol}.txt`) {
           this.currentDoc.text = await getFileContent(
             this.org,
             this.pechaId,
@@ -274,7 +272,7 @@ export default {
     },
 
     save() {
-      Loading.show();
+      this.$q.loading.show();
       this.opfLayers.forEach(async (opfLayer) => {
         const sha = await commit(
           this.org,
@@ -288,7 +286,7 @@ export default {
 
         opfLayer.metadata.sha = sha;
       });
-      Loading.hide();
+      this.$q.loading.hide();
     },
 
     async loadUser() {
@@ -296,16 +294,22 @@ export default {
     },
 
     async updateBaseLayer() {
-      const response = await this.$axios.post(
-        getOrigin() + "/api/v1/" + this.pechaId + "/update/base",
+      this.$q.loading.show();
+      const response = await this.$axios.put(
+        getOrigin() +
+          "/api/v1/pechas/" +
+          this.pechaId +
+          "/base/" +
+          this.currentVol,
         {
           updated_base: {
-            id: this.vol,
+            id: this.currentVol,
             content: this.currentDoc.text.slice(0, 100),
           },
           layers: this.opfLayersContent,
         }
       );
+      this.$q.loading.hide();
       console.log(response["data"]);
     },
 
@@ -315,7 +319,7 @@ export default {
         getOrigin() +
           "/api/v1/pechas/" +
           this.pechaId +
-          "/export?branch=" +
+          "/export/" +
           this.reviewBranch
       );
       this.$q.loading.hide();

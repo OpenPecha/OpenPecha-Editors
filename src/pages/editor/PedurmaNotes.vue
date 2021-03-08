@@ -125,7 +125,6 @@ export default {
     },
 
     fail() {
-      console.log(this.textId, "failed");
       this.message.text = this.textId + " Not found!";
       this.message.iconName = "clear";
       this.message.iconColor = "red";

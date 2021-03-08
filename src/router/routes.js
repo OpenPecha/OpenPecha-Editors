@@ -28,7 +28,6 @@ const routes = [
         path: '/editor/:pechaId',
         component: () => import('pages/Annotation.vue'),
         beforeEnter: (to, from, next) => {
-          console.log(Store)
           if (Store.getters['app/githubUserAccessToken']) {
             next()
           } else {

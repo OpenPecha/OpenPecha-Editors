@@ -90,7 +90,6 @@
 <script>
 import { mapState } from "vuex";
 
-import yaml from "js-yaml";
 import { v4 as uuidv4 } from "uuid";
 
 import { idealColor, layerColor, getOrigin } from "src/utils";
@@ -113,6 +112,7 @@ export default {
       currentLayer: null,
       org: "OpenPecha",
       reviewBranch: "review",
+      pechaCompoents: null,
       currentVol: "v001",
       editingBase: false,
       opfLayers: [], // [{id: layerId, metadata: github-metadata, content: actual-layer}]
@@ -139,12 +139,6 @@ export default {
     pechaId() {
       return this.$route.params.pechaId;
     },
-
-    opfLayersContent() {
-      return this.opfLayers.map((opfLayer) => {
-        return opfLayer.content;
-      });
-    },
   },
 
   methods: {
@@ -160,8 +154,8 @@ export default {
 
       // remove from opf layer
       const opfLayerIdx = this.getOpfLayerIdx(ann.layerId);
-      this.opfLayers[opfLayerIdx].content.annotations[ann.id].deleted = true;
-      this.opfLayers[opfLayerIdx].content.annotations[ann.id].reviewed = false;
+      this.opfLayers[opfLayerIdx].annotations[ann.id].deleted = true;
+      this.opfLayers[opfLayerIdx].annotations[ann.id].reviewed = false;
     },
 
     updateEntity(layerId, ann) {
@@ -181,9 +175,7 @@ export default {
       this.currentDoc.annotations.push(newAnn);
 
       // add to opf layer
-      this.opfLayers[this.getOpfLayerIdx(layerId)].content.annotations[
-        newAnn.id
-      ] = {
+      this.opfLayers[this.getOpfLayerIdx(layerId)].annotations[newAnn.id] = {
         span: newAnn.span,
         reviewed: false,
       };
@@ -211,6 +203,13 @@ export default {
       }
     },
 
+    async loadPechaComponents() {
+      const response = await this.$axios.get(
+        getOrigin() + "/api/v1/pechas/" + this.pechaId + "/components"
+      );
+      this.pechaCompoents = response.data;
+    },
+
     addLayer(layer, layerFile) {
       // add layer for annotations
       this.layers.push({
@@ -229,46 +228,23 @@ export default {
     },
 
     async loadVolumeLayer() {
-      const layerFiles = await getFiles(
-        this.org,
-        this.pechaId,
-        this.reviewBranch,
-        `${this.pechaId}.opf/layers/${this.currentVol}`,
-        this.userAccessToken
-      );
-
-      layerFiles.forEach(async (layerFile) => {
-        const content = await getFileContent(
-          this.org,
-          this.pechaId,
-          layerFile.sha,
-          this.userAccessToken
+      this.pechaCompoents[this.currentVol].forEach(async (layerName) => {
+        const response = await this.$axios.get(
+          getOrigin() +
+            `/api/v1/pechas/${this.pechaId}/layers/${this.currentVol}/${layerName}`
         );
-        const layer = yaml.load(content);
+        const layer = response.data;
         this.loadAnn(layer);
-        this.addLayer(layer, layerFile);
+        this.addLayer(layer);
       });
     },
 
     async loadVolumeBase() {
-      const baseVols = await getFiles(
-        this.org,
-        this.pechaId,
-        this.reviewBranch,
-        `${this.pechaId}.opf/base`,
-        this.userAccessToken
+      const response = await this.$axios.get(
+        getOrigin() + `/api/v1/pechas/${this.pechaId}/base/${this.currentVol}`
       );
-
-      baseVols.forEach(async (baseVol) => {
-        if (baseVol.name == `${this.currentVol}.txt`) {
-          this.currentDoc.text = await getFileContent(
-            this.org,
-            this.pechaId,
-            baseVol.sha,
-            this.userAccessToken
-          );
-        }
-      });
+      this.currentDoc.text = response.data;
+      console.log(this.currentDoc.text);
     },
 
     save() {
@@ -335,7 +311,8 @@ export default {
     },
   },
 
-  created() {
+  async created() {
+    await this.loadPechaComponents();
     this.loadVolumeLayer();
     this.loadVolumeBase();
     this.loadUser();

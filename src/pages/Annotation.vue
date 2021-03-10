@@ -248,7 +248,12 @@ export default {
         const response = await this.$axios.put(
           getOrigin() +
             `/api/v1/pechas/${this.pechaId}/layers/${this.currentVol}/${layer.annotation_type}`,
-          layer
+          layer,
+          {
+            headers: {
+              token: this.userAccessToken,
+            },
+          }
         );
         console.log(response);
       });
@@ -262,17 +267,18 @@ export default {
     async updateBaseLayer() {
       this.$q.loading.show();
       const response = await this.$axios.put(
-        getOrigin() +
-          "/api/v1/pechas/" +
-          this.pechaId +
-          "/base/" +
-          this.currentVol,
+        getOrigin() + `/api/v1/pechas/${this.pechaId}/base/${this.currentVol}`,
         {
           updated_base: {
             id: this.currentVol,
             content: this.currentDoc.text.slice(0, 100),
           },
           layers: this.opfLayersContent,
+        },
+        {
+          headers: {
+            token: this.userAccessToken,
+          },
         }
       );
       this.$q.loading.hide();

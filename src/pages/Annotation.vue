@@ -210,7 +210,7 @@ export default {
       this.pechaCompoents = response.data;
     },
 
-    addLayer(layer, layerFile) {
+    addLayer(layer) {
       // add layer for annotations
       this.layers.push({
         id: layer.id,
@@ -220,11 +220,7 @@ export default {
       });
 
       // save opf layers
-      this.opfLayers.push({
-        id: layer.id,
-        metadata: layerFile,
-        content: layer,
-      });
+      this.opfLayers.push(layer);
     },
 
     async loadVolumeLayer() {
@@ -244,23 +240,17 @@ export default {
         getOrigin() + `/api/v1/pechas/${this.pechaId}/base/${this.currentVol}`
       );
       this.currentDoc.text = response.data;
-      console.log(this.currentDoc.text);
     },
 
     save() {
       this.$q.loading.show();
-      this.opfLayers.forEach(async (opfLayer) => {
-        const sha = await commit(
-          this.org,
-          this.pechaId,
-          this.reviewBranch,
-          opfLayer.metadata.path,
-          opfLayer.content,
-          opfLayer.metadata.sha,
-          this.userAccessToken
+      this.opfLayers.forEach(async (layer) => {
+        const response = await this.$axios.put(
+          getOrigin() +
+            `/api/v1/pechas/${this.pechaId}/layers/${this.currentVol}/${layer.annotation_type}`,
+          layer
         );
-
-        opfLayer.metadata.sha = sha;
+        console.log(response);
       });
       this.$q.loading.hide();
     },

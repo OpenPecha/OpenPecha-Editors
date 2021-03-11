@@ -93,7 +93,7 @@ import { mapState } from "vuex";
 import { v4 as uuidv4 } from "uuid";
 
 import { idealColor, layerColor, getOrigin } from "src/utils";
-import { getFiles, getFileContent, commit, getUser } from "src/github";
+import { getUser } from "src/github";
 
 import EntityItemBox from "components/annotation/EntityItemBox";
 import DownloadLinkBox from "components/Modals/DownloadLinkBox";
@@ -113,6 +113,7 @@ export default {
       org: "OpenPecha",
       reviewBranch: "review",
       pechaCompoents: null,
+      changedLayers: [],
       currentVol: "v001",
       editingBase: false,
       opfLayers: [], // [{id: layerId, metadata: github-metadata, content: actual-layer}]
@@ -146,6 +147,14 @@ export default {
       return this.opfLayers.findIndex((layer) => layer.id == layerId);
     },
 
+    trackChangedLayer(layerId) {
+      if (this.changedLayers.indexOf(layerId) == -1) {
+        console.log("layer changed");
+        this.changedLayers.push(layerId);
+      }
+      console.log(this.changedLayers);
+    },
+
     removeEntity(ann) {
       // remove from doc annotations
       this.currentDoc.annotations = this.currentDoc.annotations.filter(
@@ -156,6 +165,9 @@ export default {
       const opfLayerIdx = this.getOpfLayerIdx(ann.layerId);
       this.opfLayers[opfLayerIdx].annotations[ann.id].deleted = true;
       this.opfLayers[opfLayerIdx].annotations[ann.id].reviewed = false;
+
+      // track changed layer
+      this.trackChangedLayer(ann.layerId);
     },
 
     updateEntity(layerId, ann) {
@@ -163,6 +175,9 @@ export default {
         (item) => item.id === ann.id
       );
       this.currentDoc.annotations[index].layer = layerId;
+
+      // track changed layer
+      this.trackChangedLayer(layerId);
     },
 
     addEntity(startOffset, endOffset, layerId) {
@@ -179,6 +194,9 @@ export default {
         span: newAnn.span,
         reviewed: false,
       };
+
+      // track changed layer
+      this.trackChangedLayer(layerId);
     },
 
     selectLayer(layer) {
@@ -195,6 +213,12 @@ export default {
 
     loadAnn(layer) {
       for (const [id, ann] of Object.entries(layer.annotations)) {
+        if (ann.deleted == true) {
+          console.log(layer.annotation_type);
+          console.log("deleted", ann);
+          continue;
+        }
+
         this.currentDoc.annotations.push({
           id: id,
           span: ann.span,
@@ -245,6 +269,9 @@ export default {
     save() {
       this.$q.loading.show();
       this.opfLayers.forEach(async (layer) => {
+        if (this.changedLayers.indexOf(layer.id) == -1) {
+          return;
+        }
         const response = await this.$axios.put(
           getOrigin() +
             `/api/v1/pechas/${this.pechaId}/layers/${this.currentVol}/${layer.annotation_type}`,
@@ -289,10 +316,12 @@ export default {
       this.$q.loading.show();
       const response = await this.$axios.get(
         getOrigin() +
-          "/api/v1/pechas/" +
-          this.pechaId +
-          "/export/" +
-          this.reviewBranch
+          `/api/v1/pechas/${this.pechaId}/export/${this.reviewBranch}`,
+        {
+          headers: {
+            token: this.userAccessToken,
+          },
+        }
       );
       this.$q.loading.hide();
       if (response["status"] == 200) {

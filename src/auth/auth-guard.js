@@ -1,3 +1,4 @@
+import { Store } from "src/store";
 import { getInstance } from "./auth0-plugin";
 
 export const authenticationGuard = (to, from, next) => {
@@ -26,3 +27,11 @@ export const authenticationGuard = (to, from, next) => {
     });
 };
 
+export const GHAuthenticationGuard = (to, from, next) => {
+    if (Store.getters['app/githubUserAccessToken']) {
+        next()
+    } else {
+        next("/login?nextUrl=" + to.fullPath)
+    }
+
+}

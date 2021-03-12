@@ -1,9 +1,7 @@
 <template>
-  <q-card style="width: 700px; max-width: 1000px">
-    <q-card-section class="row">
-      <div class="text-h6">Add Text</div>
-      <q-space />
-      <q-btn v-close-popup flat round dense icon="close" />
+  <q-card style="width: 700px; max-width: 1000px" flat>
+    <q-card-section class="row justify-center">
+      <div class="text-h5 text-purple-4">Upload Your Text</div>
     </q-card-section>
 
     <form @submit.prevent="submitForm">
@@ -106,7 +104,7 @@
             </template>
           </q-file>
         </div>
-        <div class="row q-mb-sm">
+        <div class="row">
           <q-file
             outlined
             accept=".txt"
@@ -122,8 +120,13 @@
         </div>
       </q-card-section>
 
-      <q-card-actions align="right">
-        <q-btn label="Save" color="primary" type="submit" />
+      <q-card-actions>
+        <q-btn
+          label="upload"
+          color="purple-4"
+          type="submit"
+          class="full-width"
+        />
       </q-card-actions>
     </form>
   </q-card>
@@ -131,6 +134,7 @@
 
 <script>
 import { getOrigin } from "src/utils";
+import { mapState } from "vuex";
 
 export default {
   data() {
@@ -150,6 +154,11 @@ export default {
       },
     };
   },
+
+  computed: {
+    ...mapState("app", ["userAccessToken"]),
+  },
+
   methods: {
     isValid() {
       let status = true;
@@ -183,11 +192,12 @@ export default {
       this.$q.loading.show();
       try {
         const response = await this.$axios.post(
-          getOrigin() + "/api/v1" + "/pechas",
+          getOrigin() + "/api/v1/pechas",
           this.getPechaAssets(),
           {
             headers: {
               "Content-Type": "multipart/form-data",
+              token: this.userAccessToken,
             },
             params: this.pechaMetadata,
           }

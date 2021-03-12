@@ -9,9 +9,9 @@
         and enriching etexts
       </div>
       <q-btn
+        to="/upload"
         label="Get Started"
         class="q-mt-lg q-mb-md self-center"
-        @click="showAddText = true"
       />
     </section>
     <section
@@ -64,21 +64,12 @@
     </section>
 
     <section id="contact"></section>
-
-    <q-dialog v-model="showAddText" persistent>
-      <add-text @close="showAddText = false" />
-    </q-dialog>
   </q-page>
 </template>
 
 <script>
-import AddText from "src/components/Modals/AddText";
-
 export default {
   name: "HomePage",
-  components: {
-    AddText,
-  },
 
   data() {
     return {

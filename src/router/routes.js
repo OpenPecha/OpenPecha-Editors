@@ -1,5 +1,4 @@
-import { Store } from "src/store"
-import { authenticationGuard } from "../auth/auth-guard"
+import { authenticationGuard, GHAuthenticationGuard } from "../auth/auth-guard"
 
 const routes = [
   {
@@ -9,6 +8,11 @@ const routes = [
       {
         path: '/',
         component: () => import('pages/Home.vue'),
+      },
+      {
+        path: '/upload',
+        component: () => import('pages/ImportText.vue'),
+        beforeEnter: GHAuthenticationGuard
       },
     ]
   },
@@ -27,13 +31,7 @@ const routes = [
       {
         path: '/editor/:pechaId',
         component: () => import('pages/Annotation.vue'),
-        beforeEnter: (to, from, next) => {
-          if (Store.getters['app/githubUserAccessToken']) {
-            next()
-          } else {
-            next("/login?nextUrl=" + to.fullPath)
-          }
-        }
+        beforeEnter: GHAuthenticationGuard
       },
       {
         path: '/editor/pedurma/:textId',

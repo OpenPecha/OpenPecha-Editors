@@ -28,7 +28,6 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 import { mapActions } from "vuex";
 
 export default {
@@ -45,10 +44,6 @@ export default {
         window.close();
       }
     }
-  },
-
-  computed: {
-    ...mapGetters("app", ["githubAuthUrl", "accessTokenUrl"]),
   },
 
   mounted() {
@@ -68,7 +63,12 @@ export default {
     },
 
     async login(newwindow) {
-      openWindow(this.githubAuthUrl, this.$t("login"));
+      openWindow(
+        process.env.GITHUB_OAUTH_URL +
+          "?client_id=" +
+          process.env.GITHUB_OAUTH_CLIENT_ID,
+        "login"
+      );
     },
 
     onMessage(e) {
@@ -85,6 +85,7 @@ export default {
 };
 
 function openWindow(url, title, options = {}) {
+  console.log(url);
   if (typeof url === "object") {
     options = url;
     url = "";

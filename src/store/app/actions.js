@@ -8,8 +8,8 @@ export function logout({ commit }, payload) {
     this.$router.push("/login")
 }
 
-export async function getUserAccessToken({ commit, getters }, payload) {
-    const response = await axios.get(getters.accessTokenUrl + "/api/v1/login/oauth/access_token", {
+export async function getUserAccessToken({ commit }, payload) {
+    const response = await axios.get(process.env.OPENPECHA_API_URL + "/api/v1/login/oauth/access_token", {
         params: { code: payload.code }
     });
     commit("setUserAccessToken", response.data.access_token)

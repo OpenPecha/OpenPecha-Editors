@@ -146,7 +146,6 @@ export default {
     },
 
     async getPreview() {
-      console.log("click");
       const googleCurrentPage = this.getCurrentPage("google");
       const namselCurrentPage = this.getCurrentPage("namsel");
       const googlePageNote = this.getPageNote("google", googleCurrentPage);

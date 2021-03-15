@@ -55,7 +55,7 @@ export default {
   },
 
   methods: {
-    ...mapActions("app", ["login", "logout", "getUserAccessToken"]),
+    ...mapActions("app", ["getUserAccessToken"]),
 
     oauthPopupFlow() {
       const newWindow = openWindow("", this.$t("login"));
@@ -85,7 +85,6 @@ export default {
 };
 
 function openWindow(url, title, options = {}) {
-  console.log(url);
   if (typeof url === "object") {
     options = url;
     url = "";

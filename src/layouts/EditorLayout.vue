@@ -5,7 +5,7 @@
         <q-toolbar-title class="text-bold">OpenPecha Editor</q-toolbar-title>
 
         <q-btn
-          v-if="$auth.isAuthenticated"
+          v-if="$auth.isAuthenticated || userAccessToken"
           flat
           dense
           icon="exit_to_app"
@@ -23,14 +23,20 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   name: "EditorLayout",
-  data() {
-    return {};
+  computed: {
+    ...mapGetters("app", ["userAccessToken"]),
   },
+
   methods: {
     logout() {
-      this.$auth.logout();
+      if (this.$auth.isAuthenticated) {
+        this.$auth.logout();
+      }
+      this.$store.dispatch("app/logout");
       this.$router.push({ path: "/" });
     },
   },

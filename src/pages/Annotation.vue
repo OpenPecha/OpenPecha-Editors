@@ -8,6 +8,7 @@
         <q-separator vertical inset />
 
         <q-btn-dropdown
+          v-if="pageReady"
           flat
           no-caps
           dense
@@ -61,14 +62,15 @@
 
       <q-separator />
 
-      <div class="col q-pa-md content scroll overflow-auto">
+      <div class="col q-pa-sm content scroll overflow-auto">
         <textarea
           v-show="editingBase"
           type="text"
-          :style="{ width: '100%', height: '80vh' }"
-          >{{ currentDoc.text }} </textarea
-        >
+          v-model="currentDoc.text"
+          :style="{ width: '100%', height: '80vh', border: 'none' }"
+        ></textarea>
         <entity-item-box
+          v-if="pageReady"
           v-show="!editingBase"
           :layers="layers"
           :text="currentDoc.text"
@@ -88,7 +90,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapGetters } from "vuex";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -110,6 +112,7 @@ export default {
     return {
       user: null,
       currentLayer: null,
+      pageReady: false,
       org: "OpenPecha",
       reviewBranch: "review",
       pechaCompoents: null,
@@ -135,7 +138,7 @@ export default {
   },
 
   computed: {
-    ...mapState("app", ["userAccessToken"]),
+    ...mapGetters("app", ["userAccessToken"]),
 
     pechaId() {
       return this.$route.params.pechaId;
@@ -149,10 +152,8 @@ export default {
 
     trackChangedLayer(layerId) {
       if (this.changedLayers.indexOf(layerId) == -1) {
-        console.log("layer changed");
         this.changedLayers.push(layerId);
       }
-      console.log(this.changedLayers);
     },
 
     removeEntity(ann) {
@@ -214,8 +215,6 @@ export default {
     loadAnn(layer) {
       for (const [id, ann] of Object.entries(layer.annotations)) {
         if (ann.deleted == true) {
-          console.log(layer.annotation_type);
-          console.log("deleted", ann);
           continue;
         }
 
@@ -225,6 +224,14 @@ export default {
           layer: layer.id,
         });
       }
+    },
+
+    setOpfsLayers(layers) {
+      this.opfLayers = layers;
+      this.currentDoc.annotations = [];
+      this.opfLayers.forEach((layer) => {
+        this.loadAnn(layer);
+      });
     },
 
     async loadPechaComponents() {
@@ -282,7 +289,6 @@ export default {
             },
           }
         );
-        console.log(response);
       });
       this.$q.loading.hide();
     },
@@ -297,10 +303,9 @@ export default {
         getOrigin() + `/api/v1/pechas/${this.pechaId}/base/${this.currentVol}`,
         {
           updated_base: {
-            id: this.currentVol,
-            content: this.currentDoc.text.slice(0, 100),
+            content: this.currentDoc.text,
           },
-          layers: this.opfLayersContent,
+          layers: this.opfLayers,
         },
         {
           headers: {
@@ -308,8 +313,10 @@ export default {
           },
         }
       );
+
+      console.log(response.data);
+      this.setOpfsLayers(response.data.layers);
       this.$q.loading.hide();
-      console.log(response["data"]);
     },
 
     async exportPecha() {
@@ -338,10 +345,11 @@ export default {
 
   async created() {
     await this.loadPechaComponents();
-    this.loadVolumeLayer();
     this.loadVolumeBase();
-    this.loadUser();
+    this.loadVolumeLayer();
     this.currentLayer = this.layers[0];
+    this.pageReady = true;
+    this.loadUser();
   },
 };
 </script>

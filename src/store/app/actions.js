@@ -1,18 +1,22 @@
 import axios from "axios";
 import { Loading } from 'quasar';
 
-export function logout({ commit }, payload) {
+export function logout() {
     Loading.show();
-    commit('setIsAuthenticated', false)
+    localStorage.removeItem("token")
     Loading.hide()
-    this.$router.push("/login")
+    this.$router.push("/")
 }
 
 export async function getUserAccessToken({ commit }, payload) {
-    const response = await axios.get(process.env.OPENPECHA_API_URL + "/api/v1/login/oauth/access_token", {
-        params: { code: payload.code }
-    });
-    commit("setUserAccessToken", response.data.access_token)
-    commit('setIsAuthenticated', true)
-    this.$router.push(payload.nextUrl)
+    try {
+        const response = await axios.get(process.env.OPENPECHA_API_URL + "/api/v1/login/oauth/access_token", {
+            params: { code: payload.code }
+        });
+
+        commit("setUserAccessToken", response.data.access_token)
+        this.$router.push(payload.nextUrl)
+    } catch (err) {
+        console.log(err)
+    }
 }

@@ -134,7 +134,7 @@
 
 <script>
 import { getOrigin } from "src/utils";
-import { mapState } from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
   data() {
@@ -156,7 +156,7 @@ export default {
   },
 
   computed: {
-    ...mapState("app", ["userAccessToken"]),
+    ...mapGetters("app", ["userAccessToken"]),
   },
 
   methods: {

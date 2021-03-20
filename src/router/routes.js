@@ -12,7 +12,7 @@ const routes = [
       {
         path: '/upload',
         component: () => import('pages/ImportText.vue'),
-        beforeEnter: GHAuthenticationGuard
+        beforeenter:  GHAuthenticationGuard
       },
     ]
   },
@@ -45,6 +45,10 @@ const routes = [
         //   requiresAuth: true,
         //   authService: "buda"
         //  }
+      },
+      {
+        path: '/richtext',
+        component: () => import('src/pages/Editor.vue'),
       },
     ]
   },

@@ -1,0 +1,22 @@
+.book-title {
+    display: block;
+    font-size: 3rem;
+    text-align: center;
+}
+
+.author {
+    display: block;
+    font-size: 2rem;
+    text-align: center
+}
+
+.chapter {
+    display: block;
+    font-size: 1rem;
+    text-align: center;
+    font-weight: bold;
+}
+
+.citation {
+    color: #897335;
+}

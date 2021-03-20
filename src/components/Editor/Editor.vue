@@ -1,263 +1,96 @@
 <template>
-  <div class="editor">
-    <div id="editor-toolbar">
-      <div v-if="hasList" class="toolbar-group">
-        <q-btn
-          flat
-          dense
-          @click="showTextList = !showTextList"
-          icon="menu"
-          class="text-list-btn"
-          color="grey-7"
-          size="sm"
-        />
-      </div>
-
-      <div v-if="extraTools" class="toolbar-group">
+  <div>
+    <q-card bordered flat>
+      <q-toolbar>
+        <q-btn flat round dense icon="menu" class="q-mr-sm">
+          <q-tooltip>show all text</q-tooltip>
+        </q-btn>
+        <q-separator vertical inset />
         <q-btn-dropdown
           flat
-          dense
           no-caps
+          dense
           icon="layers"
-          :label="currentLayer"
-          color="grey-7"
-          size="sm"
+          :label="currentLayer.name"
+          class="q-ml-sm"
         >
-          <q-list>
-            <q-item
-              v-for="layer in layers"
-              :key="layer"
-              clickable
-              v-close-popup
-              @click="selectLayer(layer)"
-            >
-              <q-item-section>
-                <q-item-label>{{ layer }}</q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-list>
+          <editor-menu-bar :editor="editor" v-slot="{ commands, isActive }">
+            <q-list dense>
+              <q-item
+                v-for="layer in layers"
+                :key="layer.id"
+                :label="currentLayer.name"
+                clickable
+                v-close-popup
+                @click="commands.layerstyle({ level: layer.style })"
+                :class="{
+                  'is-active': isActive.layerstyle({ level: layer.style }),
+                }"
+              >
+                <q-item-section>
+                  <q-item-label>{{ layer.name }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </editor-menu-bar>
         </q-btn-dropdown>
+      </q-toolbar>
 
-        <q-btn-dropdown
-          flat
-          dense
-          no-caps
-          icon="color_lens"
-          :label="currentTheme"
-          color="grey-7"
-          size="sm"
+      <q-separator />
+      <div>
+        <q-scroll-area
+          class="q-pl-sm q-pr-sm"
+          style="height: 85vh; width: 100%"
         >
-          <q-list>
-            <q-item
-              v-for="theme in themes"
-              :key="theme"
-              clickable
-              v-close-popup
-              @click="selectTheme(theme)"
-            >
-              <q-item-section>
-                <q-item-label>{{ theme }}</q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-btn-dropdown>
+          <editor-content class="editor__content" :editor="editor" />
+        </q-scroll-area>
       </div>
-
-      <div v-if="extraTools" class="toolbar-group">
-        <q-btn
-          flat
-          round
-          dense
-          @click="saveText"
-          icon="save"
-          color="grey-7"
-          size="sm"
-        />
-        <q-btn flat round dense icon="get_app" color="grey-7" size="sm" />
-      </div>
-    </div>
-
-    <div class="editorContainer row">
-      <div v-show="showTextList" class="text-navigation col-2">
-        <TextList v-if="hasList" :list="textList" :click="open" />
-      </div>
-
-      <div class="textarea col">
-        <textarea :id="textAreaId" cols="30" rows="10"></textarea>
-      </div>
-    </div>
+    </q-card>
+    <!-- <pre>{{ localHTML }}</pre>
+    <pre>{{ localJSON }}</pre> -->
   </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import { Loading } from "quasar";
-import CodeMirror from "codemirror";
-
-// basic
-import "codemirror/lib/codemirror.css";
-
-// addons
-import "codemirror/addon/mode/simple.js";
-import "codemirror/addon/display/fullscreen.css";
-import "codemirror/addon/display/fullscreen.js";
-
-// language mode
-import "./mode/hfml.js";
-
-// theme style
+import { Editor, EditorContent, EditorMenuBar } from "tiptap";
+import { Bold } from "tiptap-extensions";
+import LayerStyle from "src/components/Editor/layerStyle.js";
+import "src/components/Editor/layers.css";
 
 export default {
+  name: "WysiwygEditor",
   props: {
-    currentLayerProp: {
-      type: String,
-      default: "BaseText",
-    },
-    textAreaIdProp: {
-      type: String,
-      default: "textarea",
-    },
-    loadText: {
-      type: Function,
-    },
-    getTextList: {
-      type: Function,
-    },
-    saveText: {
-      type: Function,
-    },
-    extraTools: {
-      type: Boolean,
-      default: true,
-    },
-    hasList: {
-      type: Boolean,
-      default: true,
-    },
-    content: {
-      type: String,
-      default: "empty notes",
-    },
-  },
-
-  data() {
-    return {
-      editor: null,
-      options: {
-        mode: "hfml",
-        lineNumbers: false,
-        viewportMargin: Infinity,
-        lineWrapping: true,
-        theme: "default",
-        extraKeys: {
-          F11: function (cm) {
-            cm.setOption("fullScreen", !cm.getOption("fullScreen"));
-          },
-          Esc: function (cm) {
-            if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
-          },
-        },
-      },
-      textAreaId: this.textAreaIdProp,
-      layers: ["BaseText", "Citation", "Sabche", "Yigchung"],
-      themes: ["Default", "Darcula", "Monospace"],
-      currentTheme: "Default",
-      currentLayer: this.currentLayerProp,
-      currentTextFile: null,
-      showTextList: false,
-    };
+    text: String,
+    layers: Array,
   },
 
   components: {
-    TextList: require("components/Editor/TextList").default,
+    EditorContent,
+    EditorMenuBar,
   },
-
-  computed: {
-    ...mapGetters("app", ["userAccessToken"]),
-
-    input() {
-      return this.editor.doc.getValue();
-    },
+  data() {
+    return {
+      editor: null,
+      localJSON: "",
+      localHTML: "",
+      currentLayer: this.layers[0],
+    };
   },
-
-  asyncComputed: {
-    textList() {
-      if (this.hasList) {
-        return this.getTextList(this.currentLayer);
-      }
-    },
+  mounted() {
+    this.editor = new Editor({
+      extensions: [new Bold(), new LayerStyle()],
+      onUpdate: ({ getHTML, getJSON }) => {
+        this.localHTML = getHTML();
+        this.localJSON = getJSON();
+      },
+      content: this.text,
+    });
   },
-
-  methods: {
-    selectLayer(layer) {
-      this.currentLayer = layer;
-    },
-
-    selectTheme(theme) {
-      this.currentTheme = theme;
-    },
-
-    async open(textFile) {
-      const text = await this.loadText(textFile);
-      this.editor.doc.setValue(text);
-      this.currentTextFile = textFile;
-      this.showTextList = false;
-      this.$emit("openPage", textFile);
-    },
-  },
-
-  mounted: function () {
-    this.editor = CodeMirror.fromTextArea(
-      document.getElementById(this.textAreaId),
-      this.options
-    );
-    if (!this.hasList) {
-      this.editor.doc.setValue(this.content);
-    }
-  },
-
-  beforeMount() {
-    if (this.userAccessToken == null) {
-      // this.$router.push("/login");
-    }
+  beforeDestroy() {
+    this.editor.destroy();
   },
 };
 </script>
 
-<style>
-#editor-toolbar {
-  display: flex;
-  align-items: center;
-  height: 30px;
-  width: 100%;
-  border: 1px solid #ccc;
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
-}
-
-.toolbar-group {
-  display: flex;
-  flex-wrap: wrap;
-  position: relative;
-  margin: 0 4px;
-}
-
-.toolbar-group:not(:first-child)::before {
-  content: "";
-  position: absolute;
-  left: -4px;
-  top: 4px;
-  bottom: 4px;
-  width: 1px;
-  background: rgba(0, 0, 0, 0.12);
-}
-
-.CodeMirror {
-  border-right: 1px solid #ccc;
-  border-left: 1px solid #ccc;
-  border-bottom: 1px solid #ccc;
-  background: white;
-  border-bottom-left-radius: 3px;
-  border-bottom-right-radius: 3px;
-}
+<style lang="sass">
 </style>

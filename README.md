@@ -26,3 +26,6 @@ See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
 - More project examplese,https://github.com/quasarframework/quasar-awesome
 - Advanced annotating, https://github.com/doccano/doccano
 - text annotation, https://github.com/recogito/recogito-js
+
+#### tiptab
+  - https://codesandbox.io/s/9x8fr

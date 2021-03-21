@@ -2,12 +2,14 @@
     display: block;
     font-size: 3rem;
     text-align: center;
+    color: #343233;
 }
 
 .author {
     display: block;
     font-size: 2rem;
-    text-align: center
+    text-align: center;
+    color: #343233;
 }
 
 .chapter {
@@ -15,8 +17,19 @@
     font-size: 1rem;
     text-align: center;
     font-weight: bold;
+    color: #343233;
 }
 
 .citation {
     color: #897335;
+}
+
+.root-text {
+    color: #8b1409;
+    line-height: 1;
+    margin-left: 10px;
+}
+
+.sabche {
+    color: #005e7f;
 }

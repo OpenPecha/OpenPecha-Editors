@@ -1,20 +1,20 @@
 <template>
   <div>
-    <q-card bordered flat>
-      <q-toolbar>
-        <q-btn flat round dense icon="menu" class="q-mr-sm">
-          <q-tooltip>show all text</q-tooltip>
-        </q-btn>
-        <q-separator vertical inset />
-        <q-btn-dropdown
-          flat
-          no-caps
-          dense
-          icon="layers"
-          :label="currentLayer.name"
-          class="q-ml-sm"
-        >
-          <editor-menu-bar :editor="editor" v-slot="{ commands, isActive }">
+    <q-card bordered flat class="q-ml-auto q-mr-auto" style="max-width: 950px">
+      <editor-menu-bar :editor="editor" v-slot="{ commands, isActive }">
+        <q-toolbar>
+          <q-btn flat round dense icon="menu" class="q-mr-sm">
+            <q-tooltip>show all text</q-tooltip>
+          </q-btn>
+          <q-separator vertical inset />
+          <q-btn-dropdown
+            flat
+            no-caps
+            dense
+            icon="layers"
+            label="Layer"
+            class="q-ml-sm q-mr-sm"
+          >
             <q-list dense>
               <q-item
                 v-for="layer in layers"
@@ -26,34 +26,44 @@
                 :class="{
                   'is-active': isActive.layerstyle({ level: layer.style }),
                 }"
+                :style="{ color: layer.style }"
               >
                 <q-item-section>
                   <q-item-label>{{ layer.name }}</q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
-          </editor-menu-bar>
-        </q-btn-dropdown>
-      </q-toolbar>
+          </q-btn-dropdown>
+
+          <q-separator vertical inset />
+          <q-btn flat dense icon="undo" @click="commands.undo" class="q-ml-sm">
+            <q-tooltip>undo</q-tooltip>
+          </q-btn>
+          <q-btn flat dense icon="redo" @click="commands.redo" class="q-mr-sm">
+            <q-tooltip>redo</q-tooltip>
+          </q-btn>
+
+          <q-space />
+
+          <q-btn flat dense icon="get_app" class="q-ml-sm" @click="exportPecha">
+            <q-tooltip>export</q-tooltip>
+          </q-btn>
+        </q-toolbar>
+      </editor-menu-bar>
 
       <q-separator />
-      <div>
-        <q-scroll-area
-          class="q-pl-sm q-pr-sm"
-          style="height: 85vh; width: 100%"
-        >
-          <editor-content class="editor__content" :editor="editor" />
-        </q-scroll-area>
-      </div>
+      <q-scroll-area class="q-pl-sm q-pr-sm" style="height: 85vh; width: 100%">
+        <editor-content class="editor__content" :editor="editor" />
+      </q-scroll-area>
     </q-card>
-    <!-- <pre>{{ localHTML }}</pre>
-    <pre>{{ localJSON }}</pre> -->
+    <pre>{{ localHTML }}</pre>
+    <pre>{{ localJSON }}</pre>
   </div>
 </template>
 
 <script>
-import { Editor, EditorContent, EditorMenuBar } from "tiptap";
-import { Bold } from "tiptap-extensions";
+import { Editor, EditorContent, EditorMenuBar, Extension } from "tiptap";
+import { History, HardBreak } from "tiptap-extensions";
 import LayerStyle from "src/components/Editor/layerStyle.js";
 import "src/components/Editor/layers.css";
 
@@ -78,7 +88,27 @@ export default {
   },
   mounted() {
     this.editor = new Editor({
-      extensions: [new Bold(), new LayerStyle()],
+      extensions: [
+        new LayerStyle(),
+        new History(),
+        new HardBreak(),
+        new (class extends Extension {
+          keys() {
+            return {
+              Enter(state, dispatch, view) {
+                const { schema, doc, tr } = view.state;
+
+                const hard_break = schema.nodes.hard_break;
+                const transaction = tr
+                  .replaceSelectionWith(hard_break.create())
+                  .scrollIntoView();
+                view.dispatch(transaction);
+                return true;
+              },
+            };
+          }
+        })(),
+      ],
       onUpdate: ({ getHTML, getJSON }) => {
         this.localHTML = getHTML();
         this.localJSON = getJSON();
@@ -89,8 +119,21 @@ export default {
   beforeDestroy() {
     this.editor.destroy();
   },
+
+  methods: {
+    exportPecha() {
+      console.log("export pecha");
+    },
+  },
 };
 </script>
 
 <style lang="sass">
+.ProseMirror:focus
+  outline: none
+
+.editor__content
+  font-family: 'monlam-ochan2', sans-serif
+  font-size: 1.657rem
+  line-heigh: 2
 </style>

@@ -21,7 +21,7 @@ export default class LayerStyle extends Mark {
       },
       parseDOM: [
         {
-          tag: "span.custom-style",
+          tag: "span",
           getAttrs(dom) {
             console.log(dom.classList[1]);
             return { level: dom.classList[1] };
@@ -29,7 +29,7 @@ export default class LayerStyle extends Mark {
         }
       ],
       toDOM: mark => {
-        return ["span", { class: `custom-style ${mark.attrs.level}` }, 0];
+        return ["span", { class: `${mark.attrs.level}` }, 0];
       }
     };
   }

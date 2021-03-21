@@ -1,5 +1,5 @@
 <template>
-  <q-page padding>
+  <q-page padding class="no-scroll">
     <editor :text="text" :layers="layers" />
   </q-page>
 </template>
@@ -34,6 +34,16 @@ export default {
           id: 4,
           name: "Citation",
           style: "citation",
+        },
+        {
+          id: 5,
+          name: "Root Text",
+          style: "root-text",
+        },
+        {
+          id: 6,
+          name: "Sabche",
+          style: "sabche",
         },
       ],
     };

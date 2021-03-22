@@ -57,7 +57,6 @@
       </q-scroll-area>
     </q-card>
     <pre>{{ localHTML }}</pre>
-    <pre>{{ localJSON }}</pre>
   </div>
 </template>
 
@@ -109,9 +108,9 @@ export default {
           }
         })(),
       ],
-      onUpdate: ({ getHTML, getJSON }) => {
+      onUpdate: ({ getHTML }) => {
         this.localHTML = getHTML();
-        this.localJSON = getJSON();
+        console.log(this.localHTML);
       },
       content: this.text,
     });

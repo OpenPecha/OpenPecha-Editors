@@ -1,5 +1,6 @@
 import { Mark } from "tiptap";
 import { updateMark } from "tiptap-commands";
+import { v4 as uuidv4 } from "uuid";
 
 export default class LayerStyle extends Mark {
   get name() {
@@ -23,13 +24,12 @@ export default class LayerStyle extends Mark {
         {
           tag: "span",
           getAttrs(dom) {
-            console.log(dom.classList[1]);
             return { level: dom.classList[1] };
           }
         }
       ],
       toDOM: mark => {
-        return ["span", { class: `${mark.attrs.level}` }, 0];
+        return ["span", { class: mark.attrs.level, id:  uuidv4().replaceAll("-", "")}, 0];
       }
     };
   }

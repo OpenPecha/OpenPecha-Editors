@@ -17,7 +17,7 @@ export default class LayerStyle extends Mark {
     return {
       attrs: {
         level: {
-          default: "commentry"
+          default: "book-title"
         }
       },
       parseDOM: [

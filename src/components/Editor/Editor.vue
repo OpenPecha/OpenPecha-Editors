@@ -12,14 +12,14 @@
             no-caps
             dense
             icon="layers"
-            label="Layer"
+            label="Layers"
             class="q-ml-sm q-mr-sm"
           >
             <q-list dense>
               <q-item
                 v-for="layer in layers"
-                :key="layer.id"
-                :label="currentLayer.name"
+                :key="layer.name"
+                :label="layer.name"
                 clickable
                 v-close-popup
                 @click="commands.layerstyle({ level: layer.style })"
@@ -48,6 +48,9 @@
           <q-btn flat dense icon="get_app" class="q-ml-sm" @click="exportPecha">
             <q-tooltip>export</q-tooltip>
           </q-btn>
+          <q-btn flat icon="save" text-color="green-5" @click="save">
+            <q-tooltip>save</q-tooltip>
+          </q-btn>
         </q-toolbar>
       </editor-menu-bar>
 
@@ -56,6 +59,10 @@
         <editor-content class="editor__content" :editor="editor" />
       </q-scroll-area>
     </q-card>
+
+    <q-dialog v-model="showDownloadLink" persistent>
+      <download-link-box :link="download_link" />
+    </q-dialog>
     <pre>{{ localHTML }}</pre>
   </div>
 </template>
@@ -63,29 +70,93 @@
 <script>
 import { Editor, EditorContent, EditorMenuBar, Extension } from "tiptap";
 import { History, HardBreak } from "tiptap-extensions";
+import { mapGetters } from "vuex";
+
+import DownloadLinkBox from "components/Modals/DownloadLinkBox";
+
 import LayerStyle from "src/components/Editor/layerStyle.js";
+import { layerClasses } from "src/components/Editor/vars.js";
+import { getOrigin } from "src/utils";
+
 import "src/components/Editor/layers.css";
 
 export default {
   name: "WysiwygEditor",
   props: {
-    text: String,
-    layers: Array,
+    content: String,
   },
 
   components: {
     EditorContent,
     EditorMenuBar,
+    DownloadLinkBox,
   },
+
   data() {
     return {
       editor: null,
+      layers: layerClasses,
       localJSON: "",
       localHTML: "",
-      currentLayer: this.layers[0],
+      org: "OpenPecha",
+      reviewBranch: "review",
+      currentVol: "v001",
+      showDownloadLink: false,
+      download_link: "",
     };
   },
+
+  computed: {
+    ...mapGetters("app", ["userAccessToken"]),
+
+    pechaId() {
+      return this.$route.params.pechaId;
+    },
+  },
+
+  methods: {
+    async exportPecha() {
+      if (this.localHTML) {
+        this.save();
+      }
+
+      this.$q.loading.show();
+      const response = await this.$axios.get(
+        getOrigin() +
+          `/api/v1/pechas/${this.pechaId}/export/${this.reviewBranch}`,
+        {
+          headers: {
+            token: this.userAccessToken,
+          },
+        }
+      );
+      this.$q.loading.hide();
+      if (response["status"] == 200) {
+        this.showDownloadLink = true;
+        this.download_link = response.data.download_link;
+      } else {
+        this.$q.notify({
+          type: "negative",
+          message: "export failed",
+        });
+      }
+    },
+
+    async save() {
+      this.$q.loading.show();
+      const response = await this.$axios.put(
+        getOrigin() +
+          `/api/v1/pechas/${this.pechaId}/${this.currentVol}/editor`,
+        {
+          content: this.localHTML,
+        }
+      );
+      this.$q.loading.hide();
+    },
+  },
+
   mounted() {
+    console.log(this.content);
     this.editor = new Editor({
       extensions: [
         new LayerStyle(),
@@ -112,17 +183,12 @@ export default {
         this.localHTML = getHTML();
         console.log(this.localHTML);
       },
-      content: this.text,
+      content: this.content,
     });
   },
+
   beforeDestroy() {
     this.editor.destroy();
-  },
-
-  methods: {
-    exportPecha() {
-      console.log("export pecha");
-    },
   },
 };
 </script>

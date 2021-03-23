@@ -47,8 +47,9 @@ const routes = [
         //  }
       },
       {
-        path: '/richtext',
+        path: '/richtext/:pechaId',
         component: () => import('src/pages/Editor.vue'),
+        beforeEnter: GHAuthenticationGuard
       },
     ]
   },

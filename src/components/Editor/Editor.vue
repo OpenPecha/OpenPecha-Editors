@@ -22,11 +22,11 @@
                 :label="layer.name"
                 clickable
                 v-close-popup
-                @click="commands.layerstyle({ level: layer.style })"
+                @click="commands.layermark({ layer: layer.style })"
                 :class="{
-                  'is-active': isActive.layerstyle({ level: layer.style }),
+                  'is-active': isActive.layermark({ layer: layer.style }),
                 }"
-                :style="{ color: layer.style }"
+                :style="{ color: layer.color }"
               >
                 <q-item-section>
                   <q-item-label>{{ layer.name }}</q-item-label>
@@ -63,7 +63,7 @@
     <q-dialog v-model="showDownloadLink" persistent>
       <download-link-box :link="download_link" />
     </q-dialog>
-    <pre>{{ localHTML }}</pre>
+    <!-- <pre>{{ localHTML }}</pre> -->
   </div>
 </template>
 
@@ -74,8 +74,7 @@ import { mapGetters } from "vuex";
 
 import DownloadLinkBox from "components/Modals/DownloadLinkBox";
 
-import LayerStyle from "src/components/Editor/layerStyle.js";
-import { layerClasses } from "src/components/Editor/vars.js";
+import LayerMark, { layers } from "src/components/Editor/layerMark.js";
 import { getOrigin } from "src/utils";
 
 import "src/components/Editor/layers.css";
@@ -95,7 +94,7 @@ export default {
   data() {
     return {
       editor: null,
-      layers: layerClasses,
+      layers: layers,
       localJSON: "",
       localHTML: "",
       org: "OpenPecha",
@@ -156,10 +155,10 @@ export default {
   },
 
   mounted() {
-    console.log(this.content);
+    // console.log(this.content);
     this.editor = new Editor({
       extensions: [
-        new LayerStyle(),
+        new LayerMark(),
         new History(),
         new HardBreak(),
         new (class extends Extension {
@@ -181,7 +180,7 @@ export default {
       ],
       onUpdate: ({ getHTML }) => {
         this.localHTML = getHTML();
-        console.log(this.localHTML);
+        // console.log(this.localHTML);
       },
       content: this.content,
     });

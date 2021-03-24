@@ -5,6 +5,22 @@
     color: #343233;
 }
 
+.sub-title {
+    display: block;
+    text-align: center;
+    color: #343233;
+    font-size: 1.33em;
+    line-height: 1.8;
+}
+
+.book-number {
+    display: block;
+    color: #343233;
+    text-align: center;
+    line-height: 1.8;
+    font-size: 1.88889em;
+}
+
 .author {
     display: block;
     font-size: 2rem;
@@ -16,7 +32,7 @@
     display: block;
     font-size: 1rem;
     text-align: center;
-    font-weight: bold;
+    line-height: 1.8;
     color: #343233;
 }
 
@@ -27,9 +43,16 @@
 .root-text {
     color: #8b1409;
     line-height: 1;
+    text-align: justify;
     margin-left: 10px;
 }
 
 .sabche {
+    text-align: justify;
     color: #005e7f;
+}
+
+.yigchung {
+    font-size: 0.75em;
+    color: #343233;
 }

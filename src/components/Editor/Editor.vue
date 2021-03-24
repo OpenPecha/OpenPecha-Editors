@@ -70,7 +70,6 @@
 <script>
 import { Editor, EditorContent, EditorMenuBar, Extension } from "tiptap";
 import { History, HardBreak } from "tiptap-extensions";
-import { mapGetters } from "vuex";
 
 import DownloadLinkBox from "components/Modals/DownloadLinkBox";
 
@@ -83,6 +82,10 @@ export default {
   name: "WysiwygEditor",
   props: {
     content: String,
+    org: String,
+    pechaId: String,
+    reviewBranch: String,
+    userAccessToken: String,
   },
 
   components: {
@@ -97,20 +100,10 @@ export default {
       layers: layers,
       localJSON: "",
       localHTML: "",
-      org: "OpenPecha",
-      reviewBranch: "review",
-      currentVol: "v001",
       showDownloadLink: false,
       download_link: "",
+      currentVol: "v001",
     };
-  },
-
-  computed: {
-    ...mapGetters("app", ["userAccessToken"]),
-
-    pechaId() {
-      return this.$route.params.pechaId;
-    },
   },
 
   methods: {
@@ -148,9 +141,26 @@ export default {
           `/api/v1/pechas/${this.pechaId}/${this.currentVol}/editor`,
         {
           content: this.localHTML,
+        },
+        {
+          headers: {
+            token: this.userAccessToken,
+          },
         }
       );
       this.$q.loading.hide();
+
+      if (response.data.success) {
+        this.$q.notify({
+          type: "positive",
+          message: "pecha saved",
+        });
+      } else {
+        this.$q.notify({
+          type: "negative",
+          message: "couldn't save pecha",
+        });
+      }
     },
   },
 

@@ -28,7 +28,6 @@
         label="Download"
         icon="get_app"
         color="green-5"
-        @click="download"
       />
     </q-card-section>
     <q-card-section> </q-card-section>

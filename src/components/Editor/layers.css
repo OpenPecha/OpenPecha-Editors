@@ -36,17 +36,16 @@
     color: #343233;
 }
 
+
 .citation {
     color: #897335;
 }
 
-.root-text {
+p > .root-text {
     color: #8b1409;
     line-height: 1;
     text-align: justify;
-    margin-left: 10px;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin-left: 20px;
 }
 
 .sabche {
@@ -57,4 +56,21 @@
 .yigchung {
     font-size: 0.75em;
     color: #343233;
+}
+
+.book-title[class]:hover::after,
+.sub-title[class]:hover::after,
+.book-number[class]:hover::after,
+.author[class]:hover::after,
+.capter[class]:hover::after
+{
+    content: attr(class);
+    position: absolute;
+    color: #777777;
+    border: 1px #aaaaaa solid;
+    border-radius: 5px;
+    padding: 0 5px;
+    font-size: 1rem;
+    margin-left: 5px;
+    z-index: 3;
 }

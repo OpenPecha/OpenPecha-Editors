@@ -68,8 +68,8 @@
 </template>
 
 <script>
-import { Editor, EditorContent, EditorMenuBar, Extension } from "tiptap";
-import { History, HardBreak } from "tiptap-extensions";
+import { Editor, EditorContent, EditorMenuBar } from "tiptap";
+import { History } from "tiptap-extensions";
 
 import DownloadLinkBox from "components/Modals/DownloadLinkBox";
 
@@ -109,7 +109,7 @@ export default {
   methods: {
     async exportPecha() {
       if (this.localHTML) {
-        this.save();
+        await this.save();
       }
 
       this.$q.loading.show();
@@ -140,7 +140,7 @@ export default {
         getOrigin() +
           `/api/v1/pechas/${this.pechaId}/${this.currentVol}/editor`,
         {
-          content: this.localHTML,
+          content: this.localHTML.replaceAll("</p>", "</p>\n"),
         },
         {
           headers: {
@@ -165,32 +165,11 @@ export default {
   },
 
   mounted() {
-    // console.log(this.content);
     this.editor = new Editor({
-      extensions: [
-        new LayerMark(),
-        new History(),
-        new HardBreak(),
-        new (class extends Extension {
-          keys() {
-            return {
-              Enter(state, dispatch, view) {
-                const { schema, doc, tr } = view.state;
-
-                const hard_break = schema.nodes.hard_break;
-                const transaction = tr
-                  .replaceSelectionWith(hard_break.create())
-                  .scrollIntoView();
-                view.dispatch(transaction);
-                return true;
-              },
-            };
-          }
-        })(),
-      ],
+      extensions: [new LayerMark(), new History()],
       onUpdate: ({ getHTML }) => {
         this.localHTML = getHTML();
-        // console.log(this.localHTML);
+        console.log(this.localHTML);
       },
       content: this.content,
     });
@@ -209,5 +188,5 @@ export default {
 .editor__content
   font-family: 'monlam-ochan2', sans-serif
   font-size: 1.657rem
-  line-heigh: 2
+  line-height: 2
 </style>

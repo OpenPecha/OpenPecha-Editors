@@ -30,7 +30,7 @@ const routes = [
     children: [
       {
         path: '/editor/:pechaId',
-        component: () => import('pages/Annotation.vue'),
+        component: () => import('pages/Editor.vue'),
         beforeEnter: GHAuthenticationGuard
       },
       {
@@ -45,11 +45,6 @@ const routes = [
         //   requiresAuth: true,
         //   authService: "buda"
         //  }
-      },
-      {
-        path: '/richtext/:pechaId',
-        component: () => import('src/pages/Editor.vue'),
-        beforeEnter: GHAuthenticationGuard
       },
     ]
   },

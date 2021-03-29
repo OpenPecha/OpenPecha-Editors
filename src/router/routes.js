@@ -29,6 +29,11 @@ const routes = [
     component: () => import('layouts/EditorLayout.vue'),
     children: [
       {
+        path: '/editor/dashboard',
+        component: () => import('pages/Dashboard.vue'),
+        // beforeenter:  GHAuthenticationGuard
+      },
+      {
         path: '/editor/:pechaId',
         component: () => import('pages/Editor.vue'),
         beforeEnter: GHAuthenticationGuard

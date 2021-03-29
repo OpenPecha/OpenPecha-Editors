@@ -9,7 +9,7 @@
         and enriching etexts
       </div>
       <q-btn
-        to="/upload"
+        to="editor/dashboard"
         label="Get Started"
         class="q-mt-lg q-mb-md self-center"
       />

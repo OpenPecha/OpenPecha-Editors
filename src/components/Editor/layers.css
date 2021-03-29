@@ -1,15 +1,16 @@
 .book-title {
     display: block;
-    font-size: 3rem;
-    text-align: center;
     color: #343233;
+    text-align: center;
+    font-size: 2.5em;
+    line-height: 1.8;
 }
 
 .sub-title {
     display: block;
+    color: #585858;
     text-align: center;
-    color: #343233;
-    font-size: 1.33em;
+    font-size: 1.8em;
     line-height: 1.8;
 }
 
@@ -17,20 +18,20 @@
     display: block;
     color: #343233;
     text-align: center;
+    font-size: 1.8em;
     line-height: 1.8;
-    font-size: 1.88889em;
 }
 
 .author {
     display: block;
-    font-size: 2rem;
+    font-size: 1.5em;
     text-align: center;
-    color: #343233;
+    color: #585858;
 }
 
 .chapter {
     display: block;
-    font-size: 1rem;
+    font-size: 1.5em;
     text-align: center;
     line-height: 1.8;
     color: #343233;
@@ -62,7 +63,7 @@ p > .root-text {
 .sub-title[class]:hover::after,
 .book-number[class]:hover::after,
 .author[class]:hover::after,
-.capter[class]:hover::after
+.chapter[class]:hover::after
 {
     content: attr(class);
     position: absolute;

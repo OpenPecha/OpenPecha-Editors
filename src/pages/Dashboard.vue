@@ -1,6 +1,11 @@
 <template>
   <q-page padding>
-    <div class="search">
+    <div
+      class="search q-ml-auto q-mr-auto"
+      :style="{
+        width: '500px',
+      }"
+    >
       <q-input filled v-model="text" label="Search">
         <template v-slot:append>
           <q-icon v-if="text === ''" name="search" />
@@ -13,15 +18,16 @@
         </template>
       </q-input>
     </div>
-    <div class="pechas q-mt-xl flex q-gutter-lg">
-      <q-card class="pecha_card cursor-pointer">
-        <q-card-section>
-          <q-icon class="" name="note_add" size="5rem" color="grey-7" />
-        </q-card-section>
-        <q-card-section>
-          <div>Create Pecha</div>
-        </q-card-section>
-      </q-card>
+    <div
+      class="pechas q-mt-xl flex q-gutter-lg q-ml-auto q-mr-auto"
+      :style="{ 'max-width': '1000px' }"
+    >
+      <div
+        class="pecha_card column justify-around content-center cursor-pointer"
+      >
+        <q-icon class="" name="note_add" size="8rem" color="grey-5" />
+        <div class="text-h6 text-grey-5">Create Pecha</div>
+      </div>
 
       <pecha-card
         v-for="pecha in pechas"
@@ -79,8 +85,8 @@ export default {
 
 <style >
 .pecha_card {
-  height: 15rem;
-  width: 10rem;
+  height: 17rem;
+  width: 12rem;
 }
 
 .pecha_card:hover {

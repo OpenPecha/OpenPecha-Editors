@@ -122,7 +122,7 @@
 
       <q-card-actions>
         <q-btn
-          label="upload"
+          label="Create"
           color="purple-4"
           type="submit"
           class="full-width"

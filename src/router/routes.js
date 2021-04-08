@@ -31,7 +31,7 @@ const routes = [
       {
         path: '/editor/dashboard',
         component: () => import('pages/Dashboard.vue'),
-        // beforeenter:  GHAuthenticationGuard
+        beforeenter:  GHAuthenticationGuard
       },
       {
         path: '/editor/:pechaId',

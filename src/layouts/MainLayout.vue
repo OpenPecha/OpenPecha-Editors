@@ -1,6 +1,6 @@
 <template>
   <q-layout>
-    <q-header elevated class="theme-color">
+    <q-header class="theme-color">
       <q-toolbar class="q-mt-md">
         <q-toolbar-title class="cursor-pointer" @click="goToHome">
           <q-img src="/icons/favicon-128x128.png" style="width: 40px" />

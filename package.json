@@ -22,6 +22,7 @@
     "@octokit/core": "^3.2.1",
     "@quasar/extras": "^1.0.0",
     "axios": "^0.18.1",
+    "chalk": "^4.1.0",
     "codemirror": "^5.58.2",
     "core-js": "^3.6.5",
     "localbase": "^0.7.4",

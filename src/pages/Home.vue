@@ -11,7 +11,7 @@
       <q-btn
         to="editor/dashboard"
         label="Get Started"
-        class="q-mt-lg q-mb-md self-center"
+        class="q-mt-lg q-mb-lg self-center"
       />
     </section>
     <section

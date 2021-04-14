@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Loading } from 'quasar';
+import { Loading, Notify } from 'quasar';
 
 export function logout() {
     Loading.show();
@@ -14,8 +14,15 @@ export async function getUserAccessToken({ commit }, payload) {
             params: { code: payload.code }
         });
 
-        commit("setUserAccessToken", response.data.access_token)
-        this.$router.push(payload.nextUrl)
+        if (response.data.access_token) {
+            commit("setUserAccessToken", response.data.access_token)
+            this.$router.push(payload.nextUrl)
+        } else {
+            Notify.create({
+                type: "negative",
+                message: "user couldn't sign in"
+            })
+        }
     } catch (err) {
         console.log(err)
     }

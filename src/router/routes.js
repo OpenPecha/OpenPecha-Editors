@@ -9,11 +9,6 @@ const routes = [
         path: '/',
         component: () => import('pages/Home.vue'),
       },
-      {
-        path: '/upload',
-        component: () => import('pages/ImportText.vue'),
-        beforeenter:  GHAuthenticationGuard
-      },
     ]
   },
   {
@@ -31,7 +26,7 @@ const routes = [
       {
         path: '/editor/dashboard',
         component: () => import('pages/Dashboard.vue'),
-        beforeenter:  GHAuthenticationGuard
+        beforeEnter:  GHAuthenticationGuard
       },
       {
         path: '/editor/:pechaId',

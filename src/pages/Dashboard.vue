@@ -83,7 +83,6 @@ export default {
       },
     });
     this.pechas = res.data;
-    console.log(this.pechas);
   },
 };
 </script>

@@ -37,7 +37,8 @@ jobs:
         AUTH0_SCOPE=openid
         IFFFServerURL=https://iiif.bdrc.io
         
-        echo "GIT_SHA=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_ENV
+        GIT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
+        echo GIT_SHA
 
 
 #     - name: Build and push Docker image

@@ -33,6 +33,4 @@ yarn-error.log*
 *.sln
 .vscode
 .env
-
-.development.env
-.production.env
+set_dev-envs.sh

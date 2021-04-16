@@ -63,6 +63,22 @@ module.exports = function (/* ctx */) {
       // Options below are automatically set depending on the env, set them if you want to override
       // extractCSS: false,
 
+      env: {
+        APP_DOMAIN_DEV: process.env.APP_DOMAIN_DEV,
+        APP_DOMAIN_STAG: process.env.APP_DOMAIN_STAG,
+        APP_DOMAIN_PROD: process.env.APP_DOMAIN_PROD,
+        APP_NAME: process.env.APP_NAME,
+        APP_ENV: process.env.APP_ENV,
+        GITHUB_OAUTH_CLIENT_ID: process.env.GITHUB_OAUTH_CLIENT_ID,
+        GITHUB_OAUTH_URL: process.env.GITHUB_OAUTH_URL,
+        AUTH0_DOMAIN: process.env.AUTH0_DOMAIN,
+        AUTH0_CLIENT_ID: process.env.AUTH0_CLIENT_ID,
+        AUTH0_RESPONSETYPE: process.env.AUTH0_RESPONSETYPE,
+        AUTH0_AUDIENCE: process.env.AUTH0_AUDIENCE,
+        AUTH0_SCOPE: process.env.AUTH0_SCOPE,
+        IFFFServerURL: process.env.IFFFServerURL
+      },
+
       // https://quasar.dev/quasar-cli/handling-webpack
       extendWebpack (cfg) {
       },

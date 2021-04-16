@@ -38,7 +38,7 @@ jobs:
         IFFFServerURL=https://iiif.bdrc.io
         
         GIT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
-        echo GIT_SHA
+        echo $GIT_SHA
 
 
 #     - name: Build and push Docker image

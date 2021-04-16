@@ -33,7 +33,7 @@ jobs:
         AUTH0_DOMAIN=bdrc-io.auth0.com
         AUTH0_CLIENT_ID=UY2zbsST2S31w6sM5TSHaOBRZPVErccc
         AUTH0_AUDIENCE=https://bdrc-io.auth0.com/api/v2/
-        AUTH0_RESPONSETYPE=token id_token
+        AUTH0_RESPONSETYPE="token id_token"
         AUTH0_SCOPE=openid
         IFFFServerURL=https://iiif.bdrc.io
         

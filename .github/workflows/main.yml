@@ -11,19 +11,18 @@ jobs:
 #     steps:
 #       - uses: actions/checkout@v2
       
-  deploy:
-    #needs: test
+  build:
+#     needs: test
     runs-on: ubuntu-latest
     steps:
-      - uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USERNAME }}
-          key: ${{ secrets.DEPLOY_KEY }}
-          port: ${{ secrets.DEPLOY_PORT }}
-          script: |
-            cd openpecha-services
-            cd openpecha-editor
-            git pull origin main
-            cd ..
-            docker-compose up -d --build editor
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        repository: openpecha/openpecha-editor
+        dockerfile: Dockerfile
+        tags: prod

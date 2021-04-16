@@ -90,4 +90,3 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           port: ${{ secrets.DEPLOY_PORT }}
           script: docker service update --image openpecha/openpecha-editor:prod-$GIT_SHA openpecha-org_editor
-              

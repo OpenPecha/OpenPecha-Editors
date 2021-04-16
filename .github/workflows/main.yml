@@ -26,3 +26,22 @@ jobs:
         repository: openpecha/openpecha-editor
         dockerfile: Dockerfile
         tags: prod
+      env:
+        OPENPECHA_API_URL: https://openpecha.org
+        APP_DOMAIN_DEV: localhost
+        APP_DOMAIN_STAG: stag.openpecha.org
+        APP_DOMAIN_PROD: openpecha.org
+        APP_NAME: openpecha
+        APP_ENV: production
+        GITHUB_OAUTH_CLIENT_ID: 70014100b75704b5f39d
+        GITHUB_OAUTH_URL: https://github.com/login/oauth/authorize
+        AUTH0_DOMAIN: bdrc-io.auth0.com
+        AUTH0_CLIENT_ID: UY2zbsST2S31w6sM5TSHaOBRZPVErccc
+        AUTH0_AUDIENCE: https://bdrc-io.auth0.com/api/v2/
+        AUTH0_RESPONSETYPE: token id_token
+        AUTH0_SCOPE: openid
+        IFFFServerURL: https://iiif.bdrc.io
+        
+
+        
+      

@@ -94,4 +94,4 @@ jobs:
           port: ${{ secrets.DEPLOY_PORT }}
           envs: SHA
           script_stop: true
-          script: docker service update --image openpecha/openpecha-editor:prod-${SHA} openpecha-api_editor
+          script: docker service update --image openpecha/openpecha-editor:prod-${SHA} openpecha-org_editor

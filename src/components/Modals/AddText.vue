@@ -192,7 +192,7 @@ export default {
       this.$q.loading.show();
       try {
         const response = await this.$axios.post(
-          getOrigin() + "/api/v1/pechas",
+          "https://openpecha.org" + "/api/v1/pechas",
           this.getPechaAssets(),
           {
             headers: {

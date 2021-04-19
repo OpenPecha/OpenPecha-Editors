@@ -86,11 +86,11 @@ jobs:
       - 
         uses: appleboy/ssh-action@master
         env:
-          SHA: ${{ env.GITHUB_SHA }}
+          SHA: ${{ env.GIT_SHA }}
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USERNAME }}
           key: ${{ secrets.DEPLOY_KEY }}
           port: ${{ secrets.DEPLOY_PORT }}
           script_stop: true
-          script: docker service update --image openpecha/openpecha-editor:prod-$SHA openpecha-org_editor
+          script: docker service update --image "openpecha/openpecha-editor:prod-$SHA" openpecha-org_editor

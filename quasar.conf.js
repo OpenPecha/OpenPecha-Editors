@@ -64,6 +64,7 @@ module.exports = function (/* ctx */) {
       // extractCSS: false,
 
       env: {
+        OPENPECHA_API_URL: process.env.OPENPECHA_API_URL,
         APP_DOMAIN_DEV: process.env.APP_DOMAIN_DEV,
         APP_DOMAIN_STAG: process.env.APP_DOMAIN_STAG,
         APP_DOMAIN_PROD: process.env.APP_DOMAIN_PROD,

@@ -19,9 +19,12 @@ export const layerColor = {
       }
 
 export function getOrigin() {
+    let orgin
     if (process.env.DEV) {
-        return process.env.OPENPECHA_API_URL
+        origin = process.env.OPENPECHA_API_URL
     } else {
-        return window.location.origin
+        origin = window.location.origin
     }
+    console.log(origin)
+    return origin
 }

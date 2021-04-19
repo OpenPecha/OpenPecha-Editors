@@ -85,9 +85,12 @@ jobs:
           echo "GIT_SHA=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_ENV
       - 
         uses: appleboy/ssh-action@master
+        env:
+          SHA: ${{ env.GITHUB_SHA }}
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USERNAME }}
           key: ${{ secrets.DEPLOY_KEY }}
           port: ${{ secrets.DEPLOY_PORT }}
-          script: docker service update --image openpecha/openpecha-editor:prod-{{ env.GIT_SHA }} openpecha-org_editor
+          script_stop: true
+          script: docker service update --image openpecha/openpecha-editor:prod-$SHA openpecha-org_editor

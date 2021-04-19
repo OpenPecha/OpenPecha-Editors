@@ -96,6 +96,5 @@ jobs:
           script_stop: true
 #           script: docker service update --image "openpecha/openpecha-editor:prod-$SHA" openpecha-org_editor
           script: |
-            ls $APP
-            echo $SHA
+            echo 'docker service update --image "openpecha/openpecha-editor:prod-$SHA" openpecha-org_editor'
             echo ${{ env.GIT_SHA }}

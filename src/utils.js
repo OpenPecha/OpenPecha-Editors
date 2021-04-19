@@ -23,7 +23,7 @@ export function getOrigin() {
     if (process.env.DEV) {
         origin = process.env.OPENPECHA_API_URL
     } else {
-        origin = window.location.origin
+        origin = "https://" + window.location.host
     }
     console.log(origin)
     return origin

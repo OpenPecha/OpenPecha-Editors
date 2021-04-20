@@ -40,7 +40,7 @@ export default {
 
   async created() {
     const res = await this.$axios.get(
-      getOrigin() + `/api/v1/pechas/${this.pechaId}/${this.currentVol}/editor/`,
+      getOrigin() + `/api/v1/pechas/${this.pechaId}/${this.currentVol}/editor`,
       {
         headers: {
           token: this.userAccessToken,

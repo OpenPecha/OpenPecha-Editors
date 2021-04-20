@@ -22,5 +22,5 @@ export function getOrigin() {
     if (process.env.DEV) {
         return process.env.OPENPECHA_API_URL
     }
-    return ""
+    return window.location.origin
 }

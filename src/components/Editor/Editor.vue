@@ -169,7 +169,6 @@ export default {
       extensions: [new LayerMark(), new History()],
       onUpdate: ({ getHTML }) => {
         this.localHTML = getHTML();
-        console.log(this.localHTML);
       },
       content: this.content,
     });

@@ -47,9 +47,8 @@ export default {
         },
       }
     );
-    this.text = res.data.content;
+    this.text = res.data.content.replace("<p></p>", "");
     this.pageReady = true;
-    console.log(this.text);
   },
 };
 </script>

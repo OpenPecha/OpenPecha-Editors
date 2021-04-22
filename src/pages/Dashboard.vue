@@ -14,7 +14,7 @@
             name="clear"
             class="cursor-pointer"
             @click="text = ''"
-          />
+          />4c220c6cb1273f326657e9f0d812936275b02e530ee9ddf81826f7af41693379
         </template>
       </q-input>
     </div>
@@ -60,7 +60,7 @@ export default {
 
   data() {
     return {
-      text: "seach pecha",
+      text: "search pecha",
       pechas: [],
       showAddText: false,
     };
@@ -77,7 +77,7 @@ export default {
   },
 
   async created() {
-    const res = await this.$axios.get(getOrigin() + "/api/v1/pechas/", {
+    const res = await this.$axios.get(getOrigin() + "/api/v1/pechas", {
       headers: {
         token: this.userAccessToken,
       },

@@ -13,33 +13,33 @@ const routes = [
   },
   {
     path: '/login',
-    component: () => import('layouts/Login.vue'),
+    component: () => import(/* webpackChunkName: "login" */ 'layouts/Login.vue'),
   },
   {
     path: '/login/buda',
-    component: () => import('layouts/BudaLogin.vue'),
+    component: () => import(/* webpackChunkName: "buda-login" */ 'layouts/BudaLogin.vue'),
   },
   {
     path: '/editor',
-    component: () => import('layouts/EditorLayout.vue'),
+    component: () => import(/* webpackChunkName: "editor-layout" */ 'layouts/EditorLayout.vue'),
     children: [
       {
         path: '/editor/dashboard',
-        component: () => import('pages/Dashboard.vue'),
+        component: () => import(/* webpackChunkName: "dashboard" */ 'pages/Dashboard.vue'),
         beforeEnter:  GHAuthenticationGuard
       },
       {
         path: '/editor/:pechaId',
-        component: () => import('pages/Editor.vue'),
+        component: () => import(/* webpackChunkName: "editor-pecha" */ 'pages/Editor.vue'),
         beforeEnter: GHAuthenticationGuard
       },
       {
         path: '/editor/pedurma/:textId',
-        component: () => import('pages/editor/Pedurma.vue'),
+        component: () => import(/* webpackChunkName: "editor-pedurma-text" */ 'pages/editor/Pedurma.vue'),
       },
       {
         path: '/editor/pedurma/:textId/notes',
-        component: () => import('pages/editor/PedurmaNotes.vue'),
+        component: () => import(/* webpackChunkName: "editor-pedurma-text-note" */ 'pages/editor/PedurmaNotes.vue'),
         beforeEnter: authenticationGuard
         // meta: {
         //   requiresAuth: true,
@@ -53,7 +53,7 @@ const routes = [
   // but you can also remove it
   {
     path: '*',
-    component: () => import('pages/Error404.vue')
+    component: () => import(/* webpackChunkName: "404" */ 'pages/Error404.vue')
   }
 ]
 

@@ -3,6 +3,7 @@ import { getInstance } from "./auth0-plugin";
 
 export const authenticationGuard = (to, from, next) => {
     if (process.env.DEV) {
+        console.log("no bdrc auth on dev")
         return next()
     }
 

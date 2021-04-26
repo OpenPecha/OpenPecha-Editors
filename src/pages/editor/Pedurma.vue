@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div v-if="!loading" class="container">
     <q-card class="image-card">
       <img :src="pages.namsel[currentPageIdx].image_link" />
     </q-card>
@@ -133,7 +133,7 @@ export default {
     },
   },
 
-  mounted() {
+  created() {
     this.fetchText();
   },
 
@@ -146,7 +146,7 @@ export default {
     getNote(textType) {
       const noteId = this.pages[textType][this.currentPageIdx].note_ref;
       if (!noteId) {
-        return "Empty";
+        return "";
       }
       return this.notesDict[textType][noteId].content;
     },

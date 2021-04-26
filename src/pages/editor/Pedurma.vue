@@ -1,9 +1,7 @@
 <template>
   <div class="container">
     <q-card class="image-card">
-      <img
-        src="https://i0.wp.com/www.dontwasteyourtime.co.uk/wp-content/uploads/2012/07/screenshot_2012-07-26T15_37_48-0100.gif?ssl=1"
-      />
+      <img :src="pages.namsel[currentPageIdx].image_link" />
     </q-card>
 
     <div class="edit">
@@ -18,9 +16,22 @@
             align="justify"
             narrow-indicator
           >
-            <!-- <q-tab name="google" label="Google"></q-tab> -->
+            <q-btn
+              flat
+              round
+              dense
+              icon="menu"
+              class="q-ml-sm"
+              @click.prevent="showPages = !showPages"
+            >
+              <q-tooltip>show pages</q-tooltip>
+            </q-btn>
             <q-tab name="namsel" label="Namsel"></q-tab>
           </q-tabs>
+
+          <div class="q-pt-sm text-grey">
+            Page - {{ pages.namsel[currentPageIdx].page_no }}
+          </div>
 
           <q-tabs
             v-model="editorTab"
@@ -37,24 +48,29 @@
         </div>
 
         <q-tab-panels v-model="editorTab" animated>
-          <q-tab-panel name="namsel">
-            <editor ref="namsel" :text="pageText()" />
+          <q-tab-panel name="namsel" class="row">
+            <q-list v-show="showPages" class="col-2" bordered separator>
+              <q-item
+                v-for="(page, index) in pages.namsel"
+                :key="page.id"
+                @click="
+                  currentPageIdx = index;
+                  showPages = false;
+                "
+                clickable
+                v-ripple
+              >
+                <q-item-section>page - {{ page.page_no }}</q-item-section>
+              </q-item>
+            </q-list>
+            <editor class="col" :text="getPageText()" @input="updatePage" />
           </q-tab-panel>
           <q-tab-panel name="google-notes">
-            <!-- <editor
-              ref="google-note"
-              :text="getNote('google', currentPageNo)"
-            /> -->
+            <editor :text="getNote('google')" @input="updateGoogleNote" />
           </q-tab-panel>
 
           <q-tab-panel name="namsel-notes">
-            <!-- <editor
-              ref="namsel-note"
-              textAreaIdProp="namsel-note-textarea"
-              :extraTools="false"
-              :hasList="false"
-              :content="getNote('namsel', currentPageNo)"
-            /> -->
+            <editor :text="getNote('namsel')" @inpute="updateNamselNote" />
           </q-tab-panel>
         </q-tab-panels>
       </div>
@@ -77,11 +93,12 @@ export default {
 
   data() {
     return {
-      currentPageId: "",
+      currentPageIdx: 0,
       currentPreview: "",
       editorTab: "namsel",
       editor: "namsel",
       loading: true,
+      showPages: false,
       pages: {
         google: [
           {
@@ -93,7 +110,7 @@ export default {
             vol: "1",
             image_link:
               "https://iiif.bdrc.io/bdr:I1PD95846::I1PD958460207.jpg/full/max/0/default.jpg",
-            note_ref: "",
+            note_ref: "8eb66aa1f0ba429f873356b8f3b5f6a6",
           },
           {
             id: "1ad72cf9d547474096d6c2f2d5c83ec4",
@@ -104,7 +121,7 @@ export default {
             vol: "1",
             image_link:
               "https://iiif.bdrc.io/bdr:I1PD95846::I1PD958460208.jpg/full/max/0/default.jpg",
-            note_ref: "",
+            note_ref: "8eb66aa1f0ba429f873356b8f3b5f6a6",
           },
           {
             id: "eaeaca6e81db4cc4a3937a2ec1c3669a",
@@ -115,7 +132,7 @@ export default {
             vol: "1",
             image_link:
               "https://iiif.bdrc.io/bdr:I1PD95846::I1PD958460209.jpg/full/max/0/default.jpg",
-            note_ref: "",
+            note_ref: "8eb66aa1f0ba429f873356b8f3b5f6a6",
           },
         ],
         namsel: [
@@ -128,7 +145,7 @@ export default {
             vol: "1",
             image_link:
               "https://iiif.bdrc.io/bdr:I1PD95846::I1PD958460207.jpg/full/max/0/default.jpg",
-            note_ref: "",
+            note_ref: "8eb66aa1f0ba429f873356b8f3b5f6a6",
           },
           {
             id: "6ba9f2a59066413689a7e4848359de80",
@@ -139,7 +156,7 @@ export default {
             vol: "1",
             image_link:
               "https://iiif.bdrc.io/bdr:I1PD95846::I1PD958460208.jpg/full/max/0/default.jpg",
-            note_ref: "",
+            note_ref: "8eb66aa1f0ba429f873356b8f3b5f6a6",
           },
           {
             id: "6a6f5fc42b564e199809d98a5438601f",
@@ -150,7 +167,7 @@ export default {
             vol: "1",
             image_link:
               "https://iiif.bdrc.io/bdr:I1PD95846::I1PD958460209.jpg/full/max/0/default.jpg",
-            note_ref: "",
+            note_ref: "8eb66aa1f0ba429f873356b8f3b5f6a6",
           },
         ],
       },
@@ -167,20 +184,23 @@ export default {
               "https://iiif.bdrc.io/bdr:I1PD95846::I1PD958460210.jpg/full/max/0/default.jpg",
           },
         ],
-        namsel: [],
+        namsel: [
+          {
+            id: "8eb66aa1f0ba429f873356b8f3b5f6a6",
+            page_no: 210,
+            content:
+              "[105b]\n[105b.1]<d༡༧༢\n[105b.2]/༢༣ བསྟན་འགྱུར། བསྟོད་ཚོགས། ཀ ༡ ཚོ\n[105b.3]2:༧ཟླ་ཚོ་ཁ་ཤོད་ཀྱི་སྐད་དུ་ལུང་། དགུ་པ། ཀ་ལུ་སྤྲོ་བ་ད ང ་།\n[105b.4]་ཆེ་བ་ལེ་ཀ་ཏ་ཏེ་ཁྱོན་བསྣམས་པ་ཚོ་ཁྱག་འ1-2\n[105b.5]\n[105b.6]e/jpཚོ\n[105b.7]ਉਰਲਰ ਉਸਦਾ ਸੁਖਵਰਸ਼ਕ ਰੋਬੋਟ ਤੋਂ ਆਖ਼Raਖਣ\n[105b.8]༡༦༩།ཨེམཚན་བྱང་འདི་གཞུང་ལས་བླངས་ཏེ་བཀོད་ཅིང་། «སྡེ་»ཆོས་ཀྱི་སྐུ་ལ་གནས་པའི་ཡོན་ཏན་ལ་བསྟོད་པ་བཞུགས།\n[105b.9]«པེ་»«སྣར་》ཆོས་ཀྱི་སྐུ་ལ་གནས་པའི་ཡོན་ཏན་ཐུན་མོང་མ་ཡིན་པ་ལ་བསྟོད་པ་བཞུགས་སོ།། ༄༅«སྣར་》བཞག\n[105b.10]༡༧༠ ༧«པེ་»«སྣར་»བཞུད། )«པེ་»«སྣར་»བསླུ། ཉི«པེ་»«སྣར་》པ། 8«པེ་»«སྣར་»གསུང་།\n[105b.11]༡༧༡ «པེ་»ཙྪ། སར ལ །\n[105b.12]ག ་པ་ལ་\n[105b.13]བདག་ག་་་་་་་་་་ པ་གླེང་པ་རྗེ་བྱ་ལོ་ཀོ་ཁཀ།བྱའི་གཡུ་རུ་མ་\n[105b.14]བ་ཁ་བས་བཟམ་>-aཔལ 1 འབག་\n[105b.15]།\n[105b.16]བསྟོད་ཚོགས། (༧)\n[105b.17]པེ་ཅིན།\n[105b.18]ཅོ་ནེ།\n[105b.19]དཔེ་གཞི། ། སྡེ་དགེ། །\n[105b.20]སྣར་ཐང་།\n[105b.21]སྡེ་ཚན། བ སྟོད་ཚོགས། བསྟོད་ཚོགས། བསྟོད་ཚོགས།\n[105b.22]ཚན་གྲངས།\n[105b.23]པོད་རྟགས། |\n[105b.24]ལྡེབ། ༦༡ བ༦-༦༢ བ་། ༧ ༡ན༣-༧༢ ན་། ༦༨ ན -༦༨ བ༦\n[105b.25]ཕྲེང༌། ། ༡༢ ། ༡༧ ། ༡༣\n[105b.26]ཚིག་རྐང་། ། ༨ ༡༡ ༡༣ ༨ ༡༡ ༡༣ ༨ ༡༡ ༡༣\n[105b.27]ཚེག་ཁྱིམ། །\n[105b.28]༦༡༨ ། ༦༡༩ །\n[105b.29]བ་ལ་\n[105b.30]༦༨༡༢\n[105b.31]༦ ༡ ༢\n[105b.32]འ་དང་ ། །ཕྱེ་བ་འདྲ་ བ་དང་།\n[105b.33]1:\n[105b.34]:\n[105b.35]: ། ་་་\n[105b.36]ན ་ ཚལ་ལོ། །\n[105b.37]བྱ་ཆེ་བ། དག་པོ། J་ཏུ་\n[105b.38]པ་དེ་ན་བས་དུད་ཀྱི ་ དབྱེ་བ་ལ་བྱ་བ། །སྐྱེ་བ་མི་\n[105b.39]1-172\n[105b.40]d>",
+            name: "Page 210",
+            vol: "1",
+            image_link:
+              "https://iiif.bdrc.io/bdr:I1PD95846::I1PD958460210.jpg/full/max/0/default.jpg",
+          },
+        ],
       },
     };
   },
 
   computed: {
-    pagesDict() {
-      const pagesDict = {};
-      this.pages.namsel.forEach((page) => {
-        pagesDict[page.id] = page;
-      });
-      return pagesDict;
-    },
-
     notesDict() {
       const notesDict = {};
       const googleNotesDict = {};
@@ -197,51 +217,60 @@ export default {
     },
   },
 
+  async mounted() {
+    // await this.fetchText();
+  },
+
   methods: {
-    pageText() {
+    getPageText() {
       // this.getPreview();
-      console.log(this.currentPageId);
-      return this.pagesDict[this.currentPageId].content;
+      return this.pages.namsel[this.currentPageIdx].content;
+    },
+
+    getNote(textType) {
+      const noteId = this.pages[textType][this.currentPageIdx].note_ref;
+      if (!noteId) {
+        return "Empty";
+      }
+      return this.notesDict[textType][noteId].content;
+    },
+
+    updatePage(value) {
+      console.log(value);
+      this.pages.namsel[this.currentPageIdx].content = value;
+    },
+
+    updateNote(textType, value) {
+      const noteId = this.pages[textType][this.currentPageIdx].note_ref;
+      this.notesDict[textType][noteId].content = value;
+    },
+
+    updateGoogleNote(value) {
+      this.updateNote("google", value);
+    },
+
+    updateNamselNote(value) {
+      this.updateNote("namsel", value);
     },
 
     saveText() {
       console.log("Save text");
     },
 
-    getNote(textType, currentPageNo) {
-      const notesPageId = this.pages[textType][currentPageNo - 1][
-        "notes_page_id"
-      ];
-
-      for (var notesPage in this.notes[textType]) {
-        if (notesPage.id == notesPageId) {
-          return notesPage.content;
-        }
-      }
-    },
-
-    getCurrentPage(textType) {
-      return this.pages[textType][this.currentPageNo - 1];
-    },
-
-    getPageNote(textType, page) {
-      return this.notes[textType].find(
-        (notesPage) => notesPage.id == page.notes_page_id
-      );
-    },
-
     async getPreview() {
-      const googleCurrentPage = this.getCurrentPage("google");
-      const namselCurrentPage = this.getCurrentPage("namsel");
-      const googlePageNote = this.getPageNote("google", googleCurrentPage);
-      const namselPageNote = this.getPageNote("namsel", namselCurrentPage);
+      const googlePage = this.pages.google[this.currentPageIdx];
+      const namselPage = this.pages.namsel[this.currentPageIdx];
+      const googleNote = this.notesDict.google[googlePage.note_ref];
+      const namselNote = this.notesDict.namsel[namselPage.note_ref];
+
+      console.log(googleNote);
 
       await this.$axios
         .post(process.env.OPENPECHA_API_URL + "/api/v1/pedurma/preview", {
-          google_page: googleCurrentPage,
-          google_page_note: googlePageNote,
-          namsel_page: namselCurrentPage,
-          namsel_page_note: namselPageNote,
+          google_page: googlePage,
+          google_page_note: googleNote,
+          namsel_page: namselPage,
+          namsel_page_note: namselNote,
         })
         .then((response) => response.data)
         .then((data) => {
@@ -288,11 +317,6 @@ export default {
       this.loading = false;
       this.$q.loading.hide();
     },
-  },
-
-  async mounted() {
-    // await this.fetchText();
-    this.currentPageId = this.pages.namsel[0].id;
   },
 };
 </script>

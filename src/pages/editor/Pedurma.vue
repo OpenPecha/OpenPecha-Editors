@@ -205,7 +205,7 @@ export default {
       //load google-ocr pages
       await this.$axios
         .get(
-          process.env.OPENPECHA_API_URL +
+            getOrigin() +
             "/api/v1/pedurma/" +
             googlePechaId +
             "/texts/" +
@@ -220,7 +220,7 @@ export default {
       //load Namsel-ocr pages
       await this.$axios
         .get(
-          process.env.OPENPECHA_API_URL +
+          getOrigin() +
             "/api/v1/pedurma/" +
             namselPechaId +
             "/texts/" +

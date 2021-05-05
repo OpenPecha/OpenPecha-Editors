@@ -1,7 +1,7 @@
 <template>
   <div v-if="!loading" class="container">
     <q-card class="image-card">
-      <img :src="pages.namsel[currentPageIdx].image_link" />
+      <img :src="imgLink" />
     </q-card>
 
     <div class="edit">
@@ -42,8 +42,16 @@
             align="justify"
             narrow-indicator
           >
-            <q-tab name="google-notes" label="Google Note"></q-tab>
-            <q-tab name="namsel-notes" label="Namsel Note"></q-tab>
+            <q-tab
+              name="google-notes"
+              label="Google Note"
+              @click="updateImg('google')"
+            ></q-tab>
+            <q-tab
+              name="namsel-notes"
+              label="Namsel Note"
+              @click="updateImg('namsel')"
+            ></q-tab>
           </q-tabs>
         </div>
 
@@ -56,6 +64,7 @@
                 @click="
                   currentPageIdx = index;
                   showPages = false;
+                  getPreview();
                 "
                 clickable
                 v-ripple
@@ -70,7 +79,7 @@
           </q-tab-panel>
 
           <q-tab-panel name="namsel-notes">
-            <editor :text="getNote('namsel')" @inpute="updateNamselNote" />
+            <editor :text="getNote('namsel')" @input="updateNamselNote" />
           </q-tab-panel>
         </q-tab-panels>
         <q-btn
@@ -85,7 +94,14 @@
       <div class="preview__btn">
         <q-btn color="secondary" label="Preview" @click="getPreview" />
       </div>
-      <div class="preview__content q-mt-md" v-html="currentPreview"></div>
+      <q-input
+        outlined
+        readonly
+        :value="currentPreview"
+        type="textarea"
+        :input-style="{ height: '700px' }"
+        class="q-mt-md"
+      />
     </div>
   </div>
 </template>
@@ -109,6 +125,7 @@ export default {
       showPages: false,
       pages: {},
       notes: {},
+      imgLink: "",
     };
   },
 
@@ -140,7 +157,11 @@ export default {
   methods: {
     getPageText() {
       // this.getPreview();
-      return this.pages.namsel[this.currentPageIdx].content;
+      const page = this.pages.namsel[this.currentPageIdx];
+      if (!["google-notes", "namsel-notes"].includes(this.editorTab)) {
+        this.imgLink = page.image_link;
+      }
+      return page.content;
     },
 
     getNote(textType) {
@@ -152,8 +173,17 @@ export default {
     },
 
     updatePage(value) {
-      console.log(value);
       this.pages.namsel[this.currentPageIdx].content = value;
+    },
+
+    updateImg(textType) {
+      const noteId = this.pages[textType][this.currentPageIdx].note_ref;
+      if (!noteId) {
+        this.imgLink = "";
+      }
+      const page = this.notesDict[textType][noteId];
+      this.imgLink = page.image_link;
+      console.log(this.imgLink);
     },
 
     updateNote(textType, value) {
@@ -193,6 +223,16 @@ export default {
         .then((response) => response.data)
         .then((data) => {
           this.currentPreview = data.content;
+        })
+        .catch((error) => {
+          console.log(error);
+          this.$q.notify({
+            type: "negative",
+            message:
+              this.pages.namsel[this.currentPageIdx].name + " preview failed",
+            position: "bottom-right",
+          });
+          return;
         });
     },
 
@@ -205,11 +245,7 @@ export default {
       //load google-ocr pages
       await this.$axios
         .get(
-            getOrigin() +
-            "/api/v1/pedurma/" +
-            googlePechaId +
-            "/texts/" +
-            textId
+          getOrigin() + "/api/v1/pedurma/" + googlePechaId + "/texts/" + textId
         )
         .then((response) => response.data)
         .then((data) => {
@@ -220,11 +256,7 @@ export default {
       //load Namsel-ocr pages
       await this.$axios
         .get(
-          getOrigin() +
-            "/api/v1/pedurma/" +
-            namselPechaId +
-            "/texts/" +
-            textId
+          getOrigin() + "/api/v1/pedurma/" + namselPechaId + "/texts/" + textId
         )
         .then((response) => response.data)
         .then((data) => {
@@ -233,6 +265,8 @@ export default {
         });
 
       this.loading = false;
+      this.imgLink = this.pages.namsel[0].image_link;
+      this.getPreview();
       this.$q.loading.hide();
     },
 
@@ -290,10 +324,5 @@ export default {
 
 .preview {
   width: 35%;
-
-  &__content {
-    padding: 5px;
-    border: 1px solid #ccc;
-  }
 }
 </style>

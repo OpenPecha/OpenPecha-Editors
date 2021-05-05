@@ -24,3 +24,11 @@ export default {
   },
 };
 </script>
+
+<style>
+.q-textarea .q-field__native {
+  font-size: 1.5rem;
+  line-height: 1.5;
+  padding-left: 2rem;
+}
+</style>

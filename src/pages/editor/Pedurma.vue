@@ -315,14 +315,15 @@ export default {
 .image-card {
   width: 25%;
   margin-right: 0.625rem;
+  margin-top: 3.3rem;
 }
 
 .edit {
-  width: 40%;
+  width: 35%;
   margin-right: 0.625rem;
 }
 
 .preview {
-  width: 35%;
+  width: 40%;
 }
 </style>

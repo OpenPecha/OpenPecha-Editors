@@ -109,6 +109,9 @@
 <script>
 import { getOrigin } from "src/utils";
 
+const NAMSEL = "namsel";
+const GOOGLE = "google";
+
 export default {
   name: "PedurmaDashbaord",
   components: {
@@ -119,12 +122,13 @@ export default {
     return {
       currentPageIdx: 0,
       currentPreview: "",
-      editorTab: "namsel",
-      editor: "namsel",
+      editorTab: NAMSEL,
+      editor: NAMSEL,
       loading: true,
       showPages: false,
       pages: {},
       notes: {},
+      textObjIds: {},
       imgLink: "",
     };
   },
@@ -140,21 +144,45 @@ export default {
       this.notes.namsel.forEach((note) => {
         namselNotesDict[note.id] = note;
       });
-      notesDict["google"] = googleNotesDict;
-      notesDict["namsel"] = namselNotesDict;
+      notesDict[GOOGLE] = googleNotesDict;
+      notesDict[NAMSEL] = namselNotesDict;
       return notesDict;
     },
 
     textId() {
       return this.$route.params.textId;
     },
+
+    googlePechaId() {
+      return this.$route.query.google;
+    },
+
+    namselPechaId() {
+      return this.$route.query.namsel;
+    },
   },
 
-  created() {
-    this.fetchText();
+  async created() {
+    this.$q.loading.show({
+      message: "fetching text, this will take a few mins...",
+    });
+    await this.fetchText(GOOGLE);
+    await this.fetchText(NAMSEL);
+    this.imgLink = this.pages[NAMSEL][0].image_link;
+    this.getPreview();
+    this.loading = false;
+    this.$q.loading.hide();
   },
 
   methods: {
+    getPechaId(textType) {
+      return this.$route.query[textType];
+    },
+
+    getTextObjId(textType) {
+      return this.textObjIds[textType];
+    },
+
     getPageText() {
       // this.getPreview();
       const page = this.pages.namsel[this.currentPageIdx];
@@ -192,11 +220,11 @@ export default {
     },
 
     updateGoogleNote(value) {
-      this.updateNote("google", value);
+      this.updateNote(GOOGLE, value);
     },
 
     updateNamselNote(value) {
-      this.updateNote("namsel", value);
+      this.updateNote(NAMSEL, value);
     },
 
     dict2List(obj) {
@@ -208,6 +236,9 @@ export default {
     },
 
     async getPreview() {
+      this.$q.loading.show({
+        message: "preparing preview...",
+      });
       const googlePage = this.pages.google[this.currentPageIdx];
       const namselPage = this.pages.namsel[this.currentPageIdx];
       const googleNote = this.notesDict.google[googlePage.note_ref];
@@ -234,49 +265,49 @@ export default {
           });
           return;
         });
-    },
-
-    async fetchText() {
-      this.$q.loading.show();
-      const textId = this.$route.params.textId;
-      const googlePechaId = this.$route.query.google;
-      const namselPechaId = this.$route.query.namsel;
-
-      //load google-ocr pages
-      await this.$axios
-        .get(
-          getOrigin() + "/api/v1/pedurma/" + googlePechaId + "/texts/" + textId
-        )
-        .then((response) => response.data)
-        .then((data) => {
-          this.pages.google = data.pages;
-          this.notes.google = data.notes;
-        });
-
-      //load Namsel-ocr pages
-      await this.$axios
-        .get(
-          getOrigin() + "/api/v1/pedurma/" + namselPechaId + "/texts/" + textId
-        )
-        .then((response) => response.data)
-        .then((data) => {
-          this.pages.namsel = data.pages;
-          this.notes.namsel = data.notes;
-        });
-
-      this.loading = false;
-      this.imgLink = this.pages.namsel[0].image_link;
-      this.getPreview();
       this.$q.loading.hide();
     },
 
-    saveText(textType) {
-      this.$axios
-        .post(getOrigin() + "/api/v1/pedurma/save", {
-          id: this.textId,
-          pages: this.pages[textType],
-          notes: this.dict2List(this.notesDict[textType]),
-        })
+    async fetchText(textType) {
+      try {
+        const response = await this.$axios.get(
+          getOrigin() +
+            "/api/v1/pedurma/" +
+            this.getPechaId(textType) +
+            "/texts/" +
+            this.textId
+        );
+        const text = await response.data;
+        this.pages[textType] = text.pages;
+        this.notes[textType] = text.notes;
+        this.textObjIds[textType] = text.id;
+      } catch (err) {
+        if (err.response) {
+          // client received an error response (5xx, 4xx)
+          console.log("Server Error:", err);
+        } else if (err.request) {
+          // client never received a response, or request never left
+          console.log("Network Error:", err);
+        } else {
+          console.log("Client Error:", err);
+        }
+      }
+    },
+
+    async saveText(textType) {
+      await this.$axios
+        .put(
+          getOrigin() +
+            "/api/v1/pedurma/" +
+            this.getPechaId(textType) +
+            "/texts/" +
+            this.textId,
+          {
+            id: this.getTextObjId(textType),
+            pages: this.pages[textType],
+            notes: this.dict2List(this.notesDict[textType]),
+          }
+        )
         .then((response) => {
           this.$q.notify({
             type: "positive",
@@ -296,8 +327,13 @@ export default {
     },
 
     save() {
-      this.saveText("google");
-      this.saveText("namsel");
+      this.saveText(GOOGLE);
+      this.saveText(NAMSEL);
+      this.$q.notify({
+        type: "info",
+        message: "saving initiated, you can continue working",
+        position: "bottom",
+      });
     },
   },
 };

@@ -83,6 +83,8 @@ module.exports = function (/* ctx */) {
         T_GOOGLE_PECHA_ID: process.env.T_GOOGLE_PECHA_ID,
         T_NAMSEL_PECHA_ID: process.env.T_NAMSEL_PECHA_ID,
         K_TEXT_ID_PREFIX: process.env.K_TEXT_ID_PREFIX,
+        T_TEXT_LIST_URL: process.env.T_TEXT_LIST_URL,
+        K_TEXT_LIST_URL: process.env.K_TEXT_LIST_URL,
       },
 
       // https://quasar.dev/quasar-cli/handling-webpack

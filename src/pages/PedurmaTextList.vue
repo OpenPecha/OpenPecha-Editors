@@ -22,14 +22,18 @@
       class="q-mt-lg flex q-gutter-lg q-ml-auto q-mr-auto"
       :style="{ 'max-width': '1000px' }"
     >
-      <TextCard v-for="text in filteredTexts" :key="text.p_id" :text="text" />
+      <q-intersection v-for="text in filteredTexts" :key="text.p_id" once>
+        <TextCard :text="text" />
+      </q-intersection>
     </div>
   </q-page>
 </template>
 
 <script>
 import TextCard from "components/Pedurma/TextCard";
-import data from "./texts.json";
+
+const KANGYUR = "kangyur";
+const TENGYUR = "tengyur";
 
 export default {
   name: "PedurmaTextList",
@@ -40,14 +44,9 @@ export default {
   data() {
     return {
       search: "",
-      texts: data,
+      texts: [],
+      pechaType: TENGYUR,
     };
-  },
-
-  methods: {
-    includes(s1, s2) {
-      return s2.toLowerCase().includes(s1.toLowerCase());
-    },
   },
 
   computed: {
@@ -59,6 +58,41 @@ export default {
         );
       });
     },
+
+    textListUrl() {
+      if (this.pechaType === TENGYUR) {
+        return process.env.T_TEXT_LIST_URL;
+      } else {
+        return process.env.K_TEXT_LIST_URL;
+      }
+    },
+  },
+
+  methods: {
+    includes(s1, s2) {
+      return s2.toLowerCase().includes(s1.toLowerCase());
+    },
+
+    async fetchTexts() {
+      try {
+        const response = await this.$axios.get(this.textListUrl);
+        this.texts = response.data;
+      } catch (err) {
+        if (err.response) {
+          // client received an error response (5xx, 4xx)
+          console.log("Server Error:", err);
+        } else if (err.request) {
+          // client never received a response, or request never left
+          console.log("Network Error:", err);
+        } else {
+          console.log("Client Error:", err);
+        }
+      }
+    },
+  },
+
+  mounted() {
+    this.fetchTexts();
   },
 };
 </script>

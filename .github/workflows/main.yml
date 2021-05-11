@@ -63,6 +63,11 @@ jobs:
           AUTH0_RESPONSETYPE=token id_token
           AUTH0_SCOPE=openid
           IFFFServerURL=https://iiif.bdrc.io
+          T_GOOGLE_PECHA_ID=P000791
+          T_NAMSEL_PECHA_ID=P000792
+          K_GOOGLE_PECHA_ID=P000793
+          K_NAMSEL_PECHA_ID=P000796
+          K_TEXT_ID_PREFIX=T
     -
       # Temp fix
       # https://github.com/docker/build-push-action/issues/252

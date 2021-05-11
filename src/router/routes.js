@@ -29,9 +29,14 @@ const routes = [
         beforeEnter:  GHAuthenticationGuard
       },
       {
+        path: '/editor/pedurma',
+        component: () => import(/* webpackChunkName: "editor-pedurma-text-list" */ 'pages/PedurmaTextList.vue'),
+        beforeEnter: authenticationGuard,
+      },
+      {
         path: '/editor/:pechaId',
         component: () => import(/* webpackChunkName: "editor-pecha" */ 'pages/Editor.vue'),
-        beforeEnter: GHAuthenticationGuard
+        beforeEnter: authenticationGuard,
       },
       {
         path: '/editor/pedurma/:textId',

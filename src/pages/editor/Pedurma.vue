@@ -111,9 +111,17 @@ import { getOrigin } from "src/utils";
 
 const NAMSEL = "namsel";
 const GOOGLE = "google";
+const KANGYUR_PECHAS = {
+  google: process.env.K_GOOGLE_PECHA_ID,
+  namsel: process.env.K_NAMSEL_PECHA_ID,
+};
+const TENGYUR_PECHAS = {
+  google: process.env.T_GOOGLE_PECHA_ID,
+  namsel: process.env.T_NAMSEL_PECHA_ID,
+};
 
 export default {
-  name: "PedurmaDashbaord",
+  name: "PedurmaEditor",
   components: {
     editor: require("components/Pedurma/Editor.vue").default,
   },
@@ -152,14 +160,6 @@ export default {
     textId() {
       return this.$route.params.textId;
     },
-
-    googlePechaId() {
-      return this.$route.query.google;
-    },
-
-    namselPechaId() {
-      return this.$route.query.namsel;
-    },
   },
 
   async created() {
@@ -176,7 +176,12 @@ export default {
 
   methods: {
     getPechaId(textType) {
-      return this.$route.query[textType];
+      const is_kangyur = this.textId[0] === process.env.K_TEXT_ID_PREFIX;
+      if (is_kangyur) {
+        return KANGYUR_PECHAS[textType];
+      } else {
+        return TENGYUR_PECHAS[textType];
+      }
     },
 
     getTextObjId(textType) {

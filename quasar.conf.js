@@ -77,7 +77,12 @@ module.exports = function (/* ctx */) {
         AUTH0_RESPONSETYPE: process.env.AUTH0_RESPONSETYPE,
         AUTH0_AUDIENCE: process.env.AUTH0_AUDIENCE,
         AUTH0_SCOPE: process.env.AUTH0_SCOPE,
-        IFFFServerURL: process.env.IFFFServerURL
+        IFFFServerURL: process.env.IFFFServerURL,
+        K_GOOGLE_PECHA_ID: process.env.K_GOOGLE_PECHA_ID,
+        K_NAMSEL_PECHA_ID: process.env.K_NAMSEL_PECHA_ID,
+        T_GOOGLE_PECHA_ID: process.env.T_GOOGLE_PECHA_ID,
+        T_NAMSEL_PECHA_ID: process.env.T_NAMSEL_PECHA_ID,
+        K_TEXT_ID_PREFIX: process.env.K_TEXT_ID_PREFIX,
       },
 
       // https://quasar.dev/quasar-cli/handling-webpack

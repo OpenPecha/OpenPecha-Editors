@@ -69,8 +69,8 @@ export default {
       try {
         const url =
           this.katen === TENGYUR
-            ? "https://raw.githubusercontent.com/OpenPecha-dev/editable-text/main/t_text_list.json"
-            : "";
+            ? process.env.T_TEXT_LIST_URL
+            : process.env.K_TEXT_LIST_URL;
         const response = await this.$axios.get(url);
         this.texts = response.data;
       } catch (err) {

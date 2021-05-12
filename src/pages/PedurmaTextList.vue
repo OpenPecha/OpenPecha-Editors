@@ -45,7 +45,7 @@ export default {
     return {
       search: "",
       texts: [],
-      pechaType: TENGYUR,
+      katen: TENGYUR,
     };
   },
 
@@ -58,14 +58,6 @@ export default {
         );
       });
     },
-
-    textListUrl() {
-      if (this.pechaType === TENGYUR) {
-        return process.env.T_TEXT_LIST_URL;
-      } else {
-        return process.env.K_TEXT_LIST_URL;
-      }
-    },
   },
 
   methods: {
@@ -75,7 +67,11 @@ export default {
 
     async fetchTexts() {
       try {
-        const response = await this.$axios.get(this.textListUrl);
+        const url =
+          this.katen === TENGYUR
+            ? process.env.T_TEXT_LIST_URL
+            : process.env.K_TEXT_LIST_URL;
+        const response = await this.$axios.get(url);
         this.texts = response.data;
       } catch (err) {
         if (err.response) {

@@ -1,16 +1,27 @@
 <template>
   <q-page>
-    <section class="hero column content-center theme-color">
+    <section class="hero column content-center transparent">
       <div
-        class="text-h5 q-pt-md text-weight-medium text-center"
+        class="text-h5 text-weight-thin text-center"
         style="max-width: 500px"
       >
-        Etext archive facilitating cross-disciplinary collaboration in curating
-        and enriching etexts
+        Etext
+        <span class="text-italic text-bold" style="color: #56d5dd"
+          >archive</span
+        >
+        facilitating
+        <span class="text-italic text-bold" style="color: #8e57f1"
+          >cross-disciplinary collaboration</span
+        >
+        in curating and enriching etexts
       </div>
       <q-btn
-        to="editor/dashboard"
+        @click="showEditorChoices = true"
         label="Get Started"
+        rounded
+        no-caps
+        size="lg"
+        style="background: #8e57f1; color: white"
         class="q-mt-lg q-mb-lg self-center"
       />
     </section>
@@ -64,16 +75,33 @@
     </section>
 
     <section id="contact"></section>
+
+    <q-dialog v-model="showEditorChoices">
+      <EditorChoices :editors="editors" />
+    </q-dialog>
   </q-page>
 </template>
 
 <script>
 export default {
   name: "HomePage",
+  components: {
+    EditorChoices: require("src/components/Modals/EditorChoices.vue").default,
+  },
 
   data() {
     return {
-      showAddText: false,
+      showEditorChoices: false,
+      editors: [
+        {
+          name: "General",
+          path: "/editor/dashboard",
+        },
+        {
+          name: "Pedurma",
+          path: "/editor/pedurma",
+        },
+      ],
     };
   },
 

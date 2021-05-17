@@ -142,7 +142,7 @@ module.exports = function (/* ctx */) {
       manifest: {
         name: `OpenPecha Editor`,
         short_name: `OpenPecha Editor`,
-        description: `Online editor for editing pecha in OpenPecha format (.opf)`,
+        description: `OpenPecha online editor`,
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',

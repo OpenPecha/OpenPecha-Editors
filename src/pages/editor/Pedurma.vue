@@ -27,6 +27,7 @@
               <q-tooltip>show pages</q-tooltip>
             </q-btn>
             <q-tab name="namsel" label="Namsel"></q-tab>
+            <q-tab name="google" label="google"></q-tab>
           </q-tabs>
 
           <div class="q-pt-sm text-grey">
@@ -72,7 +73,17 @@
                 <q-item-section>page - {{ page.page_no }}</q-item-section>
               </q-item>
             </q-list>
-            <editor class="col" :text="getPageText()" @input="updatePage" />
+            <editor
+              class="col"
+              :text="getPageText('namsel')"
+              @input="updatePage('namsel')"
+            />
+          </q-tab-panel>
+          <q-tab-panel name="google">
+            <editor
+              :text="getPageText('google')"
+              @input="updatePage('google')"
+            />
           </q-tab-panel>
           <q-tab-panel name="google-notes">
             <editor :text="getNote('google')" @input="updateGoogleNote" />
@@ -82,17 +93,18 @@
             <editor :text="getNote('namsel')" @input="updateNamselNote" />
           </q-tab-panel>
         </q-tab-panels>
-        <q-btn
-          class="q-mt-sm full-width"
-          color="green-5"
-          label="save"
-          @click="save"
-        />
       </div>
     </div>
     <div class="preview">
-      <div class="preview__btn">
-        <q-btn color="secondary" label="Preview" @click="getPreview" />
+      <div class="row justify-between">
+        <q-btn color="green-5" label="save" icon="save" @click="save" />
+        <q-btn
+          color="blue-5"
+          label="Download"
+          icon="file_download"
+          @click="download"
+          class="q-ml-sm"
+        />
       </div>
       <q-input
         outlined
@@ -103,6 +115,9 @@
         class="q-mt-md"
       />
     </div>
+    <q-dialog v-model="download_url" persistent>
+      <download-link-box :link="download_url" />
+    </q-dialog>
   </div>
 </template>
 
@@ -124,6 +139,7 @@ export default {
   name: "PedurmaEditor",
   components: {
     editor: require("components/Pedurma/Editor.vue").default,
+    DownloadLinkBox: require("components/Modals/DownloadLinkBox.vue").default,
   },
 
   data() {
@@ -138,6 +154,7 @@ export default {
       notes: {},
       textObjIds: {},
       imgLink: "",
+      download_url: false,
     };
   },
 
@@ -164,7 +181,7 @@ export default {
 
   async created() {
     this.$q.loading.show({
-      message: "fetching text, this will take a few mins...",
+      message: "fetching text, please wait...",
     });
     await this.fetchText(GOOGLE);
     await this.fetchText(NAMSEL);
@@ -188,9 +205,9 @@ export default {
       return this.textObjIds[textType];
     },
 
-    getPageText() {
+    getPageText(textType) {
       // this.getPreview();
-      const page = this.pages.namsel[this.currentPageIdx];
+      const page = this.pages[textType][this.currentPageIdx];
       if (!["google-notes", "namsel-notes"].includes(this.editorTab)) {
         this.imgLink = page.image_link;
       }
@@ -205,8 +222,8 @@ export default {
       return this.notesDict[textType][noteId].content;
     },
 
-    updatePage(value) {
-      this.pages.namsel[this.currentPageIdx].content = value;
+    updatePage(textType, value) {
+      this.pages[textType][this.currentPageIdx].content = value;
     },
 
     updateImg(textType) {
@@ -216,7 +233,6 @@ export default {
       }
       const page = this.notesDict[textType][noteId];
       this.imgLink = page.image_link;
-      console.log(this.imgLink);
     },
 
     updateNote(textType, value) {
@@ -339,6 +355,14 @@ export default {
         message: "saving initiated, you can continue working",
         position: "bottom",
       });
+    },
+
+    async download() {
+      await this.save();
+      const response = await this.$axios.get(
+        getOrigin() + "/api/v1/pedurma/" + "/preview/" + this.textId
+      );
+      this.download_url = response.data.download_url;
     },
   },
 };

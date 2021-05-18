@@ -46,12 +46,14 @@ export default {
           this.$q.notify({
             type: "positive",
             message: "Download link copied",
+            position: "top-center",
           });
         })
         .catch(() => {
           this.$q.notify({
             type: "negative",
             message: "Download link could not be copied",
+            position: "top-center",
           });
         });
     },

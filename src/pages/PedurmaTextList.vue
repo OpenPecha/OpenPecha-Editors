@@ -6,7 +6,12 @@
         width: '500px',
       }"
     >
-      <q-input filled v-model="search" label="Search">
+      <q-input
+        filled
+        v-model="search"
+        label="Search"
+        :style="{ 'font-size': '1.5rem' }"
+      >
         <template v-slot:append>
           <q-icon v-if="search === ''" name="search" />
           <q-icon
@@ -19,26 +24,59 @@
       </q-input>
     </div>
     <div
-      class="q-mt-lg flex q-gutter-lg q-ml-auto q-mr-auto"
-      :style="{ 'max-width': '1000px' }"
+      class="q-mt-lg q-mx-auto"
+      :style="{ 'max-width': '1000px', height: '10px' }"
     >
-      <q-intersection v-for="text in filteredTexts" :key="text.p_id" once>
-        <TextCard :text="text" />
+      <q-intersection
+        v-for="text in filteredTexts"
+        :key="text.p_id"
+        :style="{ height: '7vh' }"
+        transition="fade"
+      >
+        <q-item clickable v-ripple>
+          <q-item-section
+            :style="{ 'max-width': '50px' }"
+            @click="open(text.p_id)"
+          >
+            <q-item-label class="text-h6">{{ text.p_id }}</q-item-label>
+          </q-item-section>
+
+          <q-item-section
+            :style="{ 'margin-left': '50px' }"
+            @click="open(text.p_id)"
+          >
+            <q-item-label class="text-h4" :style="{ 'margin-top': '-20px' }">{{
+              text.p_title
+            }}</q-item-label>
+          </q-item-section>
+
+          <q-item-section side>
+            <q-icon
+              class="cursor-pointer text-green-4"
+              name="file_download"
+              size="md"
+              @click="download(text.p_id)"
+            >
+              <q-tooltip> Download </q-tooltip>
+            </q-icon>
+          </q-item-section>
+        </q-item>
       </q-intersection>
     </div>
+    <q-dialog v-model="showDownloadBox" persistent>
+      <download-link-box :link="download_url" />
+    </q-dialog>
   </q-page>
 </template>
 
 <script>
-import TextCard from "components/Pedurma/TextCard";
-
 const KANGYUR = "kangyur";
 const TENGYUR = "tengyur";
 
 export default {
   name: "PedurmaTextList",
   components: {
-    TextCard,
+    DownloadLinkBox: require("components/Modals/DownloadLinkBox.vue").default,
   },
 
   data() {
@@ -46,6 +84,8 @@ export default {
       search: "",
       texts: [],
       katen: TENGYUR,
+      download_url: "",
+      showDownloadBox: false,
     };
   },
 
@@ -84,6 +124,15 @@ export default {
           console.log("Client Error:", err);
         }
       }
+    },
+
+    open(text_id) {
+      this.$router.push("/editor/pedurma/" + text_id);
+    },
+
+    download(text_id) {
+      this.download_url = `https://github.com/OpenPecha/P000791/releases/download/${text_id}/${text_id}.zip`;
+      this.showDownloadBox = true;
     },
   },
 

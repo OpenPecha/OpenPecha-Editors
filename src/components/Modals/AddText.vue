@@ -189,7 +189,9 @@ export default {
     },
 
     async createPecha() {
-      this.$q.loading.show();
+      this.$q.loading.show({
+        message: "creating your pecha...",
+      });
       try {
         const response = await this.$axios.post(
           getOrigin() + "/api/v1/pechas",

@@ -6,14 +6,14 @@
         width: '500px',
       }"
     >
-      <q-input filled v-model="text" label="Search">
+      <q-input filled v-model="search" label="Search">
         <template v-slot:append>
-          <q-icon v-if="text === ''" name="search" />
+          <q-icon v-if="search === ''" name="search" />
           <q-icon
             v-else
             name="clear"
             class="cursor-pointer"
-            @click="text = ''"
+            @click="search = ''"
           />
         </template>
       </q-input>
@@ -31,11 +31,12 @@
       </div>
 
       <pecha-card
-        v-for="pecha in pechas"
+        v-for="pecha in filteredPechas"
         :key="pecha.pechaId"
         :img="pecha.img"
         :title="pecha.title"
         :id="pecha.id"
+        @remove-pecha="remove"
         class="pecha_card cursor-pointer"
       />
     </div>
@@ -48,11 +49,12 @@
 
 <script>
 import { mapGetters } from "vuex";
-import PechaCard from "components/PechaCard";
+import PechaCard from "components/Dashboard/PechaCard";
 import AddText from "components/Modals/AddText";
 import { getOrigin } from "src/utils";
 
 export default {
+  name: "Dashboard",
   components: {
     PechaCard,
     AddText,
@@ -60,7 +62,7 @@ export default {
 
   data() {
     return {
-      text: "search pecha",
+      search: "",
       pechas: [],
       showAddText: false,
     };
@@ -68,11 +70,24 @@ export default {
 
   computed: {
     ...mapGetters("app", ["userAccessToken"]),
+
+    filteredPechas() {
+      return this.pechas.filter((pecha) => {
+        return pecha.title.includes(this.search);
+      });
+    },
   },
 
   methods: {
     create() {
       this.$router.push("/upload");
+    },
+
+    remove(pecha_id) {
+      this.pechas = this.pechas.filter((pecha) => {
+        print(pecha);
+        return pecha.id != pecha_id;
+      });
     },
   },
 

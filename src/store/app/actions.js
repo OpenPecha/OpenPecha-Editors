@@ -1,10 +1,8 @@
 import axios from "axios";
-import { Loading, Notify } from 'quasar';
+import { Notify } from 'quasar';
 
-export function logout() {
-    Loading.show();
-    localStorage.removeItem("token")
-    Loading.hide()
+export function logout({ commit }) {
+    commit("unsetUserAccessToken")
     this.$router.push("/")
 }
 

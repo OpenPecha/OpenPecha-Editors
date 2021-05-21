@@ -89,7 +89,6 @@ export default {
         this.$auth.logout();
       }
       this.$store.dispatch("app/logout");
-      this.$router.push({ path: "/" });
     },
   },
 };

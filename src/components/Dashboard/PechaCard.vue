@@ -8,11 +8,13 @@
       transition-hide="jump-down"
     >
       <q-list style="min-width: 100px">
-        <q-item clickable v-close-popup @click="update">
-          <q-item-section class="text-center">Update</q-item-section>
+        <q-item clickable v-close-popup @click="updateMetadata">
+          <q-item-section class="text-center">Metadata</q-item-section>
+        </q-item>
+        <q-item clickable v-close-popup @click="exportPecha">
+          <q-item-section class="text-center">Export</q-item-section>
         </q-item>
         <q-separator />
-        <!-- <q-item clickable v-close-popup @click="remove"> -->
         <q-btn
           flat
           label="Delete"
@@ -21,22 +23,36 @@
           @click="confirm"
           class="full-width"
         />
-        <!-- <q-item-section class="text-red">Remove</q-item-section> -->
-        <!-- </q-item> -->
       </q-list>
     </q-menu>
+
+    <q-dialog v-model="showMetadata">
+      <Metadata :pecha_id="id" />
+    </q-dialog>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import { getOrigin } from "src/utils";
+import Metadata from "components/Modals/Metadata";
 
 export default {
   props: {
     img: String,
     title: String,
     id: String,
+  },
+
+  data() {
+    return {
+      metadata: {},
+      showMetadata: false,
+    };
+  },
+
+  components: {
+    Metadata,
   },
 
   computed: {
@@ -48,7 +64,8 @@ export default {
       this.$router.push("/editor/" + this.id);
     },
 
-    update() {
+    updateMetadata() {
+      this.showMetadata = true;
       console.log("update ", this.id);
     },
 
@@ -92,6 +109,10 @@ export default {
         .onOk(() => {
           this.remove();
         });
+    },
+
+    exportPecha() {
+      console.log("exporting ", this.id);
     },
   },
 };

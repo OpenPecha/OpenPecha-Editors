@@ -9,11 +9,20 @@
     >
       <q-list style="min-width: 100px">
         <q-item clickable v-close-popup @click="update">
-          <q-item-section>Update</q-item-section>
+          <q-item-section class="text-center">Update</q-item-section>
         </q-item>
-        <q-item clickable v-close-popup @click="remove">
-          <q-item-section class="text-red">Remove</q-item-section>
-        </q-item>
+        <q-separator />
+        <!-- <q-item clickable v-close-popup @click="remove"> -->
+        <q-btn
+          flat
+          label="Delete"
+          color="negative"
+          icon="delete"
+          @click="confirm"
+          class="full-width"
+        />
+        <!-- <q-item-section class="text-red">Remove</q-item-section> -->
+        <!-- </q-item> -->
       </q-list>
     </q-menu>
   </div>
@@ -70,6 +79,19 @@ export default {
         position: "bottom-right",
       });
       this.$emit("remove-pecha", this.id);
+    },
+
+    confirm() {
+      this.$q
+        .dialog({
+          title: "Confirm",
+          message: "Are you sure want to delete the Pecha",
+          cancel: true,
+          persistent: true,
+        })
+        .onOk(() => {
+          this.remove();
+        });
     },
   },
 };

@@ -6,27 +6,47 @@
       context-menu
       transition-show="jump-up"
       transition-hide="jump-down"
+      class="colume"
     >
-      <q-list style="min-width: 100px">
-        <q-item clickable v-close-popup @click="exportPecha">
-          <q-item-section>Export to Epub</q-item-section>
-        </q-item>
-        <q-item clickable v-close-popup @click="updateMetadata">
-          <q-item-section>Update Metadata</q-item-section>
-        </q-item>
-        <q-item clickable v-close-popup @click="updateAssets">
-          <q-item-section>Update Assets</q-item-section>
-        </q-item>
-        <q-separator />
-        <q-btn
-          flat
-          label="Delete"
-          color="negative"
-          icon="delete"
-          @click="confirm"
-          class="full-width"
-        />
-      </q-list>
+      <q-btn
+        flat
+        no-caps
+        label="Export"
+        :color="menuBtnColor"
+        icon="menu_book"
+        @click="exportPecha"
+        class="full-width"
+      />
+      <q-separator />
+      <q-btn
+        flat
+        no-caps
+        label="Metadata"
+        :color="menuBtnColor"
+        icon="format_list_bulleted"
+        @click="updateMetadata"
+        class="full-width"
+      />
+      <q-separator />
+      <q-btn
+        flat
+        no-caps
+        label="Assets"
+        :color="menuBtnColor"
+        icon="image"
+        @click="updateAssets"
+        class="full-width"
+      />
+      <q-separator />
+      <q-btn
+        flat
+        no-caps
+        label="Delete"
+        color="negative"
+        icon="delete"
+        @click="confirm"
+        class="full-width"
+      />
     </q-menu>
 
     <q-dialog v-model="showMetadata">
@@ -59,6 +79,7 @@ export default {
       showAssets: false,
       showDownload: false,
       downloadUrl: "",
+      menuBtnColor: "grey-9",
     };
   },
 

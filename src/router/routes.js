@@ -24,7 +24,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "editor-layout" */ 'layouts/EditorLayout.vue'),
     children: [
       {
-        path: '/editor/dashboard',
+        path: '/editor',
         component: () => import(/* webpackChunkName: "dashboard" */ 'pages/Dashboard.vue'),
         beforeEnter:  GHAuthenticationGuard
       },

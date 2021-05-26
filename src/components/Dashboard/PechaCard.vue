@@ -8,11 +8,14 @@
       transition-hide="jump-down"
     >
       <q-list style="min-width: 100px">
-        <q-item clickable v-close-popup @click="updateMetadata">
-          <q-item-section class="text-center">Metadata</q-item-section>
-        </q-item>
         <q-item clickable v-close-popup @click="exportPecha">
-          <q-item-section class="text-center">Export</q-item-section>
+          <q-item-section>Export to Epub</q-item-section>
+        </q-item>
+        <q-item clickable v-close-popup @click="updateMetadata">
+          <q-item-section>Update Metadata</q-item-section>
+        </q-item>
+        <q-item clickable v-close-popup @click="updateAssets">
+          <q-item-section>Update Assets</q-item-section>
         </q-item>
         <q-separator />
         <q-btn
@@ -29,6 +32,10 @@
     <q-dialog v-model="showMetadata">
       <Metadata :pecha_id="id" />
     </q-dialog>
+
+    <q-dialog v-model="showDownload" persistent>
+      <download-link-box :link="downloadUrl" />
+    </q-dialog>
   </div>
 </template>
 
@@ -36,6 +43,7 @@
 import { mapGetters } from "vuex";
 import { getOrigin } from "src/utils";
 import Metadata from "components/Modals/Metadata";
+import DownloadLinkBox from "components/Modals/DownloadLinkBox";
 
 export default {
   props: {
@@ -48,11 +56,15 @@ export default {
     return {
       metadata: {},
       showMetadata: false,
+      showAssets: false,
+      showDownload: false,
+      downloadUrl: "",
     };
   },
 
   components: {
     Metadata,
+    DownloadLinkBox,
   },
 
   computed: {
@@ -66,7 +78,6 @@ export default {
 
     updateMetadata() {
       this.showMetadata = true;
-      console.log("update ", this.id);
     },
 
     async remove() {
@@ -98,6 +109,14 @@ export default {
       this.$emit("remove-pecha", this.id);
     },
 
+    updateAssets() {
+      this.showAssets = true;
+      this.$q.notify({
+        type: "info",
+        message: "Not implemented yet, we will let know",
+      });
+    },
+
     confirm() {
       this.$q
         .dialog({
@@ -111,8 +130,26 @@ export default {
         });
     },
 
-    exportPecha() {
-      console.log("exporting ", this.id);
+    async exportPecha() {
+      this.$q.loading.show();
+      const response = await this.$axios.get(
+        getOrigin() + `/api/v1/pechas/${this.id}/export/review`,
+        {
+          headers: {
+            token: this.userAccessToken,
+          },
+        }
+      );
+      this.$q.loading.hide();
+      if (response["status"] == 200) {
+        this.downloadUrl = response.data.download_link;
+        this.showDownload = true;
+      } else {
+        this.$q.notify({
+          type: "negative",
+          message: "export failed",
+        });
+      }
     },
   },
 };

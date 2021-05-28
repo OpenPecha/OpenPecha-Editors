@@ -360,7 +360,7 @@ export default {
     async download() {
       await this.save();
       const response = await this.$axios.get(
-        getOrigin() + "/api/v1/pedurma/" + "/preview/" + this.textId
+        getOrigin() + "/api/v1/pedurma/" + this.textId + "/preview/"
       );
       this.download_url = response.data.download_url;
     },

@@ -142,7 +142,7 @@ export default {
       this.$q
         .dialog({
           title: "Confirm",
-          message: "Are you sure want to delete the Pecha",
+          message: "Are you sure want to delete the Pecha?",
           cancel: true,
           persistent: true,
         })

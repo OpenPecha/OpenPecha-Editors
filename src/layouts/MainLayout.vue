@@ -1,7 +1,7 @@
 <template>
   <q-layout>
-    <q-header class="theme-color">
-      <q-toolbar class="q-mt-md">
+    <q-header class="fixed-top transparent q-py-sm">
+      <q-toolbar class="q-mx-auto" style="max-width: 1080px">
         <q-toolbar-title class="cursor-pointer" @click="goToHome">
           <q-img src="/icons/favicon-128x128.png" style="width: 40px" />
           <span class="text-weight-medium q-ml-xs" style="color: #12dfec">
@@ -9,9 +9,8 @@
           >
           <span class="text-weight-medium" style="color: #8e57f1">Pecha</span>
         </q-toolbar-title>
-        <q-tabs shrink>
+        <q-tabs shrink class="text-blue-grey-9">
           <q-tab label="Features" @click="scrollToElement('features')" />
-          <q-tab label="About Us" @click="scrollToElement('about-us')" />
         </q-tabs>
       </q-toolbar>
     </q-header>

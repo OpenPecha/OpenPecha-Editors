@@ -11,7 +11,6 @@
         </q-toolbar-title>
         <q-tabs shrink class="text-blue-grey-9">
           <q-tab label="Features" @click="scrollToElement('features')" />
-          <q-tab label="About Us" @click="scrollToElement('about-us')" />
         </q-tabs>
       </q-toolbar>
     </q-header>

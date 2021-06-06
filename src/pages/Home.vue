@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <section class="hero column content-center transparent">
+    <section class="hero q-mt-lg column content-center transparent">
       <div
         class="text-h5 text-weight-thin text-center"
         style="max-width: 500px"
@@ -25,40 +25,37 @@
         class="q-mt-lg q-mb-lg self-center"
       />
     </section>
-    <section
-      id="features"
-      class="feature column q-mt-xl q-ml-auto q-mr-auto"
-      style="width: 60%"
-    >
-      <div class="item self-start" style="width: 40%">
-        <q-icon
-          name="format_align_left"
-          style="font-size: 2rem"
-          class="text-grey"
-        />
-        <div class="text-h5">Format</div>
-        <div class="text-weight-light">
-          A format to represent a text with all sorts of annotations.
+    <section id="features" class="q-pa-xl q-mt-xl" style="background: #f7f7f7">
+      <div class="feature column q-ml-auto q-mr-auto" style="width: 60%">
+        <div class="item self-start" style="width: 40%">
+          <q-icon
+            name="format_align_left"
+            style="font-size: 4rem; color: #8e57f1"
+          />
+          <div class="text-subtitle1">Format</div>
+          <div class="text-weight-light">
+            A format to represent a text with all sorts of annotations.
+          </div>
         </div>
-      </div>
-      <div class="item self-end q-mt-lg" style="width: 40%">
-        <q-icon name="padding" style="font-size: 2rem" class="text-grey" />
-        <div class="text-h5">Editor</div>
-        <div class="text-weight-light">
-          Create annotations and export text into ebook. Get annotations
-          suggestion to speed up the work.
+        <div class="item self-end q-mt-lg" style="width: 40%">
+          <q-icon name="padding" style="font-size: 4rem; color: #8e57f1" />
+          <div class="text-subtitle1">Editor</div>
+          <div class="text-weight-light">
+            Create annotations and export text into ebook. Get annotations
+            suggestion to speed up the work.
+          </div>
         </div>
-      </div>
-      <div class="item self-starti q-mt-lg q-mb-xl" style="width: 40%">
-        <q-icon name="storage" style="font-size: 2rem" class="text-grey" />
-        <div class="text-h5">Catalog</div>
-        <div class="text-weight-light">
-          A catalog of all the text published in openpecha format
+        <div class="item self-start q-mt-lg" style="width: 40%">
+          <q-icon name="storage" style="font-size: 4rem; color: #8e57f1" />
+          <div class="text-subtitle1">Catalog</div>
+          <div class="text-weight-light">
+            A catalog of all the text published in openpecha format
+          </div>
         </div>
       </div>
     </section>
 
-    <section
+    <!-- <section
       id="about-us"
       class="row justify-center"
       style="background: #f7f7f7"
@@ -72,7 +69,7 @@
           >
         </h5>
       </div>
-    </section>
+    </section> -->
 
     <section id="contact"></section>
 

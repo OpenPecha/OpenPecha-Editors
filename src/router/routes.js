@@ -34,6 +34,11 @@ const routes = [
         // beforeEnter: authenticationGuard,
       },
       {
+        path: '/editor/proofread',
+        component: () => import(/* webpackChunkName: "editor-proofread" */ 'pages/Proofread.vue'),
+        beforeEnter: authenticationGuard,
+      },
+      {
         path: '/editor/:pechaId',
         component: () => import(/* webpackChunkName: "editor-pecha" */ 'pages/Editor.vue'),
         beforeEnter: GHAuthenticationGuard,

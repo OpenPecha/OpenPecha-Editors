@@ -13262,6 +13262,11 @@ throat@^5.0.0:
   resolved "https://registry.yarnpkg.com/throat/-/throat-5.0.0.tgz#c5199235803aad18754a667d659b5e72ce16764b"
   integrity sha512-fcwX4mndzpLQKBS1DVYhGAcYaYt7vsHNIvQV+WXMvnow5cgjPphq5CaayLaGsjRdSCKZFNGt7/GYAuXaNOiYCA==
 
+throttle-debounce@^2.0.1:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/throttle-debounce/-/throttle-debounce-2.3.0.tgz#fd31865e66502071e411817e241465b3e9c372e2"
+  integrity sha512-H7oLPV0P7+jgvrk+6mwwwBDmxTaxnu9HMXmloNLXwnNO0ZxZ31Orah2n8lU1eMPvsaowP2CX+USCgyovXfdOFQ==
+
 throttleit@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/throttleit/-/throttleit-1.0.0.tgz#9e785836daf46743145a5984b6268d828528ac6c"
@@ -13949,6 +13954,14 @@ uuid@^8.2.0, uuid@^8.3.0, uuid@^8.3.2:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
 
+v-viewer@^1.6.3:
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/v-viewer/-/v-viewer-1.6.3.tgz#6e350e2a342fa6d7dbfe69a12a1a4d66e3a3cc6e"
+  integrity sha512-W45FU18rO6ZiID4CS+DdsZJ7m5CXSxV0Js9O9E/+THWk4PqILUzFUPUndJ6vMf0IKymvQmyvwRXawCMDxGCzcQ==
+  dependencies:
+    throttle-debounce "^2.0.1"
+    viewerjs "^1.5.0"
+
 v8-to-istanbul@^7.0.0:
   version "7.1.0"
   resolved "https://registry.yarnpkg.com/v8-to-istanbul/-/v8-to-istanbul-7.1.0.tgz#5b95cef45c0f83217ec79f8fc7ee1c8b486aee07"
@@ -13984,6 +13997,11 @@ verror@1.10.0:
     assert-plus "^1.0.0"
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
+
+viewerjs@^1.5.0:
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/viewerjs/-/viewerjs-1.9.2.tgz#42b9e5f4c4d3f136478d53e7d564e8b2ba9b5c7e"
+  integrity sha512-08Jz4SOsJ4cNIY9R1fRa1i/CiuZYBfserur7pFPUeOEi/ncrmft0UPKdNBXT3JtHPq9gHU4G9le1Nd5dlvTWKg==
 
 vm-browserify@^1.0.1:
   version "1.1.2"

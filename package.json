@@ -30,6 +30,7 @@
     "tiptap-commands": "^1.17.1",
     "tiptap-extensions": "^1.35.1",
     "uuid": "^8.3.2",
+    "v-viewer": "^1.6.3",
     "vue-i18n": "^8.0.0"
   },
   "devDependencies": {

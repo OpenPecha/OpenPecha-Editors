@@ -23,7 +23,7 @@
         <div class="content col">
           <div class="row items-center q-mb-md q-ml-auto q-mr-auto">
             <q-btn flat dense col="col" icon="chevron_left" size="20px" />
-            <img
+            <ImageViewer
               class="col"
               src="https://eap.bl.uk/sites/default/files/styles/publicity_image/public/Capture_22.JPG?itok=FvA3uXQu"
               alt="page image"
@@ -83,8 +83,13 @@
 </template>
 
 <script>
+import ImageViewer from "src/components/ImageViewer.vue";
 export default {
   name: "Proofread",
+
+  components: {
+    ImageViewer,
+  },
 
   data() {
     return {

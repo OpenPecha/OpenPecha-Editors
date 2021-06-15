@@ -25,8 +25,9 @@
             <q-btn flat dense col="col" icon="chevron_left" size="20px" />
             <ImageViewer
               class="col"
-              src="https://eap.bl.uk/sites/default/files/styles/publicity_image/public/Capture_22.JPG?itok=FvA3uXQu"
+              src="https://www.tbrc.org/browser/ImageService?work=W22703&igroup=5404&image=6&first=1&last=818&fetchimg=yes"
               alt="page image"
+              style="border: 2px solid grey"
             />
             <q-btn flat dense col="col" icon="chevron_right" size="20px" />
           </div>

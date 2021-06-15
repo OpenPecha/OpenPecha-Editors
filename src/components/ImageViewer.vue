@@ -1,45 +1,28 @@
 <template>
-  <div>
-    <viewer
-      :options="options"
-      :images="[src]"
-      @inited="inited"
-      class="viewer"
-      ref="viewer"
-    >
-      <template #default="scope">
-        <img
-          v-for="src in scope.images"
-          :src="src"
-          :key="src"
-          width="100%"
-          height="300"
-        />
-        {{ scope.options }}
-      </template>
-    </viewer>
-  </div>
+  <inner-image-zoom :src="src" :zoomSrc="src" />
 </template>
+
 <script>
-import "viewerjs/dist/viewer.css";
-import { component as Viewer } from "v-viewer";
+import "vue-inner-image-zoom/lib/vue-inner-image-zoom.css";
+import InnerImageZoom from "vue-inner-image-zoom";
+
 export default {
-  components: {
-    Viewer,
-  },
-
   props: {
-    src: String,
-    alt: String,
+    src: {
+      type: String,
+      required: true,
+    },
   },
 
-  methods: {
-    inited(viewer) {
-      this.$viewer = viewer;
-    },
-    show() {
-      this.$viewer.show();
-    },
+  components: {
+    "inner-image-zoom": InnerImageZoom,
   },
 };
 </script>
+
+<style scoped>
+/* figure > div > picture > img {
+  width: 100%;
+  height: 100px;
+} */
+</style>

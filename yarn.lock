@@ -10382,6 +10382,11 @@ plist@^3.0.1:
     xmlbuilder "^9.0.7"
     xmldom "0.1.x"
 
+portal-vue@^2.1.7:
+  version "2.1.7"
+  resolved "https://registry.yarnpkg.com/portal-vue/-/portal-vue-2.1.7.tgz#ea08069b25b640ca08a5b86f67c612f15f4e4ad4"
+  integrity sha512-+yCno2oB3xA7irTt0EU5Ezw22L2J51uKAacE/6hMPMoO/mx3h4rXFkkBkT4GFsMDv/vEe8TNKC3ujJJ0PTwb6g==
+
 portfinder@^1.0.26:
   version "1.0.28"
   resolved "https://registry.yarnpkg.com/portfinder/-/portfinder-1.0.28.tgz#67c4622852bd5374dd1dd900f779f53462fac778"
@@ -13262,11 +13267,6 @@ throat@^5.0.0:
   resolved "https://registry.yarnpkg.com/throat/-/throat-5.0.0.tgz#c5199235803aad18754a667d659b5e72ce16764b"
   integrity sha512-fcwX4mndzpLQKBS1DVYhGAcYaYt7vsHNIvQV+WXMvnow5cgjPphq5CaayLaGsjRdSCKZFNGt7/GYAuXaNOiYCA==
 
-throttle-debounce@^2.0.1:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/throttle-debounce/-/throttle-debounce-2.3.0.tgz#fd31865e66502071e411817e241465b3e9c372e2"
-  integrity sha512-H7oLPV0P7+jgvrk+6mwwwBDmxTaxnu9HMXmloNLXwnNO0ZxZ31Orah2n8lU1eMPvsaowP2CX+USCgyovXfdOFQ==
-
 throttleit@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/throttleit/-/throttleit-1.0.0.tgz#9e785836daf46743145a5984b6268d828528ac6c"
@@ -13954,14 +13954,6 @@ uuid@^8.2.0, uuid@^8.3.0, uuid@^8.3.2:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
 
-v-viewer@^1.6.3:
-  version "1.6.3"
-  resolved "https://registry.yarnpkg.com/v-viewer/-/v-viewer-1.6.3.tgz#6e350e2a342fa6d7dbfe69a12a1a4d66e3a3cc6e"
-  integrity sha512-W45FU18rO6ZiID4CS+DdsZJ7m5CXSxV0Js9O9E/+THWk4PqILUzFUPUndJ6vMf0IKymvQmyvwRXawCMDxGCzcQ==
-  dependencies:
-    throttle-debounce "^2.0.1"
-    viewerjs "^1.5.0"
-
 v8-to-istanbul@^7.0.0:
   version "7.1.0"
   resolved "https://registry.yarnpkg.com/v8-to-istanbul/-/v8-to-istanbul-7.1.0.tgz#5b95cef45c0f83217ec79f8fc7ee1c8b486aee07"
@@ -13998,11 +13990,6 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-viewerjs@^1.5.0:
-  version "1.9.2"
-  resolved "https://registry.yarnpkg.com/viewerjs/-/viewerjs-1.9.2.tgz#42b9e5f4c4d3f136478d53e7d564e8b2ba9b5c7e"
-  integrity sha512-08Jz4SOsJ4cNIY9R1fRa1i/CiuZYBfserur7pFPUeOEi/ncrmft0UPKdNBXT3JtHPq9gHU4G9le1Nd5dlvTWKg==
-
 vm-browserify@^1.0.1:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-1.1.2.tgz#78641c488b8e6ca91a75f511e7a3b32a86e5dda0"
@@ -14022,6 +14009,13 @@ vue-i18n@^8.0.0:
   version "8.22.1"
   resolved "https://registry.yarnpkg.com/vue-i18n/-/vue-i18n-8.22.1.tgz#b9dd098a17e1f5adb91bdf9611f0385310da7cb1"
   integrity sha512-JNgiEJ5a8YPfk5y2lKyfOAGLmkpAVfhaUi+T4wGpSppRYZ3XSyawSDDketY5KV2CsAiBLAGEIO6jO+0l2hQubg==
+
+vue-inner-image-zoom@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/vue-inner-image-zoom/-/vue-inner-image-zoom-1.1.0.tgz#e5e239f0f6733adac9fa343c2eaff497393a5054"
+  integrity sha512-StYNzUpHevIx/gueHLJKyGufApFB+UNg6vEGnXsRVL0wK1Xo8HD+0/Wv5mtN2S6njC9pU+D32LDjQHAezF/zUg==
+  dependencies:
+    portal-vue "^2.1.7"
 
 vue-jest@^3.0.7:
   version "3.0.7"

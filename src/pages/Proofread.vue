@@ -123,7 +123,35 @@ export default {
   },
 
   methods: {
+    save() {
+      this.$axios
+        .put(getOrigin() + `/api/v1/proofread/${this.volId}/${this.pageId}`, {
+          content: this.page,
+          image_url: this.pageImageUrl,
+        })
+        .then((response) => {
+          if (response.data.success === true) {
+            this.$q.notify({
+              type: "positive",
+              message: `Page ${this.pageId} saved`,
+              position: "bottom",
+            });
+          }
+        })
+        .catch(() => {
+          this.$q.notify({
+            type: "negative",
+            message: `Page ${this.pageId} failed to saved`,
+            position: "bottom",
+          });
+        });
+    },
+
     async open(pageId) {
+      if (this.page) {
+        this.save();
+      }
+
       const response = await this.$axios.get(
         getOrigin() + `/api/v1/proofread/${this.volId}/${pageId}`
       );
@@ -154,7 +182,6 @@ export default {
 
     addStyle(string, styleName) {
       const styledStr = `<span class=${styleName}>${string}</span>`;
-      console.log(styledStr);
       return styledStr;
     },
 
@@ -170,7 +197,6 @@ export default {
       var formattedDiffs = "";
       for (const diff of diffs) {
         const [op, chunk] = diff;
-        console.log(op, chunk);
         if (op === 1) {
           formattedDiffs = formattedDiffs.concat(
             this.addStyle(chunk, "diff-remove")

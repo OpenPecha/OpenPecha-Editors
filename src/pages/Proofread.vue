@@ -3,29 +3,29 @@
     <div class="column">
       <q-toolbar class="bg-grey-3 q-mb-md">
         <q-btn flat icon="menu" @click="showPages = !showPages" />
-        <div class="full-width text-center">Page {{ currentPage }}</div>
+        <div class="full-width text-center">Page {{ pageId }}</div>
       </q-toolbar>
       <div class="row">
         <div class="page-list col-2 q-mr-md" v-show="showPages">
           <q-list bordered separator style="max-height: 700px; overflow: auto">
             <q-item
-              v-for="page in pages"
-              :key="page"
+              v-for="pageId in pages"
+              :key="pageId"
               clickable
               v-ripple
-              @click="open(page)"
+              @click="open(pageId)"
             >
-              <q-item-section> Page {{ page }} </q-item-section>
+              <q-item-section> Page {{ pageId }} </q-item-section>
             </q-item>
             <q-separator />
           </q-list>
         </div>
-        <div class="content col">
+        <div v-if="page" class="content col">
           <div class="row items-center q-mb-md q-ml-auto q-mr-auto">
             <q-btn flat dense col="col" icon="chevron_left" size="20px" />
             <ImageViewer
               class="col"
-              src="https://www.tbrc.org/browser/ImageService?work=W22703&igroup=5404&image=6&first=1&last=818&fetchimg=yes"
+              :src="pageImageUrl"
               alt="page image"
               style="border: 2px solid grey"
             />
@@ -40,7 +40,7 @@
                 padding: 10px;
                 font-size: 1.4rem;
               "
-              v-model="text"
+              v-model="page"
             >
             </textarea>
           </div>
@@ -64,15 +64,15 @@
 
               <q-tab-panels v-model="tab" animated style="font-size: 1.3rem">
                 <q-tab-panel name="current">
-                  <pre>{{ text }}</pre>
+                  <pre>{{ currentDiff }}</pre>
                 </q-tab-panel>
 
                 <q-tab-panel name="google">
-                  <pre>{{ text }}</pre>
+                  <pre>{{ googleDiff }}</pre>
                 </q-tab-panel>
 
                 <q-tab-panel name="derge">
-                  <pre>{{ text }}</pre>
+                  <pre>{{ dergeDiff }}</pre>
                 </q-tab-panel>
               </q-tab-panels>
             </q-card>
@@ -85,6 +85,8 @@
 
 <script>
 import ImageViewer from "src/components/ImageViewer.vue";
+import { getOrigin } from "src/utils";
+
 export default {
   name: "Proofread",
 
@@ -94,24 +96,69 @@ export default {
 
   data() {
     return {
+      volId: "v047",
       tab: "current",
-      text: "བ་དང་།བྱང་དང་།ག་དང་སྟོང་དང་། ཕྱོགས་བཅུ་ཀུན་ནདགའ་ལྡན་གྱི་གནསན་འཁོད་ཅིང། ཐམས་ཚད་ཀྱང་སྲིད་པ་ཐམལ་མངོན་དུ་ཕྱོགས་པ། ལྷའི་ཚོགས་ཀྱིས་ཡོས་སུ་བསྐོརབ།འཆའབོ་བའི་རྣམ\nགུབ་དང་།བྱང་དང་།ག་དང་སྟོང་དང་། ཕྱོགས་བཅུ་ཀུན་ནདགའ་ལྡན་གྱི་གནསན་འཁོད་ཅིང། ཐམས་ཚད་ཀྱང་སྲིད་པ་ཐམལ་མངོན་དུ་ཕྱོགས་པ། ལྷའི་ཚོགས་ཀྱིས་ཡོས་སུ་བསྐོརབ།འཆའབོ་བའི་རྣམ\nབྱང་དང་།ག་དང་སྟོང་དང་། ཕྱོགས་བཅུ་ཀུན་ནདགའ་ལྡན་གྱི་གནསན་འཁོད་ཅིང། ཐམས་ཚད་ཀྱང་སྲིད་པ་ཐམལ་མངོན་དུ་ཕྱོགས་པ། ལྷའི་ཚོགས་ཀྱིས་ཡོས་སུ་བསྐོརབ།འཆའབོ་བའི་རྣམ",
       showPages: false,
-      currentPage: null,
-      pages: [...Array(100).keys()],
+      pages: [],
+      pageId: null,
+      page: "",
+      pageImageUrl:
+        "https://www.tbrc.org/browser/ImageService?work=W22703&igroup=5404&image=6&first=1&last=818&fetchimg=yes",
+      currentDiff: "",
+      googleDiff: "",
+      dergeDiff: "",
     };
   },
 
-  methods: {
-    open(page) {
-      console.log("opening page ", page);
-      this.currentPage = page;
-      this.showPages = false;
+  watch: {
+    page(pageContent) {
+      this.getDiffs("transk").then((diffs) => {
+        this.currentDiff = diffs;
+      });
+      this.getDiffs("google_ocr").then((diffs) => {
+        this.googleDiff = diffs;
+      });
+      this.getDiffs("derge").then((diffs) => {
+        this.dergeDiff = diffs;
+      });
     },
   },
 
-  mounted() {
-    this.currentPage = this.pages[0];
+  methods: {
+    async open(pageId) {
+      console.log(pageId);
+      const response = await this.$axios.get(
+        getOrigin() + `/api/v1/proofread/${this.volId}/${pageId}`
+      );
+      this.page = response.data.content;
+      this.pageImageUrl = response.data.image_url;
+      this.pageId = pageId;
+      this.showPages = false;
+    },
+
+    async fetchPages() {
+      const response = await this.$axios.get(
+        getOrigin() + "/api/v1/proofread/metadata/vols/" + this.volId
+      );
+      this.pages = response.data.pages;
+    },
+
+    async getDiffs(diffWith) {
+      const response = await this.$axios.post(
+        getOrigin() +
+          `/api/v1/proofread/${this.volId}/${this.pageId}/diffs?diff_with=${diffWith}`,
+        {
+          content: this.page,
+          image_url: this.pageImageUrl,
+        }
+      );
+      return response.data.diffs;
+    },
+  },
+
+  async mounted() {
+    await this.fetchPages();
+    this.open(this.pages[0]);
   },
 };
 </script>

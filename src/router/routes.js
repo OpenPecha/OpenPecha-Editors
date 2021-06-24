@@ -34,7 +34,7 @@ const routes = [
         // beforeEnter: authenticationGuard,
       },
       {
-        path: '/editor/proofread',
+        path: '/editor/proofread/',
         component: () => import(/* webpackChunkName: "editor-proofread" */ 'pages/Proofread.vue'),
         beforeEnter: authenticationGuard,
       },

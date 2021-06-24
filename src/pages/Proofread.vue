@@ -64,15 +64,15 @@
 
               <q-tab-panels v-model="tab" animated style="font-size: 1.3rem">
                 <q-tab-panel name="current">
-                  <pre>{{ currentDiff }}</pre>
+                  <div v-html="diffs.transk"></div>
                 </q-tab-panel>
 
                 <q-tab-panel name="google">
-                  <pre>{{ googleDiff }}</pre>
+                  <div v-html="diffs.google_ocr"></div>
                 </q-tab-panel>
 
                 <q-tab-panel name="derge">
-                  <pre>{{ dergeDiff }}</pre>
+                  <div v-html="diffs.derge"></div>
                 </q-tab-panel>
               </q-tab-panels>
             </q-card>
@@ -104,29 +104,26 @@ export default {
       page: "",
       pageImageUrl:
         "https://www.tbrc.org/browser/ImageService?work=W22703&igroup=5404&image=6&first=1&last=818&fetchimg=yes",
-      currentDiff: "",
-      googleDiff: "",
-      dergeDiff: "",
+      diffs: {
+        transk: "",
+        google_ocr: "",
+        derge: "",
+      },
     };
   },
 
   watch: {
     page(pageContent) {
-      this.getDiffs("transk").then((diffs) => {
-        this.currentDiff = diffs;
-      });
-      this.getDiffs("google_ocr").then((diffs) => {
-        this.googleDiff = diffs;
-      });
-      this.getDiffs("derge").then((diffs) => {
-        this.dergeDiff = diffs;
+      ["transk", "google_ocr", "derge"].forEach((diffWith) => {
+        this.getDiffs(diffWith).then((diffs) => {
+          this.diffs[diffWith] = this.formatDiff(diffs);
+        });
       });
     },
   },
 
   methods: {
     async open(pageId) {
-      console.log(pageId);
       const response = await this.$axios.get(
         getOrigin() + `/api/v1/proofread/${this.volId}/${pageId}`
       );
@@ -154,6 +151,40 @@ export default {
       );
       return response.data.diffs;
     },
+
+    addStyle(string, styleName) {
+      const styledStr = `<span class=${styleName}>${string}</span>`;
+      console.log(styledStr);
+      return styledStr;
+    },
+
+    toPara(string) {
+      var paras = "";
+      for (const line of string.split("\n")) {
+        paras = paras.concat(`<p>${line}</p>`);
+      }
+      return paras;
+    },
+
+    formatDiff(diffs) {
+      var formattedDiffs = "";
+      for (const diff of diffs) {
+        const [op, chunk] = diff;
+        console.log(op, chunk);
+        if (op === 1) {
+          formattedDiffs = formattedDiffs.concat(
+            this.addStyle(chunk, "diff-remove")
+          );
+        } else if (op === -1) {
+          formattedDiffs = formattedDiffs.concat(
+            this.addStyle(chunk, "diff-add")
+          );
+        } else {
+          formattedDiffs = formattedDiffs.concat(chunk);
+        }
+      }
+      return this.toPara(formattedDiffs);
+    },
   },
 
   async mounted() {
@@ -168,5 +199,13 @@ export default {
   max-width: 1000px;
   margin-left: auto;
   margin-right: auto;
+}
+
+.diffs >>> .diff-add {
+  background-color: rgb(184, 236, 184);
+}
+
+.diffs >>> .diff-remove {
+  background-color: rgb(236, 144, 144);
 }
 </style>

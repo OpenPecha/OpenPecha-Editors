@@ -179,7 +179,7 @@ export default {
       const response = await this.$axios.get(
         getOrigin() + "/api/v1/proofread/metadata/vols/" + this.volId
       );
-      this.pages = response.data.pages;
+      this.pages = response.data;
     },
 
     async getDiffs(diffWith) {

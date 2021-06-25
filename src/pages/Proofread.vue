@@ -22,14 +22,28 @@
         </div>
         <div v-if="page" class="content col">
           <div class="row items-center q-mb-md q-ml-auto q-mr-auto">
-            <q-btn flat dense col="col" icon="chevron_left" size="20px" />
+            <q-btn
+              flat
+              dense
+              col="col"
+              icon="chevron_left"
+              size="20px"
+              @click="loadImage('previous')"
+            />
             <ImageViewer
               class="col"
               :src="pageImageUrl"
               alt="page image"
               style="border: 2px solid grey"
             />
-            <q-btn flat dense col="col" icon="chevron_right" size="20px" />
+            <q-btn
+              flat
+              dense
+              col="col"
+              icon="chevron_right"
+              size="20px"
+              @click="loadImage('next')"
+            />
           </div>
           <div class="editor text-center q-mb-md">
             <textarea
@@ -134,7 +148,7 @@ export default {
             this.$q.notify({
               type: "positive",
               message: `Page ${this.pageId} saved`,
-              position: "bottom",
+              position: "bottom-right",
             });
           }
         })
@@ -142,7 +156,7 @@ export default {
           this.$q.notify({
             type: "negative",
             message: `Page ${this.pageId} failed to saved`,
-            position: "bottom",
+            position: "bottom-right",
           });
         });
     },
@@ -210,6 +224,16 @@ export default {
         }
       }
       return this.toPara(formattedDiffs);
+    },
+
+    loadImage(order) {
+      this.$axios
+        .post(getOrigin() + `/api/v1/proofread/images/${order}`, {
+          image_url: this.pageImageUrl,
+        })
+        .then((response) => {
+          this.pageImageUrl = response.data.image_url;
+        });
     },
   },
 

@@ -9,13 +9,13 @@
         <div class="page-list col-2 q-mr-md" v-show="showPages">
           <q-list bordered separator style="max-height: 700px; overflow: auto">
             <q-item
-              v-for="pageId in pages"
-              :key="pageId"
+              v-for="page in pageList"
+              :key="page.id"
               clickable
               v-ripple
-              @click="open(pageId)"
+              @click="open(page.id)"
             >
-              <q-item-section> Page {{ pageId }} </q-item-section>
+              <q-item-section> Page {{ page.id }} </q-item-section>
             </q-item>
             <q-separator />
           </q-list>
@@ -114,7 +114,7 @@ export default {
       tab: "current",
       showPages: false,
       pages: [],
-      pageId: null,
+      pageId: "0001",
       page: "",
       pageImageUrl:
         "https://www.tbrc.org/browser/ImageService?work=W22703&igroup=5404&image=6&first=1&last=818&fetchimg=yes",
@@ -132,6 +132,17 @@ export default {
         this.getDiffs(diffWith).then((diffs) => {
           this.diffs[diffWith] = this.formatDiff(diffs);
         });
+      });
+    },
+  },
+
+  computed: {
+    pageList() {
+      return Object.keys(this.pages).map((key) => {
+        return {
+          id: key,
+          ...this.pages[key],
+        };
       });
     },
   },
@@ -163,7 +174,7 @@ export default {
 
     async open(pageId) {
       if (this.page) {
-        this.save();
+        this.save(this.pageId);
       }
 
       const response = await this.$axios.get(
@@ -239,7 +250,7 @@ export default {
 
   async mounted() {
     await this.fetchPages();
-    this.open(this.pages[0]);
+    this.open(this.pageId);
   },
 };
 </script>

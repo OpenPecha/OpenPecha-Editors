@@ -110,7 +110,6 @@ export default {
 
   data() {
     return {
-      volId: "v047",
       tab: "current",
       showPages: false,
       pages: [],
@@ -145,6 +144,10 @@ export default {
         };
       });
     },
+
+    volId() {
+      return this.$route.query.volId;
+    },
   },
 
   methods: {
@@ -174,7 +177,7 @@ export default {
 
     async open(pageId) {
       if (this.page) {
-        this.save(this.pageId);
+        this.save();
       }
 
       const response = await this.$axios.get(

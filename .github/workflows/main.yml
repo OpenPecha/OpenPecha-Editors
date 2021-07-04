@@ -63,8 +63,8 @@ jobs:
           AUTH0_RESPONSETYPE=token id_token
           AUTH0_SCOPE=openid
           IFFFServerURL=https://iiif.bdrc.io
-          T_GOOGLE_PECHA_ID=P000791
-          T_NAMSEL_PECHA_ID=P000792
+          T_GOOGLE_PECHA_ID=12d32eb31c1a4cc59741cda99ebc7211
+          T_NAMSEL_PECHA_ID=187ed94f85154ea5b1ac374a651e1770
           K_GOOGLE_PECHA_ID=P000793
           K_NAMSEL_PECHA_ID=P000796
           K_TEXT_ID_PREFIX=T

@@ -58,7 +58,13 @@
 
         <q-tab-panels v-model="editorTab" animated>
           <q-tab-panel name="namsel" class="row">
-            <q-list v-show="showPages" class="col-2" bordered separator>
+            <q-list
+              v-show="showPages"
+              class="col-2"
+              bordered
+              separator
+              style="max-height: 700px; overflow: auto"
+            >
               <q-item
                 v-for="(page, index) in pages.namsel"
                 :key="page.id"
@@ -80,10 +86,7 @@
             />
           </q-tab-panel>
           <q-tab-panel name="google">
-            <editor
-              :text="getPageText('google')"
-              @input="updatePage('google')"
-            />
+            <editor :text="getPageText('google')" @input="updatePage('google')" />
           </q-tab-panel>
           <q-tab-panel name="google-notes">
             <editor :text="getNote('google')" @input="updateGoogleNote" />
@@ -280,8 +283,7 @@ export default {
           console.log(error);
           this.$q.notify({
             type: "negative",
-            message:
-              this.pages.namsel[this.currentPageIdx].name + " preview failed",
+            message: this.pages.namsel[this.currentPageIdx].name + " preview failed",
             position: "bottom-right",
           });
           return;

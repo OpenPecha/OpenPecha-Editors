@@ -1,10 +1,6 @@
 <template>
   <q-page padding class="container">
     <div class="column">
-      <q-toolbar class="bg-grey-3 q-mb-md">
-        <q-btn flat icon="menu" @click="showPages = !showPages" />
-        <div class="full-width text-center">Page {{ pageId }}</div>
-      </q-toolbar>
       <div class="row">
         <div class="page-list col-2 q-mr-md" v-show="showPages">
           <q-list bordered separator style="max-height: 700px; overflow: auto">
@@ -46,14 +42,16 @@
             />
           </div>
           <div class="editor text-center q-mb-md">
+            <q-pagination
+              v-if="pages"
+              v-model="pageIdInt"
+              :max="pages.length"
+              input
+              class="q-mb-lg"
+            />
             <textarea
               name="textarea"
-              style="
-                width: 100%;
-                min-height: 250px;
-                padding: 10px;
-                font-size: 1.4rem;
-              "
+              style="width: 100%; min-height: 250px; padding: 10px; font-size: 1.4rem"
               v-model="page"
             >
             </textarea>
@@ -114,6 +112,7 @@ export default {
       showPages: false,
       pages: [],
       pageId: "0001",
+      pageIdInt: 1,
       page: "",
       pageImageUrl:
         "https://www.tbrc.org/browser/ImageService?work=W22703&igroup=5404&image=6&first=1&last=818&fetchimg=yes",
@@ -226,13 +225,9 @@ export default {
       for (const diff of diffs) {
         const [op, chunk] = diff;
         if (op === 1) {
-          formattedDiffs = formattedDiffs.concat(
-            this.addStyle(chunk, "diff-remove")
-          );
+          formattedDiffs = formattedDiffs.concat(this.addStyle(chunk, "diff-remove"));
         } else if (op === -1) {
-          formattedDiffs = formattedDiffs.concat(
-            this.addStyle(chunk, "diff-add")
-          );
+          formattedDiffs = formattedDiffs.concat(this.addStyle(chunk, "diff-add"));
         } else {
           formattedDiffs = formattedDiffs.concat(chunk);
         }
@@ -260,7 +255,7 @@ export default {
 
 <style scoped>
 .container {
-  max-width: 1000px;
+  width: 80%;
   margin-left: auto;
   margin-right: auto;
 }

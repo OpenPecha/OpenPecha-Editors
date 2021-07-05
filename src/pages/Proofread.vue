@@ -16,8 +16,9 @@
             <q-separator />
           </q-list>
         </div>
+
         <div v-if="page" class="content col">
-          <div class="row items-center q-mb-md q-ml-auto q-mr-auto">
+          <div class="row justify-center items-center bg-grey-3">
             <q-btn
               flat
               dense
@@ -26,12 +27,7 @@
               size="20px"
               @click="loadImage('previous')"
             />
-            <ImageViewer
-              class="col"
-              :src="pageImageUrl"
-              alt="page image"
-              style="border: 2px solid grey"
-            />
+            <div>{{ imageName }}</div>
             <q-btn
               flat
               dense
@@ -41,17 +37,21 @@
               @click="loadImage('next')"
             />
           </div>
-          <div class="editor text-center q-mb-md">
-            <q-pagination
-              v-if="pages"
-              v-model="pageIdInt"
-              :max="pages.length"
-              input
-              class="q-mb-lg"
-            />
+
+          <ImageViewer
+            class="col"
+            :src="pageImageUrl"
+            alt="page image"
+            style="height: 300px; border: 2px solid grey; resize: both; overflow: auto"
+          />
+
+          <div class="editor q-mb-md">
+            <div class="column items-center bg-grey-3">
+              <q-pagination v-model="pageIdInt" :max="Object.keys(pages).length" input />
+            </div>
             <textarea
               name="textarea"
-              style="width: 100%; min-height: 250px; padding: 10px; font-size: 1.4rem"
+              style="width: 100%; height: 250px; padding: 10px; font-size: 1.4rem"
               v-model="page"
             >
             </textarea>
@@ -114,8 +114,7 @@ export default {
       pageId: "0001",
       pageIdInt: 1,
       page: "",
-      pageImageUrl:
-        "https://www.tbrc.org/browser/ImageService?work=W22703&igroup=5404&image=6&first=1&last=818&fetchimg=yes",
+      pageImageUrl: "",
       diffs: {
         transk: "",
         google_ocr: "",
@@ -132,6 +131,14 @@ export default {
         });
       });
     },
+
+    pageIdInt() {
+      if (this.page) {
+        this.save(this.pageId);
+      }
+      this.pageId = this.pageIdInt.toString().padStart(4, "0");
+      this.open(this.pageId);
+    },
   },
 
   computed: {
@@ -147,12 +154,16 @@ export default {
     volId() {
       return this.$route.query.volId;
     },
+
+    imageName() {
+      return this.pageImageUrl.split("::")[1].split("/")[0];
+    },
   },
 
   methods: {
-    save() {
+    save(pageId) {
       this.$axios
-        .put(getOrigin() + `/api/v1/proofread/${this.volId}/${this.pageId}`, {
+        .put(getOrigin() + `/api/v1/proofread/${this.volId}/${pageId}`, {
           content: this.page,
           image_url: this.pageImageUrl,
         })
@@ -160,7 +171,7 @@ export default {
           if (response.data.success === true) {
             this.$q.notify({
               type: "positive",
-              message: `Page ${this.pageId} saved`,
+              message: `Page ${pageId} saved`,
               position: "bottom-right",
             });
           }
@@ -168,17 +179,13 @@ export default {
         .catch(() => {
           this.$q.notify({
             type: "negative",
-            message: `Page ${this.pageId} failed to saved`,
+            message: `Page ${pageId} failed to saved`,
             position: "bottom-right",
           });
         });
     },
 
     async open(pageId) {
-      if (this.page) {
-        this.save();
-      }
-
       const response = await this.$axios.get(
         getOrigin() + `/api/v1/proofread/${this.volId}/${pageId}`
       );

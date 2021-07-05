@@ -79,14 +79,10 @@
                 <q-item-section>page - {{ page.page_no }}</q-item-section>
               </q-item>
             </q-list>
-            <editor
-              class="col"
-              :text="getPageText('namsel')"
-              @input="updatePage('namsel')"
-            />
+            <editor class="col" :text="getPageText('namsel')" @input="updateNamselPage" />
           </q-tab-panel>
           <q-tab-panel name="google">
-            <editor :text="getPageText('google')" @input="updatePage('google')" />
+            <editor :text="getPageText('google')" @input="updateGooglePage" />
           </q-tab-panel>
           <q-tab-panel name="google-notes">
             <editor :text="getNote('google')" @input="updateGoogleNote" />
@@ -227,6 +223,14 @@ export default {
 
     updatePage(textType, value) {
       this.pages[textType][this.currentPageIdx].content = value;
+    },
+
+    updateGooglePage(value) {
+      this.updatePage(GOOGLE, value);
+    },
+
+    updateNamselPage(value) {
+      this.updatePage(NAMSEL, value);
     },
 
     updateImg(textType) {

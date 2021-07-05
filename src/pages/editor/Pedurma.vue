@@ -114,7 +114,7 @@
         class="q-mt-md"
       />
     </div>
-    <q-dialog v-model="download_url" persistent>
+    <q-dialog v-model="showDownloadDialog" persistent>
       <download-link-box :link="download_url" />
     </q-dialog>
   </div>
@@ -153,7 +153,8 @@ export default {
       notes: {},
       textObjIds: {},
       imgLink: "",
-      download_url: false,
+      download_url: "",
+      showDownloadDialog: false,
     };
   },
 
@@ -358,17 +359,33 @@ export default {
       this.saveText(NAMSEL);
       this.$q.notify({
         type: "info",
-        message: "saving initiated, you can continue working",
+        message: "Saving the text",
         position: "bottom",
       });
     },
 
     async download() {
       await this.save();
-      const response = await this.$axios.get(
-        getOrigin() + "/api/v1/pedurma/" + this.textId + "/preview/"
-      );
-      this.download_url = response.data.download_url;
+      this.$q.notify({
+        type: "info",
+        message: "Preparing the download",
+        position: "bottom",
+      });
+
+      this.$axios
+        .get(getOrigin() + "/api/v1/pedurma/" + this.textId + "/preview")
+        .then((response) => {
+          this.download_url = response.data.download_url;
+          this.showDownloadDialog = true;
+        })
+        .catch((err) => {
+          this.$q.notify({
+            type: "negative",
+            message: "Download failed, please contact the team",
+            position: "bottom",
+          });
+          console.log(err);
+        });
     },
   },
 };

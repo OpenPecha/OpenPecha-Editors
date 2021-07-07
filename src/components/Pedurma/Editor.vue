@@ -4,7 +4,7 @@
     :value="text"
     @input="updateValue"
     type="textarea"
-    :input-style="{ height: '700px' }"
+    :input-style="{ height: '85vh' }"
   />
 </template>
 

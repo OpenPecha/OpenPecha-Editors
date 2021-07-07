@@ -87,7 +87,7 @@
         readonly
         :value="currentPreview"
         type="textarea"
-        :input-style="{ height: '700px' }"
+        :input-style="{ height: '85vh' }"
         class="q-mt-md"
       />
     </div>

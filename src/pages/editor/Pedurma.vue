@@ -16,23 +16,17 @@
             align="justify"
             narrow-indicator
           >
-            <q-btn
-              flat
-              round
-              dense
-              icon="menu"
-              class="q-ml-sm"
-              @click.prevent="showPages = !showPages"
-            >
-              <q-tooltip>show pages</q-tooltip>
-            </q-btn>
             <q-tab name="namsel" label="Namsel"></q-tab>
             <q-tab name="google" label="google"></q-tab>
           </q-tabs>
 
-          <div class="q-pt-sm text-grey">
-            Page - {{ pages.namsel[currentPageIdx].page_no }}
-          </div>
+          <q-pagination
+            v-model="currentPageNum"
+            :max="Object.keys(pages.namsel).length"
+            input
+            class="rounded-borders text-grey-4"
+            style="border: 1px solid"
+          />
 
           <q-tabs
             v-model="editorTab"
@@ -58,27 +52,6 @@
 
         <q-tab-panels v-model="editorTab" animated>
           <q-tab-panel name="namsel" class="row">
-            <q-list
-              v-show="showPages"
-              class="col-2"
-              bordered
-              separator
-              style="max-height: 700px; overflow: auto"
-            >
-              <q-item
-                v-for="(page, index) in pages.namsel"
-                :key="page.id"
-                @click="
-                  currentPageIdx = index;
-                  showPages = false;
-                  getPreview();
-                "
-                clickable
-                v-ripple
-              >
-                <q-item-section>page - {{ page.page_no }}</q-item-section>
-              </q-item>
-            </q-list>
             <editor
               class="col"
               :text="getPageText('namsel')"
@@ -147,12 +120,11 @@ export default {
 
   data() {
     return {
-      currentPageIdx: 0,
+      currentPageNum: 1,
       currentPreview: "",
       editorTab: NAMSEL,
       editor: NAMSEL,
       loading: true,
-      showPages: false,
       pages: {},
       notes: {},
       textObjIds: {},
@@ -163,6 +135,10 @@ export default {
   },
 
   computed: {
+    currentPageIdx() {
+      return this.currentPageNum - 1;
+    },
+
     notesDict() {
       const notesDict = {};
       const googleNotesDict = {};

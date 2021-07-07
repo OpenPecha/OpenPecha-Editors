@@ -79,7 +79,11 @@
                 <q-item-section>page - {{ page.page_no }}</q-item-section>
               </q-item>
             </q-list>
-            <editor class="col" :text="getPageText('namsel')" @input="updateNamselPage" />
+            <editor
+              class="col"
+              :text="getPageText('namsel')"
+              @input="updateNamselPage"
+            />
           </q-tab-panel>
           <q-tab-panel name="google">
             <editor :text="getPageText('google')" @input="updateGooglePage" />
@@ -224,6 +228,7 @@ export default {
 
     updatePage(textType, value) {
       this.pages[textType][this.currentPageIdx].content = value;
+      this.getPreview();
     },
 
     updateGooglePage(value) {
@@ -246,6 +251,7 @@ export default {
     updateNote(textType, value) {
       const noteId = this.pages[textType][this.currentPageIdx].note_ref;
       this.notesDict[textType][noteId].content = value;
+      this.getPreview();
     },
 
     updateGoogleNote(value) {
@@ -265,9 +271,7 @@ export default {
     },
 
     async getPreview() {
-      this.$q.loading.show({
-        message: "preparing preview...",
-      });
+      console.log("get prevview");
       const googlePage = this.pages.google[this.currentPageIdx];
       const namselPage = this.pages.namsel[this.currentPageIdx];
       const googleNote = this.notesDict.google[googlePage.note_ref];
@@ -288,8 +292,9 @@ export default {
           console.log(error);
           this.$q.notify({
             type: "negative",
-            message: this.pages.namsel[this.currentPageIdx].name + " preview failed",
-            position: "bottom-right",
+            message:
+              this.pages.namsel[this.currentPageIdx].name + " preview failed",
+            position: "bottom",
           });
           return;
         });

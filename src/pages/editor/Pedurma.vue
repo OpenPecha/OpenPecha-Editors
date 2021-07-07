@@ -16,8 +16,12 @@
             align="justify"
             narrow-indicator
           >
-            <q-tab name="namsel" label="Namsel"></q-tab>
-            <q-tab name="google" label="google"></q-tab>
+            <q-tab
+              name="namsel"
+              label="མཆན་གནས།"
+              style="font-size: 1.5rem"
+            ></q-tab>
+            <q-tab name="google" label="སྡེ་དགེ་མ་ཡིག"></q-tab>
           </q-tabs>
 
           <q-pagination
@@ -39,12 +43,12 @@
           >
             <q-tab
               name="google-notes"
-              label="Google Note"
+              label="མཆན་ཡིག"
               @click="updateImg('google')"
             ></q-tab>
             <q-tab
               name="namsel-notes"
-              label="Namsel Note"
+              label="མཆན་གྲངས།"
               @click="updateImg('namsel')"
             ></q-tab>
           </q-tabs>
@@ -372,7 +376,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .container {
   display: flex;
   margin: 1rem;
@@ -394,5 +398,9 @@ export default {
 
 .preview {
   width: 40%;
+}
+
+.edit__editors >>> .q-tab__label {
+  font-size: 25px;
 }
 </style>

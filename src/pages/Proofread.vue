@@ -26,12 +26,7 @@
           class="col"
           :src="pageImageUrl"
           alt="page image"
-          style="
-            height: 300px;
-            border: 2px solid grey;
-            resize: both;
-            overflow: auto;
-          "
+          style="height: 300px; border: 2px solid grey"
         />
 
         <div class="editor q-mb-md">

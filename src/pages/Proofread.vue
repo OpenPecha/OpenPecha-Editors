@@ -1,94 +1,86 @@
 <template>
-  <q-page padding class="container">
-    <div class="column">
-      <div class="row">
-        <div class="page-list col-2 q-mr-md" v-show="showPages">
-          <q-list bordered separator style="max-height: 700px; overflow: auto">
-            <q-item
-              v-for="page in pageList"
-              :key="page.id"
-              clickable
-              v-ripple
-              @click="open(page.id)"
-            >
-              <q-item-section> Page {{ page.id }} </q-item-section>
-            </q-item>
-            <q-separator />
-          </q-list>
+  <q-page padding class="container column" v-if="pages">
+    <div class="row">
+      <div class="content col">
+        <div class="row justify-center items-center bg-grey-3">
+          <q-btn
+            flat
+            dense
+            col="col"
+            icon="chevron_left"
+            size="20px"
+            @click="loadImage('previous')"
+          />
+          <div v-if="pageImageUrl">{{ imageName }}</div>
+          <q-btn
+            flat
+            dense
+            col="col"
+            icon="chevron_right"
+            size="20px"
+            @click="loadImage('next')"
+          />
         </div>
 
-        <div v-if="page" class="content col">
-          <div class="row justify-center items-center bg-grey-3">
-            <q-btn
-              flat
-              dense
-              col="col"
-              icon="chevron_left"
-              size="20px"
-              @click="loadImage('previous')"
-            />
-            <div>{{ imageName }}</div>
-            <q-btn
-              flat
-              dense
-              col="col"
-              icon="chevron_right"
-              size="20px"
-              @click="loadImage('next')"
+        <ImageViewer
+          class="col"
+          :src="pageImageUrl"
+          alt="page image"
+          style="
+            height: 300px;
+            border: 2px solid grey;
+            resize: both;
+            overflow: auto;
+          "
+        />
+
+        <div class="editor q-mb-md">
+          <div class="column items-center bg-grey-3">
+            <q-pagination
+              v-model="pageIdInt"
+              :max="Object.keys(pages).length"
+              input
             />
           </div>
-
-          <ImageViewer
-            class="col"
-            :src="pageImageUrl"
-            alt="page image"
-            style="height: 300px; border: 2px solid grey; resize: both; overflow: auto"
-          />
-
-          <div class="editor q-mb-md">
-            <div class="column items-center bg-grey-3">
-              <q-pagination v-model="pageIdInt" :max="Object.keys(pages).length" input />
-            </div>
-            <textarea
-              name="textarea"
-              style="width: 100%; height: 250px; padding: 10px; font-size: 1.4rem"
-              v-model="page"
+          <textarea
+            name="textarea"
+            style="width: 100%; height: 250px; padding: 10px; font-size: 1.4rem"
+            v-model="page"
+          >
+          </textarea>
+        </div>
+        <div class="diffs">
+          <q-card>
+            <q-tabs
+              v-model="tab"
+              dense
+              class="text-grey"
+              active-color="primary"
+              indicator-color="primary"
+              align="justify"
+              narrow-indicator
             >
-            </textarea>
-          </div>
-          <div class="diffs">
-            <q-card>
-              <q-tabs
-                v-model="tab"
-                dense
-                class="text-grey"
-                active-color="primary"
-                indicator-color="primary"
-                align="justify"
-                narrow-indicator
-              >
-                <q-tab name="current" label="Current/Trans." no-caps />
-                <q-tab name="google" label="Google/Current" no-caps />
-                <q-tab name="derge" label="Derge/Current" no-caps />
-              </q-tabs>
+              <q-tab name="current" label="Current/Trans." no-caps />
+              <q-tab name="google" label="Google/Current" no-caps />
+              <q-tab name="derge" label="Derge/Current" no-caps />
+            </q-tabs>
 
-              <q-separator />
+            <q-separator />
 
-              <q-tab-panels v-model="tab" animated style="font-size: 1.3rem">
-                <q-tab-panel name="current">
-                  <div v-html="diffs.transk"></div>
-                </q-tab-panel>
+            <q-tab-panels v-model="tab" animated style="font-size: 1.3rem">
+              <q-tab-panel name="current">
+                <div v-html="diffs.transk"></div>
+              </q-tab-panel>
 
-                <q-tab-panel name="google">
-                  <div v-html="diffs.google_ocr"></div>
-                </q-tab-panel>
+              <q-tab-panel name="google">
+                <div v-html="diffs.google_ocr"></div>
+              </q-tab-panel>
 
-                <q-tab-panel name="derge">
-                  <div v-html="diffs.derge"></div>
-                </q-tab-panel>
-              </q-tab-panels>
-            </q-card>
-          </div>
+              <q-tab-panel name="derge">
+                <div v-html="diffs.derge"></div>
+              </q-tab-panel>
+            </q-tab-panels>
+          </q-card>
         </div>
       </div>
     </div>
@@ -109,8 +101,7 @@ export default {
   data() {
     return {
       tab: "current",
-      showPages: false,
-      pages: [],
+      pages: null,
       pageId: "0001",
       pageIdInt: 1,
       page: "",
@@ -192,7 +183,6 @@ export default {
       this.page = response.data.content;
       this.pageImageUrl = response.data.image_url;
       this.pageId = pageId;
-      this.showPages = false;
     },
 
     async fetchPages() {
@@ -232,9 +222,13 @@ export default {
       for (const diff of diffs) {
         const [op, chunk] = diff;
         if (op === 1) {
-          formattedDiffs = formattedDiffs.concat(this.addStyle(chunk, "diff-remove"));
+          formattedDiffs = formattedDiffs.concat(
+            this.addStyle(chunk, "diff-remove")
+          );
         } else if (op === -1) {
-          formattedDiffs = formattedDiffs.concat(this.addStyle(chunk, "diff-add"));
+          formattedDiffs = formattedDiffs.concat(
+            this.addStyle(chunk, "diff-add")
+          );
         } else {
           formattedDiffs = formattedDiffs.concat(chunk);
         }

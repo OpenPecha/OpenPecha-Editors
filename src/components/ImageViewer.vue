@@ -21,8 +21,4 @@ export default {
 </script>
 
 <style scoped>
-/* figure > div > picture > img {
-  width: 100%;
-  height: 100px;
-} */
 </style>

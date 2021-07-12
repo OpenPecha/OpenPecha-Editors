@@ -86,14 +86,13 @@
           class="q-ml-sm"
         />
       </div>
-      <q-input
-        outlined
-        readonly
-        :value="currentPreview"
-        type="textarea"
-        :input-style="{ height: '85vh' }"
-        class="q-mt-md"
-      />
+      <div class="preview__content q-mt-lg">
+        <div
+          v-if="currentPreview"
+          class="q-mt-md"
+          v-html="formattedPreview"
+        ></div>
+      </div>
     </div>
     <q-dialog v-model="showDownloadDialog" persistent>
       <download-link-box :link="download_url" />
@@ -102,7 +101,7 @@
 </template>
 
 <script>
-import { getOrigin } from "src/utils";
+import { getOrigin, toPara } from "src/utils";
 
 const NAMSEL = "namsel";
 const GOOGLE = "google";
@@ -160,6 +159,24 @@ export default {
 
     textId() {
       return this.$route.params.textId;
+    },
+
+    formattedPreview() {
+      const noteRegex = /<.*?>/g;
+      const notes = this.currentPreview.match(noteRegex);
+      const chunks = this.currentPreview.split(noteRegex);
+
+      let result = "";
+      console.log(notes, chunks.length);
+      for (let i = 0; i < notes.length; i++) {
+        result += chunks[i] + '<span class="note">' + notes[i] + "</span>";
+      }
+
+      if (chunks.length > notes.length) {
+        result += chunks[chunks.length - 1];
+      }
+
+      return toPara(result);
     },
   },
 
@@ -398,6 +415,16 @@ export default {
 
 .preview {
   width: 40%;
+}
+
+.preview__content {
+  padding: 2px 7px;
+  font-size: 1.5rem;
+  border: 1px dotted grey;
+}
+
+.preview >>> .note {
+  background-color: rgb(184, 236, 184);
 }
 
 .edit__editors >>> .q-tab__label {

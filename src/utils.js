@@ -24,3 +24,11 @@ export function getOrigin() {
     }
     return window.location.origin
 }
+
+export function toPara(string) {
+      var paras = "";
+      for (const line of string.split("\n")) {
+        paras = paras.concat(`<p>${line}</p>`);
+      }
+      return paras;
+    }

@@ -6,7 +6,7 @@
 
     <div class="edit">
       <div class="edit__editors">
-        <div class="tabs row justify-between">
+        <div class="tabs row no-wrap justify-between">
           <q-tabs
             v-model="editorTab"
             dense
@@ -137,6 +137,12 @@ export default {
     };
   },
 
+  watch: {
+    currentPageIdx() {
+      this.getPreview();
+    },
+  },
+
   computed: {
     currentPageIdx() {
       return this.currentPageNum - 1;
@@ -167,7 +173,6 @@ export default {
       const chunks = this.currentPreview.split(noteRegex);
 
       let result = "";
-      console.log(notes, chunks.length);
       for (let i = 0; i < notes.length; i++) {
         result += chunks[i] + '<span class="note">' + notes[i] + "</span>";
       }
@@ -207,7 +212,6 @@ export default {
     },
 
     getPageText(textType) {
-      // this.getPreview();
       const page = this.pages[textType][this.currentPageIdx];
       if (!["google-notes", "namsel-notes"].includes(this.editorTab)) {
         this.imgLink = page.image_link;
@@ -268,7 +272,6 @@ export default {
     },
 
     async getPreview() {
-      console.log("get prevview");
       const googlePage = this.pages.google[this.currentPageIdx];
       const namselPage = this.pages.namsel[this.currentPageIdx];
       const googleNote = this.notesDict.google[googlePage.note_ref];
@@ -286,11 +289,14 @@ export default {
           this.currentPreview = data.content;
         })
         .catch((error) => {
+          var message = "Preview failed";
+          if (error.response.status === 422) {
+            message = "Missing page number in the note";
+          }
           console.log(error);
           this.$q.notify({
             type: "negative",
-            message:
-              this.pages.namsel[this.currentPageIdx].name + " preview failed",
+            message: message,
             position: "bottom",
           });
           return;

@@ -1,11 +1,12 @@
 <template>
-  <q-page padding class="container column" v-if="pages">
+  <q-page class="container column q-pt-sm" v-if="pages">
     <div class="row">
       <div class="content col">
         <div class="row justify-center items-center bg-grey-3">
           <q-btn
             flat
             dense
+            disable
             col="col"
             icon="chevron_left"
             size="20px"
@@ -27,7 +28,7 @@
           :src="pageImageUrl"
           alt="page image"
           style="
-            height: 300px;
+            height: 250px;
             border: 2px solid grey;
             resize: both;
             overflow: auto;
@@ -67,7 +68,11 @@
 
             <q-separator />
 
-            <q-tab-panels v-model="tab" animated style="font-size: 1.3rem">
+            <q-tab-panels
+              v-model="tab"
+              animated
+              style="font-size: 1.3rem; max-height: 250px; overflow: auto"
+            >
               <q-tab-panel name="current">
                 <div v-html="diffs.transk"></div>
               </q-tab-panel>

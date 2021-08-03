@@ -6,50 +6,38 @@
 
     <div class="edit">
       <div class="edit__editors">
-        <div class="tabs row justify-between items-center">
-          <q-tabs
-            v-model="editorTab"
-            dense
-            class="text-grey"
-            active-color="primary"
-            indicator-color="primary"
-            align="justify"
-            narrow-indicator
-          >
-            <q-tab name="namsel" label="མཆན་གནས།"></q-tab>
-            <q-tab name="google" label="སྡེ་དགེ་མ་ཡིག"></q-tab>
-          </q-tabs>
+        <q-tabs
+          v-model="editorTab"
+          dense
+          class="text-grey"
+          active-color="primary"
+          indicator-color="primary"
+          align="justify"
+          narrow-indicator
+        >
+          <q-tab name="namsel" label="མཆན་གནས།"></q-tab>
+          <q-tab name="google" label="སྡེ་དགེ་མ་ཡིག"></q-tab>
 
           <q-pagination
             dense
             v-model="currentPageNum"
             :max="Object.keys(pages.namsel).length"
             input
-            class="rounded-borders text-grey-4"
+            class="rounded-borders text-grey-4 q-mt-sm"
             style="border: 1px solid; height: 30px"
           />
 
-          <q-tabs
-            v-model="editorTab"
-            dense
-            class="text-grey"
-            active-color="primary"
-            indicator-color="primary"
-            align="justify"
-            narrow-indicator
-          >
-            <q-tab
-              name="google-notes"
-              label="མཆན་ཡིག"
-              @click="updateImg('google')"
-            ></q-tab>
-            <q-tab
-              name="namsel-notes"
-              label="མཆན་གྲངས།"
-              @click="updateImg('namsel')"
-            ></q-tab>
-          </q-tabs>
-        </div>
+          <q-tab
+            name="google-notes"
+            label="མཆན་ཡིག"
+            @click="updateImg('google')"
+          ></q-tab>
+          <q-tab
+            name="namsel-notes"
+            label="མཆན་གྲངས།"
+            @click="updateImg('namsel')"
+          ></q-tab>
+        </q-tabs>
 
         <q-tab-panels v-model="editorTab" animated>
           <q-tab-panel name="namsel" class="row">
@@ -402,18 +390,23 @@ export default {
 }
 
 .image-card {
-  width: 40%;
+  width: 37%;
   margin-right: 0.625rem;
 }
 
 .edit {
-  width: 30%;
+  width: 28%;
   margin-right: 0.625rem;
 }
 
 .edit__editors >>> .q-tab__label {
   font-size: 1.563rem;
   line-height: 0px;
+}
+
+.edit__editors >>> .q-tabs {
+  min-width: 200px;
+  max-width: 600px;
 }
 
 .edit__editors >>> .q-tab {
@@ -425,7 +418,7 @@ export default {
 }
 
 .preview {
-  width: 30%;
+  width: 35%;
 }
 
 .preview__content {

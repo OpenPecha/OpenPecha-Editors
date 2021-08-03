@@ -128,9 +128,9 @@ export default {
       });
     },
 
-    pageIdInt() {
+    async pageIdInt() {
       if (this.page) {
-        this.save(this.pageId);
+        await this.save(this.pageId);
       }
       this.pageId = this.pageIdInt.toString().padStart(4, "0");
       this.open(this.pageId);
@@ -158,7 +158,7 @@ export default {
 
   methods: {
     save(pageId) {
-      this.$axios
+      return this.$axios
         .put(getOrigin() + `/api/v1/proofread/${this.volId}/${pageId}`, {
           content: this.page,
           image_url: this.pageImageUrl,

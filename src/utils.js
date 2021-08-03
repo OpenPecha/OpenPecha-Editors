@@ -28,7 +28,10 @@ export function getOrigin() {
 export function toPara(string) {
       var paras = "";
       for (const line of string.split("\n")) {
-        paras = paras.concat(`<p>${line}</p>`);
+        if (line) {
+          paras = paras.concat(`<p>${line}</p>`);
+        }
       }
-      return paras;
+
+      return paras
     }

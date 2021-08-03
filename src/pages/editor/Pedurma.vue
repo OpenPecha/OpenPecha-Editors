@@ -6,7 +6,7 @@
 
     <div class="edit">
       <div class="edit__editors">
-        <div class="tabs row no-wrap justify-between">
+        <div class="tabs row justify-between items-center">
           <q-tabs
             v-model="editorTab"
             dense
@@ -16,20 +16,17 @@
             align="justify"
             narrow-indicator
           >
-            <q-tab
-              name="namsel"
-              label="མཆན་གནས།"
-              style="font-size: 1.5rem"
-            ></q-tab>
+            <q-tab name="namsel" label="མཆན་གནས།"></q-tab>
             <q-tab name="google" label="སྡེ་དགེ་མ་ཡིག"></q-tab>
           </q-tabs>
 
           <q-pagination
+            dense
             v-model="currentPageNum"
             :max="Object.keys(pages.namsel).length"
             input
             class="rounded-borders text-grey-4"
-            style="border: 1px solid"
+            style="border: 1px solid; height: 30px"
           />
 
           <q-tabs
@@ -86,12 +83,8 @@
           class="q-ml-sm"
         />
       </div>
-      <div class="preview__content q-mt-lg">
-        <div
-          v-if="currentPreview"
-          class="q-mt-md"
-          v-html="formattedPreview"
-        ></div>
+      <div class="preview__content">
+        <div v-if="currentPreview" v-html="formattedPreview"></div>
       </div>
     </div>
     <q-dialog v-model="showDownloadDialog" persistent>
@@ -409,31 +402,50 @@ export default {
 }
 
 .image-card {
-  width: 25%;
+  width: 40%;
   margin-right: 0.625rem;
-  margin-top: 3.3rem;
 }
 
 .edit {
-  width: 35%;
+  width: 30%;
   margin-right: 0.625rem;
 }
 
+.edit__editors >>> .q-tab__label {
+  font-size: 1.563rem;
+  line-height: 0px;
+}
+
+.edit__editors >>> .q-tab {
+  padding: 0px 5px;
+}
+
+.edit__editors >>> .q-tab-panel {
+  padding: 15px 0px 0px 0px;
+}
+
 .preview {
-  width: 40%;
+  width: 30%;
 }
 
 .preview__content {
-  padding: 2px 7px;
+  margin-top: 16px;
+  /* padding-top: 18px; */
+  padding-left: 10px;
   font-size: 1.5rem;
-  border: 1px dotted grey;
+  border: 1px dotted rgb(209, 208, 208);
+  height: 85vh;
+  overflow-x: auto;
+  overflow-y: hidden;
+  line-height: 1.4;
+}
+
+.preview__content >>> p {
+  font-size: 1.5rem;
+  margin: 0px 0px;
 }
 
 .preview >>> .note {
   background-color: rgb(184, 236, 184);
-}
-
-.edit__editors >>> .q-tab__label {
-  font-size: 25px;
 }
 </style>

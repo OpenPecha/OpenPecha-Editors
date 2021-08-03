@@ -28,7 +28,7 @@ export default {
 <style>
 .q-textarea .q-field__native {
   font-size: 1.5rem;
-  line-height: 1.5;
-  padding-left: 2rem;
+  line-height: 1.4;
+  padding: 0px 0px;
 }
 </style>

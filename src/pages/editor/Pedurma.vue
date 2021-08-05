@@ -1,10 +1,8 @@
 <template>
   <div v-if="!loading" class="container">
     <q-card class="image-card">
-      <!-- <img :src="imgLink" /> -->
-      <ImageViewer
-        src="https://iiif.bdrc.io/bdr:I8LS67932::I8LS679320015.tif/full/max/0/default.png"
-      />
+      <ImageViewer :src="imgLink" />
+      <!-- <ImageViewer src="https://iiif.bdrc.io/bdr:I8LS67932::I8LS679320015.tif/full/max/0/default.png" /> -->
     </q-card>
 
     <div class="edit">
@@ -13,8 +11,7 @@
           v-model="editorTab"
           dense
           class="text-grey"
-          active-color="primary"
-          indicator-color="primary"
+          active-color="deep-purple-5"
           align="justify"
           narrow-indicator
         >
@@ -26,7 +23,7 @@
             v-model="currentPageNum"
             :max="Object.keys(pages.namsel).length"
             input
-            class="rounded-borders text-grey-4 q-mt-sm"
+            class="rounded-borders text-grey-4"
             style="border: 1px solid; height: 30px"
           />
 
@@ -65,13 +62,21 @@
     </div>
     <div class="preview">
       <div class="row justify-between">
-        <q-btn color="green-5" label="save" icon="save" @click="save" />
         <q-btn
+          dense
+          color="green-5"
+          label="save"
+          icon="save"
+          @click="save"
+          class="q-px-sm"
+        />
+        <q-btn
+          dense
           color="blue-5"
           label="Download"
           icon="file_download"
           @click="download"
-          class="q-ml-sm"
+          class="q-ml-sm q-px-sm"
         />
       </div>
       <div class="preview__content">
@@ -407,13 +412,14 @@ export default {
 }
 
 .edit__editors >>> .q-tab__label {
-  font-size: 1.563rem;
-  line-height: 0px;
+  font-size: 1.1rem;
+  line-height: 0;
+  font-family: "jomolhari", sans-serif;
 }
 
 .edit__editors >>> .q-tabs {
-  min-width: 200px;
-  max-width: 600px;
+  /* min-width: 200px;
+  max-width: 600px; */
 }
 
 .edit__editors >>> .q-tab {
@@ -421,7 +427,8 @@ export default {
 }
 
 .edit__editors >>> .q-tab-panel {
-  padding: 15px 0px 0px 0px;
+  padding: 10px 0px 0px 0px;
+  font-family: "jomolhari", sans-serif;
 }
 
 .preview {
@@ -429,23 +436,28 @@ export default {
 }
 
 .preview__content {
-  margin-top: 16px;
-  /* padding-top: 18px; */
+  margin-top: 11px;
+  padding-top: 5px;
   padding-left: 10px;
-  font-size: 1.5rem;
   border: 1px dotted rgb(209, 208, 208);
   height: 85vh;
   overflow-x: auto;
   overflow-y: hidden;
-  line-height: 1.4;
+  font-family: "jomolhari", sans-serif;
+  font-size: 1.3rem;
+  line-height: 1.3;
 }
 
 .preview__content >>> p {
-  font-size: 1.5rem;
   margin: 0px 0px;
+  color: rgb(155, 155, 155);
 }
 
 .preview >>> .note {
-  background-color: rgb(184, 236, 184);
+  padding: 0px 3px;
+  color: rgb(44, 44, 44);
+  background-color: rgb(209, 188, 248);
+  border-radius: 8px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 </style>

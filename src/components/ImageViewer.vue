@@ -1,5 +1,5 @@
 <template>
-  <inner-image-zoom :src="src" :zoomSrc="src" />
+  <inner-image-zoom :src="srcSmall" :zoomSrc="src" />
 </template>
 
 <script>
@@ -16,6 +16,13 @@ export default {
 
   components: {
     "inner-image-zoom": InnerImageZoom,
+  },
+
+  computed: {
+    srcSmall() {
+      const splitedURL = this.src.split("max");
+      return splitedURL[0] + "pct:50" + splitedURL[1];
+    },
   },
 };
 </script>

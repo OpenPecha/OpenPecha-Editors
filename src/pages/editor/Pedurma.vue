@@ -1,7 +1,10 @@
 <template>
   <div v-if="!loading" class="container">
     <q-card class="image-card">
-      <img :src="imgLink" />
+      <!-- <img :src="imgLink" /> -->
+      <ImageViewer
+        src="https://iiif.bdrc.io/bdr:I8LS67932::I8LS679320015.tif/full/max/0/default.png"
+      />
     </q-card>
 
     <div class="edit">
@@ -83,6 +86,7 @@
 
 <script>
 import { getOrigin, toPara } from "src/utils";
+import ImageViewer from "components/ImageViewer.vue";
 
 const NAMSEL = "namsel";
 const GOOGLE = "google";
@@ -100,6 +104,7 @@ export default {
   components: {
     editor: require("components/Pedurma/Editor.vue").default,
     DownloadLinkBox: require("components/Modals/DownloadLinkBox.vue").default,
+    ImageViewer,
   },
 
   data() {
@@ -390,12 +395,14 @@ export default {
 }
 
 .image-card {
-  width: 37%;
+  width: 35%;
   margin-right: 0.625rem;
+  height: 90vh;
+  overflow: auto;
 }
 
 .edit {
-  width: 28%;
+  width: 30%;
   margin-right: 0.625rem;
 }
 

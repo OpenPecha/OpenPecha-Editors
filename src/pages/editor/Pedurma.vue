@@ -88,12 +88,15 @@
         />
         <q-btn
           dense
+          :loading="downloading"
           color="blue-5"
           label="Download"
           icon="file_download"
           @click="download"
           class="q-ml-sm q-px-sm"
         />
+      <q-tooltip> Decrease font size </q-tooltip>
+    </q-btn>
       </div>
       <div class="preview__content">
         <div v-if="currentPreview" v-html="formattedPreview"></div>
@@ -143,6 +146,7 @@ export default {
       imgLink: "",
       download_url: "",
       showDownloadDialog: false,
+      downloading: false,
     };
   },
 
@@ -382,6 +386,7 @@ export default {
     },
 
     async download() {
+      this.downloading = true;
       await this.save();
       this.$q.notify({
         type: "info",
@@ -394,6 +399,7 @@ export default {
         .then((response) => {
           this.download_url = response.data.download_url;
           this.showDownloadDialog = true;
+          this.downloading = false;
         })
         .catch((err) => {
           this.$q.notify({
@@ -402,6 +408,7 @@ export default {
             position: "bottom",
           });
           console.log(err);
+          this.downloading = false;
         });
     },
   },

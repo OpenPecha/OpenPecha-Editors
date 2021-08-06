@@ -40,28 +40,44 @@
         </q-tabs>
 
         <q-tab-panels v-model="editorTab" animated>
-          <q-tab-panel name="namsel" class="row">
+          <q-tab-panel name="namsel">
             <editor
-              class="col"
+              class="edit__editor"
               :text="getPageText('namsel')"
               @input="updateNamselPage"
             />
           </q-tab-panel>
           <q-tab-panel name="google">
-            <editor :text="getPageText('google')" @input="updateGooglePage" />
+            <editor
+              class="edit__editor"
+              :text="getPageText('google')"
+              @input="updateGooglePage"
+            />
           </q-tab-panel>
           <q-tab-panel name="google-notes">
-            <editor :text="getNote('google')" @input="updateGoogleNote" />
+            <editor
+              class="edit__editor"
+              :text="getNote('google')"
+              @input="updateGoogleNote"
+            />
           </q-tab-panel>
 
           <q-tab-panel name="namsel-notes">
-            <editor :text="getNote('namsel')" @input="updateNamselNote" />
+            <editor
+              class="edit__editor"
+              :text="getNote('namsel')"
+              @input="updateNamselNote"
+            />
           </q-tab-panel>
         </q-tab-panels>
       </div>
     </div>
     <div class="preview">
       <div class="row justify-between">
+        <FontSizeModifier
+          :selectors="['.preview__content', '.edit__editor']"
+          :default="1.3"
+        />
         <q-btn
           dense
           color="green-5"
@@ -92,6 +108,7 @@
 <script>
 import { getOrigin, toPara } from "src/utils";
 import ImageViewer from "components/ImageViewer.vue";
+import FontSizeModifier from "components/FontSizeModifier.vue";
 
 const NAMSEL = "namsel";
 const GOOGLE = "google";
@@ -110,6 +127,7 @@ export default {
     editor: require("components/Pedurma/Editor.vue").default,
     DownloadLinkBox: require("components/Modals/DownloadLinkBox.vue").default,
     ImageViewer,
+    FontSizeModifier,
   },
 
   data() {
@@ -429,6 +447,10 @@ export default {
 .edit__editors >>> .q-tab-panel {
   padding: 10px 0px 0px 0px;
   font-family: "jomolhari", sans-serif;
+}
+
+.edit__editor {
+  font-size: 1.3rem;
 }
 
 .preview {

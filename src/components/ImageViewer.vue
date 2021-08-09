@@ -12,6 +12,10 @@ export default {
       type: String,
       required: true,
     },
+    resize: {
+      type: Boolean,
+      default: true,
+    },
   },
 
   components: {
@@ -20,6 +24,9 @@ export default {
 
   computed: {
     srcSmall() {
+      if (!this.resize) {
+        return this.src;
+      }
       const splitedURL = this.src.split("max");
       return splitedURL[0] + "pct:50" + splitedURL[1];
     },

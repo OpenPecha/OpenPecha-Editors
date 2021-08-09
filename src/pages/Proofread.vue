@@ -26,11 +26,12 @@
         <ImageViewer
           class="col"
           :src="pageImageUrl"
+          :resize="false"
           alt="page image"
           style="
             height: 250px;
+            width: 100%;
             border: 2px solid grey;
-            resize: both;
             overflow: auto;
           "
         />

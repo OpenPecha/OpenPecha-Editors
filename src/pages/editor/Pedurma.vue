@@ -95,8 +95,6 @@
           @click="download"
           class="q-ml-sm q-px-sm"
         />
-      <q-tooltip> Decrease font size </q-tooltip>
-    </q-btn>
       </div>
       <div class="preview__content">
         <div v-if="currentPreview" v-html="formattedPreview"></div>
@@ -123,6 +121,12 @@ const TENGYUR_PECHAS = {
   google: process.env.T_GOOGLE_PECHA_ID,
   namsel: process.env.T_NAMSEL_PECHA_ID,
 };
+
+function splitNoteNumber(string) {
+  const noteNumber = string[string.length - 2] + " ";
+  const chunk = string.slice(0, string.length - noteNumber.length - 1);
+  return { noteNumber, chunk };
+}
 
 export default {
   name: "PedurmaEditor",
@@ -187,7 +191,15 @@ export default {
 
       let result = "";
       for (let i = 0; i < notes.length; i++) {
-        result += chunks[i] + '<span class="note">' + notes[i] + "</span>";
+        const { noteNumber, chunk } = splitNoteNumber(chunks[i]);
+        result +=
+          chunk +
+          '<span class="note-number">' +
+          noteNumber +
+          "</span>" +
+          '<span class="note">' +
+          notes[i] +
+          "</span>";
       }
 
       if (chunks.length > notes.length) {
@@ -486,7 +498,12 @@ export default {
   padding: 0px 3px;
   color: rgb(44, 44, 44);
   background-color: rgb(209, 188, 248);
-  border-radius: 8px;
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  border-radius: 3px;
+}
+
+.preview >>> .note-number {
+  padding: 0px 3px;
+  color: rgb(44, 44, 44);
+  background-color: rgb(207, 241, 83);
 }
 </style>

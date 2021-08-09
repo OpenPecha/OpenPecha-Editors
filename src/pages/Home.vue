@@ -1,10 +1,7 @@
 <template>
   <q-page>
     <section class="hero q-mt-lg column content-center transparent">
-      <div
-        class="text-h5 text-weight-thin text-center"
-        style="max-width: 500px"
-      >
+      <div class="text-h4 text-center text-grey-9" style="max-width: 600px">
         Etext
         <span class="text-italic text-bold" style="color: #56d5dd"
           >archive</span
@@ -15,67 +12,49 @@
         >
         in curating and enriching etexts
       </div>
-      <q-btn
-        @click="showEditorChoices = true"
-        label="Get Started"
-        rounded
-        no-caps
-        size="lg"
-        style="background: #8e57f1; color: white"
-        class="q-mt-lg q-mb-lg self-center"
-      />
     </section>
-    <section id="features" class="q-pa-xl q-mt-xl" style="background: #f7f7f7">
-      <div class="feature column q-ml-auto q-mr-auto" style="width: 60%">
-        <div class="item self-start" style="width: 40%">
-          <q-icon
-            name="format_align_left"
-            style="font-size: 4rem; color: #8e57f1"
-          />
-          <div class="text-subtitle1">Format</div>
-          <div class="text-weight-light">
-            A format to represent a text with all sorts of annotations.
-          </div>
-        </div>
-        <div class="item self-end q-mt-lg" style="width: 40%">
-          <q-icon name="padding" style="font-size: 4rem; color: #8e57f1" />
-          <div class="text-subtitle1">Editor</div>
-          <div class="text-weight-light">
-            Create annotations and export text into ebook. Get annotations
-            suggestion to speed up the work.
-          </div>
-        </div>
-        <div class="item self-start q-mt-lg" style="width: 40%">
-          <q-icon name="storage" style="font-size: 4rem; color: #8e57f1" />
-          <div class="text-subtitle1">Catalog</div>
-          <div class="text-weight-light">
-            A catalog of all the text published in openpecha format
-          </div>
-        </div>
+
+    <section id="features" class="q-pa-xl q-mt-xl" style="background: #16042d">
+      <div
+        style="max-width: 1080px; margin: auto"
+        class="row justify-center q-gutter-lg"
+      >
+        <q-card
+          flat
+          bordered
+          v-for="product in products"
+          :key="product.name"
+          style="width: 300px"
+          class="column"
+        >
+          <q-img :src="product.image" style="height: 200px" />
+
+          <q-separator />
+
+          <q-card-section>
+            <div class="text-h4 q-mt-sm q-mb-xs">{{ product.name }}</div>
+            <div class="text-caption text-grey">
+              Editor for producing collated Kangyur and Tengyur text
+            </div>
+          </q-card-section>
+
+          <q-card-actions class="q-mt-auto">
+            <q-btn
+              v-if="product.ready"
+              color="primary"
+              icon-right="arrow_forward"
+              label="Get Started"
+              :to="product.path"
+            />
+            <q-btn v-else color="primary" label="Coming Soon" disabled />
+          </q-card-actions>
+        </q-card>
       </div>
     </section>
 
-    <!-- <section
-      id="about-us"
-      class="row justify-center"
-      style="background: #f7f7f7"
-    >
-      <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
-        <h5 class="text-center">
-          About Us
-          <br />
-          <span class="text-center text-grey text-h6"
-            >Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span
-          >
-        </h5>
-      </div>
-    </section> -->
+    <section id="about-us"></section>
 
     <section id="contact"></section>
-
-    <q-dialog v-model="showEditorChoices">
-      <EditorChoices :editors="editors" />
-    </q-dialog>
   </q-page>
 </template>
 
@@ -89,30 +68,30 @@ export default {
   data() {
     return {
       showEditorChoices: false,
-      editors: [
+      products: [
         {
-          name: "General",
-          path: "/editor/dashboard",
+          name: "Pedurma Editor",
+          desc: "Editor for producing collated Kangyur and Tengyur text",
+          image: require("assets/img/pedurma-editor.png"),
+          path: "/editor/pedurma",
+          ready: true,
         },
         {
-          name: "Pedurma",
+          name: "Annotation Editor",
+          desc: "Editor for creating annotations and exporting into ebook",
+          image: require("assets/img/annotation-editor.png"),
+          path: "/editor/dashboard",
+          ready: true,
+        },
+        {
+          name: "Proofreading Editor",
+          desc: "Advanced proofreading by comparing different editions of text to save proofreading time",
+          image: "",
           path: "/editor/pedurma",
+          ready: false,
         },
       ],
     };
-  },
-
-  methods: {
-    hoverOver: function (index) {
-      this["about_heading_color_" + index] = this.theme_color;
-      this["about_heading_" + index] = ["animated", "bounceIn"];
-    },
-    hoverOutTimeout: function (index) {
-      this["about_heading_color_" + index] = "#424242";
-      setTimeout(() => {
-        this["about_heading_" + index] = [];
-      }, 1000);
-    },
   },
 };
 </script>

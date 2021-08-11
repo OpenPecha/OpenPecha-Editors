@@ -127,7 +127,7 @@ export default {
     },
 
     open(text_id) {
-      this.$router.push("/editor/pedurma/" + text_id);
+      this.$router.push("/pedurma/" + text_id);
     },
 
     download(text_id) {

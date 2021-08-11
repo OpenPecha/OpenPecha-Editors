@@ -73,7 +73,7 @@ export default {
           name: "Pedurma Editor",
           desc: "Editor for producing collated Kangyur and Tengyur text",
           image: require("assets/img/pedurma-editor.png"),
-          path: "/editor/pedurma",
+          path: "/pedurma",
           ready: true,
         },
         {
@@ -87,7 +87,7 @@ export default {
           name: "Proofreading Editor",
           desc: "Advanced proofreading by comparing different editions of text to save proofreading time",
           image: "",
-          path: "/editor/pedurma",
+          path: "/proofread",
           ready: false,
         },
       ],

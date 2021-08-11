@@ -107,6 +107,7 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import { getOrigin, toPara } from "src/utils";
 import ImageViewer from "components/ImageViewer.vue";
 import FontSizeModifier from "components/FontSizeModifier.vue";
@@ -220,9 +221,13 @@ export default {
     this.getPreview();
     this.loading = false;
     this.$q.loading.hide();
+
+    // set nav back path
+    this.setNavBackPath("/pedurma");
   },
 
   methods: {
+    ...mapActions("app", ["setNavBackPath"]),
     getPechaId(textType) {
       const is_kangyur = this.textId[0] === process.env.K_TEXT_ID_PREFIX;
       if (is_kangyur) {

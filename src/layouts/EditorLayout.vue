@@ -3,11 +3,12 @@
     <q-header reveal bordered class="theme-color">
       <q-toolbar v-if="$q.platform.is.desktop">
         <q-btn
+          v-show="navBackPath"
           dense
           flat
           round
-          icon="menu"
-          @click="left = !left"
+          icon="arrow_back"
+          :to="navBackPath"
           color="black"
         />
         <q-btn
@@ -40,27 +41,6 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="left" side="left" overlay behavior="desktop" bordered>
-      <q-list padding>
-        <q-item
-          v-for="link in primaryNav"
-          :key="link.text"
-          :to="link.to"
-          v-ripple
-          clickable
-        >
-          <q-item-section avatar>
-            <q-icon color="grey" :name="link.icon" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label class="">{{ link.text }}</q-item-label>
-          </q-item-section>
-        </q-item>
-
-        <q-separator class="q-my-md" />
-      </q-list>
-    </q-drawer>
-
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -68,7 +48,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapState } from "vuex";
 
 export default {
   name: "EditorLayout",
@@ -80,6 +60,7 @@ export default {
   },
 
   computed: {
+    ...mapState("app", ["navBackPath"]),
     ...mapGetters("app", ["userAccessToken"]),
   },
 

@@ -1,0 +1,46 @@
+<template>
+  <div>
+    <q-intersection
+      v-for="item in items"
+      :key="item.id"
+      :style="{ height: '7vh' }"
+      transition="fade"
+    >
+      <q-item clickable v-ripple>
+        <q-item-section :style="{ 'max-width': '50px' }" @click="open(item.id)">
+          <q-item-label class="text-h6">{{ item.id }}</q-item-label>
+        </q-item-section>
+
+        <q-item-section
+          :style="{ 'margin-left': '50px' }"
+          @click="open(item.id)"
+        >
+          <q-item-label class="text-h4" :style="{ 'margin-top': '-20px' }">{{
+            item.title
+          }}</q-item-label>
+        </q-item-section>
+
+        <slot></slot>
+      </q-item>
+    </q-intersection>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "LazyItemList",
+  props: {
+    items: {
+      type: Array,
+      require: true,
+    },
+    open: {
+      type: Function,
+      require: true,
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+</style>

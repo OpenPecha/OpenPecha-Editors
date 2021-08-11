@@ -2,6 +2,7 @@
 export default function () {
     return {
         // Github Oauth
-        userAccessToken: null
+        userAccessToken: null,
+        navBackPath: "",
     }
 }

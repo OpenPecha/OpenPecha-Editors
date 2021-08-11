@@ -70,6 +70,8 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 const KANGYUR = "kangyur";
 const TENGYUR = "tengyur";
 
@@ -101,6 +103,8 @@ export default {
   },
 
   methods: {
+    ...mapActions("app", ["unsetNavBackPath"]),
+
     includes(s1, s2) {
       return s2.toLowerCase().includes(s1.toLowerCase());
     },
@@ -138,6 +142,10 @@ export default {
 
   mounted() {
     this.fetchTexts();
+  },
+
+  created() {
+    this.unsetNavBackPath();
   },
 };
 </script>

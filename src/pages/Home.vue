@@ -88,7 +88,7 @@ export default {
           desc: "Advanced proofreading by comparing different editions of text to save proofreading time",
           image: "",
           path: "/proofread",
-          ready: false,
+          ready: true,
         },
       ],
     };

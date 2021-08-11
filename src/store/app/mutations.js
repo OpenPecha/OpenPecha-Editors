@@ -7,3 +7,7 @@ export function unsetUserAccessToken(state) {
   state.userAccessToken = ""
   localStorage.removeItem("token")
 }
+
+export function setNavBackPath(state, path) {
+  state.navBackPath = path
+}

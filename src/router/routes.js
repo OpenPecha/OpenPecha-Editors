@@ -29,6 +29,11 @@ const routes = [
         beforeEnter:  GHAuthenticationGuard
       },
       {
+        path: '/editor/proofread',
+        component: () => import(/* webpackChunkName: "editor-proofread" */ 'src/pages/proofreading/DiffProofread.vue'),
+        beforeEnter: authenticationGuard,
+      },
+      {
         path: '/editor/:pechaId',
         component: () => import(/* webpackChunkName: "editor-pecha" */ 'pages/Editor.vue'),
         beforeEnter: GHAuthenticationGuard,
@@ -36,15 +41,14 @@ const routes = [
 
       {
         path: '/pedurma',
-        component: () => import(/* webpackChunkName: "editor-pedurma-text-list" */ 'pages/PedurmaTextList.vue'),
+        component: () => import(/* webpackChunkName: "editor-pedurma-text-list" */ 'src/pages/pedurma/PedurmaTextList.vue'),
         // beforeEnter: authenticationGuard,
       },
       {
         path: '/pedurma/:textId',
-        component: () => import(/* webpackChunkName: "editor-pedurma-text" */ 'pages/editor/Pedurma.vue'),
+        component: () => import(/* webpackChunkName: "editor-pedurma-text" */ 'src/pages/pedurma/PedurmaText.vue'),
         beforeEnter: authenticationGuard,
       },
-
       {
         path: '/pedurma/:textId/notes',
         component: () => import(/* webpackChunkName: "editor-pedurma-text-note" */ 'pages/editor/PedurmaNotes.vue'),
@@ -57,17 +61,17 @@ const routes = [
 
       {
         path: '/proofread',
-        component: () => import(/* webpackChunkName: "editor-proofread" */ 'pages/Proofread.vue'),
+        component: () => import(/* webpackChunkName: "editor-proofread" */ 'src/pages/proofreading/ProofreadPechaList.vue'),
         beforeEnter: authenticationGuard,
       },
       {
-        path: '/proofread/:volId',
-        component: () => import(/* webpackChunkName: "editor-proofread" */ 'pages/Proofread.vue'),
+        path: '/proofread/:pechaId',
+        component: () => import(/* webpackChunkName: "editor-proofread" */ 'src/pages/proofreading/ProofreadVolumeList.vue'),
         beforeEnter: authenticationGuard,
       },
       {
-        path: '/proofread/:volId/:pageId',
-        component: () => import(/* webpackChunkName: "editor-proofread" */ 'pages/Proofread.vue'),
+        path: '/proofread/:pechaId/:volId',
+        component: () => import(/* webpackChunkName: "editor-proofread" */ 'src/pages/proofreading/ProofreadEditor.vue'),
         beforeEnter: authenticationGuard,
       },
     ]

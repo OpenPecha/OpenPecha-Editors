@@ -25,3 +25,11 @@ export async function getUserAccessToken({ commit }, payload) {
         console.log(err)
     }
 }
+
+export function setNavBackPath({ commit }, path) {
+    commit("setNavBackPath", path)
+}
+
+export function unsetNavBackPath({ commit }) {
+    commit("setNavBackPath", "")
+}

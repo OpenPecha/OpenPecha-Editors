@@ -6,13 +6,13 @@
         width: '500px',
       }"
     >
-      <SearchableList :items="volumes" :open="open" />
+      <SearchableList :items="volumes" :open="open" listItemId="bdrcId" />
     </div>
   </q-page>
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import SearchableList from "components/SearchableList.vue";
 
 export default {
@@ -21,23 +21,16 @@ export default {
     SearchableList,
   },
 
-  data() {
-    return {
-      volumes: [
-        {
-          id: "v001",
-          title: "001_འདུལ་བ།_ཀ",
-        },
-        {
-          id: "v002",
-          title: "002_འདུལ་བ།_ཁ",
-        },
-      ],
-    };
+  computed: {
+    ...mapGetters("proofread", ["volumes"]),
+    pechaId() {
+      return this.$route.params.pechaId;
+    },
   },
 
   methods: {
     ...mapActions("app", ["setNavBackPath"]),
+    ...mapActions("proofread", ["fetchVolumes"]),
 
     open(volId) {
       this.$router.push(`/proofread/${this.pechaId}/${volId}`);
@@ -45,6 +38,7 @@ export default {
   },
 
   created() {
+    this.fetchVolumes({ pechaId: this.pechaId });
     this.setNavBackPath("/proofread");
   },
 };

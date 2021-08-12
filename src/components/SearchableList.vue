@@ -20,7 +20,7 @@
       class="q-mt-lg q-mx-auto"
       :style="{ 'max-width': '500px', height: '10px' }"
     >
-      <LazyItemList :items="filteredItems" :open="open" />
+      <LazyItemList :items="filteredItems" :open="open" :itemId="listItemId" />
     </div>
   </div>
 </template>
@@ -41,6 +41,10 @@ export default {
     open: {
       type: Function,
       require: true,
+    },
+    listItemId: {
+      type: String,
+      default: "id",
     },
   },
   data() {

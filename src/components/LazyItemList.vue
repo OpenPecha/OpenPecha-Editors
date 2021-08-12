@@ -8,7 +8,7 @@
     >
       <q-item clickable v-ripple>
         <q-item-section :style="{ 'max-width': '50px' }" @click="open(item.id)">
-          <q-item-label class="text-h6">{{ item.id }}</q-item-label>
+          <q-item-label class="text-h6">{{ item[itemId] }}</q-item-label>
         </q-item-section>
 
         <q-item-section
@@ -37,6 +37,10 @@ export default {
     open: {
       type: Function,
       require: true,
+    },
+    itemId: {
+      type: String,
+      default: "id",
     },
   },
 };

@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import app from './app'
+import proofread from "./proofread"
 
 
 Vue.use(Vuex)
@@ -8,6 +9,7 @@ Vue.use(Vuex)
 const Store = new Vuex.Store({
   modules: {
     app,
+    proofread,
   },
 
   // enable strict mode (adds overhead!)

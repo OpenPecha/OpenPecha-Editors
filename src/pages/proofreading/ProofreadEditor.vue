@@ -1,24 +1,82 @@
 <template>
-  <div>Proofreading editor</div>
+  <q-page padding>
+    <div
+      style="max-width: 1800px; min-width: 800px; height: 80vh; margin: auto"
+    >
+      <ImageViewer
+        class="col"
+        :src="page.imageUrl"
+        :resize="false"
+        alt="page image"
+        style="width: 100%; border: 2px solid grey"
+      />
+
+      <div class="editor q-mb-md">
+        <div class="column items-center bg-grey-3">
+          <q-pagination v-model="pageNum" :max="pageIds.length" input />
+        </div>
+        <textarea
+          name="textarea"
+          style="width: 100%; height: 300px; padding: 10px; font-size: 1.4rem"
+          v-model="page.content"
+        >
+        </textarea>
+      </div>
+    </div>
+  </q-page>
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import ImageViewer from "components/ImageViewer";
+import { mapActions, mapState } from "vuex";
 
 export default {
   name: "ProofreadEditor",
 
+  components: {
+    ImageViewer,
+  },
+
+  data() {
+    return {
+      pageNum: 1,
+    };
+  },
+
+  watch: {
+    pageNum() {
+      const pageId = this.pageIds[this.pageNum - 1];
+      this.fetchPage({ pechaId: this.pechaId, volId: this.volId, pageId });
+    },
+  },
+
   computed: {
+    ...mapState("proofread", ["pageIds", "page"]),
+
     pechaId() {
       return this.$route.params.pechaId;
+    },
+
+    volId() {
+      return this.$route.params.volId;
     },
   },
 
   methods: {
     ...mapActions("app", ["setNavBackPath"]),
+    ...mapActions("proofread", ["fetchPageIds", "fetchPage"]),
+
+    setPageNum() {
+      const inputPageNum = this.$route.query.page;
+      if (inputPageNum && inputPageNum > 0) {
+        this.pageNum = inputPageNum;
+      }
+    },
   },
 
   created() {
+    this.fetchPageIds({ pechaId: this.pechaId, volId: this.volId });
+    this.setPageNum();
     this.setNavBackPath(`/proofread/${this.pechaId}`);
   },
 };

@@ -139,15 +139,6 @@ export default {
   },
 
   computed: {
-    pageList() {
-      return Object.keys(this.pages).map((key) => {
-        return {
-          id: key,
-          ...this.pages[key],
-        };
-      });
-    },
-
     volId() {
       return this.$route.query.volId;
     },
@@ -160,7 +151,7 @@ export default {
   methods: {
     save(pageId) {
       return this.$axios
-        .put(getOrigin() + `/api/v1/proofread/${this.volId}/${pageId}`, {
+        .put(getOrigin() + `/api/v1/diffproofread/${this.volId}/${pageId}`, {
           content: this.page,
           image_url: this.pageImageUrl,
         })
@@ -184,7 +175,7 @@ export default {
 
     async open(pageId) {
       const response = await this.$axios.get(
-        getOrigin() + `/api/v1/proofread/${this.volId}/${pageId}`
+        getOrigin() + `/api/v1/diffproofread/${this.volId}/${pageId}`
       );
       this.page = response.data.content;
       this.pageImageUrl = response.data.image_url;
@@ -193,7 +184,7 @@ export default {
 
     async fetchPages() {
       const response = await this.$axios.get(
-        getOrigin() + "/api/v1/proofread/metadata/vols/" + this.volId
+        getOrigin() + "/api/v1/diffproofread/metadata/vols/" + this.volId
       );
       this.pages = response.data;
     },
@@ -201,7 +192,7 @@ export default {
     async getDiffs(diffWith) {
       const response = await this.$axios.post(
         getOrigin() +
-          `/api/v1/proofread/${this.volId}/${this.pageId}/diffs?diff_with=${diffWith}`,
+          `/api/v1/diffproofread/${this.volId}/${this.pageId}/diffs?diff_with=${diffWith}`,
         {
           content: this.page,
           image_url: this.pageImageUrl,
@@ -244,7 +235,7 @@ export default {
 
     loadImage(order) {
       this.$axios
-        .post(getOrigin() + `/api/v1/proofread/images/${order}`, {
+        .post(getOrigin() + `/api/v1/diffproofread/images/${order}`, {
           image_url: this.pageImageUrl,
         })
         .then((response) => {

@@ -6,15 +6,12 @@
       :style="{ height: '7vh' }"
       transition="fade"
     >
-      <q-item clickable v-ripple>
-        <q-item-section :style="{ 'max-width': '50px' }" @click="open(item.id)">
+      <q-item clickable v-ripple @click="open(item.id)">
+        <q-item-section :style="{ 'max-width': '50px' }">
           <q-item-label class="text-h5">{{ item[itemId] }}</q-item-label>
         </q-item-section>
 
-        <q-item-section
-          :style="{ 'margin-left': '50px' }"
-          @click="open(item.id)"
-        >
+        <q-item-section :style="{ 'margin-left': '50px' }">
           <q-item-label
             class="text-h4"
             style="font-family: 'jomolhari', sans-serif"

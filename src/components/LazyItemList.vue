@@ -8,16 +8,19 @@
     >
       <q-item clickable v-ripple>
         <q-item-section :style="{ 'max-width': '50px' }" @click="open(item.id)">
-          <q-item-label class="text-h6">{{ item[itemId] }}</q-item-label>
+          <q-item-label class="text-h5">{{ item[itemId] }}</q-item-label>
         </q-item-section>
 
         <q-item-section
           :style="{ 'margin-left': '50px' }"
           @click="open(item.id)"
         >
-          <q-item-label class="text-h4" :style="{ 'margin-top': '-20px' }">{{
-            item.title
-          }}</q-item-label>
+          <q-item-label
+            class="text-h4"
+            style="font-family: 'jomolhari', sans-serif"
+          >
+            {{ item.title }}
+          </q-item-label>
         </q-item-section>
 
         <slot></slot>

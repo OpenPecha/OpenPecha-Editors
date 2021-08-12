@@ -1,5 +1,5 @@
 <template>
-  <q-page>
+  <q-page padding>
     <div
       class="q-ml-auto q-mr-auto q-mt-lg"
       :style="{

@@ -12,8 +12,19 @@
       />
 
       <div class="editor q-mb-md">
-        <div class="column items-center bg-grey-3">
+        <div class="row items-center bg-grey-3 justify-center">
           <q-pagination v-model="pageNum" :max="pageIds.length" input />
+          <q-separator vertical />
+          <q-btn
+            flat
+            dense
+            color="green-5"
+            icon="save"
+            @click="save"
+            :loading="saving"
+          >
+            <q-tooltip> save </q-tooltip>
+          </q-btn>
         </div>
         <textarea
           name="textarea"
@@ -40,6 +51,7 @@ export default {
   data() {
     return {
       pageNum: 1,
+      saving: false,
     };
   },
 
@@ -47,6 +59,10 @@ export default {
     pageNum() {
       const pageId = this.pageIds[this.pageNum - 1];
       this.fetchPage({ pechaId: this.pechaId, volId: this.volId, pageId });
+    },
+
+    page() {
+      console.log(this.page);
     },
   },
 
@@ -60,6 +76,10 @@ export default {
     volId() {
       return this.$route.params.volId;
     },
+
+    pageId() {
+      return this.pageIds[this.pageNum - 1];
+    },
   },
 
   methods: {
@@ -71,6 +91,39 @@ export default {
       if (inputPageNum && inputPageNum > 0) {
         this.pageNum = inputPageNum;
       }
+    },
+
+    async save() {
+      this.saving = true;
+      this.$axios
+        .post(
+          process.env.OPENPECHA_API_URL +
+            `/api/v1/proofread/${this.pechaId}/${this.volId}/${this.pageId}`,
+          {
+            content: this.page.content,
+            image_url: this.page.imageUrl,
+          }
+        )
+        .then((response) => {
+          this.$q.notify({
+            type: "positive",
+            message: "saved ",
+            position: "bottom",
+            icon: "check",
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+          this.$q.notify({
+            type: "negative",
+            message: "failed to save, please contact the team",
+            position: "bottom",
+            icon: "sms_failed",
+          });
+        })
+        .finally(() => {
+          this.saving = false;
+        });
     },
   },
 

@@ -6,12 +6,9 @@ export async function fetchVolumes({commit}, {pechaId}) {
 }
 
 
-export async function fetchPageIds({commit, dispatch}, {pechaId, volId}) {
+export async function fetchPageIds({commit}, {pechaId, volId}) {
     const response = await axios.get(process.env.OPENPECHA_API_URL + `/api/v1/proofread/${pechaId}/${volId}`)
     commit("setPageIds", response.data)
-
-    // prefetch first page
-    dispatch("fetchPage", {pechaId, volId, pageId: response.data[0]})
 }
 
 export async function fetchPage({commit}, {pechaId, volId, pageId}) {

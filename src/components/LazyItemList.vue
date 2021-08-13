@@ -3,7 +3,7 @@
     <q-intersection
       v-for="item in items"
       :key="item.id"
-      :style="{ height: '7vh' }"
+      style="height: 7vh"
       transition="fade"
     >
       <q-item clickable v-ripple @click="open(item.id)">

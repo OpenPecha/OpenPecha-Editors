@@ -16,10 +16,7 @@
         />
       </template>
     </q-input>
-    <div
-      class="q-mt-lg q-mx-auto"
-      :style="{ 'max-width': '500px', height: '10px' }"
-    >
+    <div class="q-mt-lg q-mx-auto" style="max-width: 500px; height: 10vh">
       <LazyItemList :items="filteredItems" :open="open" :itemId="listItemId" />
     </div>
   </div>

@@ -29,7 +29,7 @@
         <textarea
           name="textarea"
           style="width: 100%; height: 300px; padding: 10px; font-size: 1.4rem"
-          v-model="page.content"
+          v-model="pageContent"
         >
         </textarea>
       </div>
@@ -57,17 +57,22 @@ export default {
 
   watch: {
     pageNum() {
-      const pageId = this.pageIds[this.pageNum - 1];
-      this.fetchPage({ pechaId: this.pechaId, volId: this.volId, pageId });
-    },
-
-    page() {
-      console.log(this.page);
+      this.setCurrentPage();
     },
   },
 
   computed: {
     ...mapState("proofread", ["pageIds", "page"]),
+
+    pageContent: {
+      get() {
+        return this.page.content;
+      },
+
+      set(value) {
+        this.$store.commit("proofread/setPageContent", value);
+      },
+    },
 
     pechaId() {
       return this.$route.params.pechaId;
@@ -86,11 +91,25 @@ export default {
     ...mapActions("app", ["setNavBackPath"]),
     ...mapActions("proofread", ["fetchPageIds", "fetchPage"]),
 
+    setCurrentPage() {
+      const pageId = this.pageIds[this.pageNum - 1];
+      this.$q.loading.show();
+      this.fetchPage({
+        pechaId: this.pechaId,
+        volId: this.volId,
+        pageId,
+      }).finally(() => {
+        this.$q.loading.hide();
+      });
+    },
+
     setPageNum() {
-      const inputPageNum = this.$route.query.page;
+      const inputPageNum = Number(this.$route.query.page);
+      console.log(inputPageNum);
       if (inputPageNum && inputPageNum > 0) {
         this.pageNum = inputPageNum;
       }
+      this.setCurrentPage();
     },
 
     async save() {
@@ -128,8 +147,14 @@ export default {
   },
 
   created() {
-    this.fetchPageIds({ pechaId: this.pechaId, volId: this.volId });
-    this.setPageNum();
+    this.$q.loading.show();
+    this.fetchPageIds({ pechaId: this.pechaId, volId: this.volId })
+      .then(() => {
+        this.setPageNum();
+      })
+      .finally(() => {
+        this.$q.loading.hide();
+      });
     this.setNavBackPath(`/proofread/${this.pechaId}`);
   },
 };

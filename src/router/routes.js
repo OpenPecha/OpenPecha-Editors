@@ -62,12 +62,10 @@ const routes = [
       {
         path: '/proofread',
         component: () => import(/* webpackChunkName: "editor-proofread" */ 'src/pages/proofreading/ProofreadPechaList.vue'),
-        beforeEnter: authenticationGuard,
       },
       {
         path: '/proofread/:pechaId',
         component: () => import(/* webpackChunkName: "editor-proofread" */ 'src/pages/proofreading/ProofreadVolumeList.vue'),
-        beforeEnter: authenticationGuard,
       },
       {
         path: '/proofread/:pechaId/:volId',

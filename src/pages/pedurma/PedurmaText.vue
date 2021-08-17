@@ -2,7 +2,9 @@
   <div v-if="!loading" class="container">
     <q-card class="image-card">
       <ImageViewer :src="imgLink" />
-      <!-- <ImageViewer src="https://iiif.bdrc.io/bdr:I8LS67932::I8LS679320015.tif/full/max/0/default.png" /> -->
+      <!-- <ImageViewer
+        src="https://iiif.bdrc.io/bdr:I8LS67932::I8LS679320015.tif/full/max/0/default.png"
+      /> -->
     </q-card>
 
     <div class="edit">
@@ -473,6 +475,10 @@ export default {
   font-family: "jomolhari", sans-serif;
 }
 
+.edit__editors >>> .q-tab-panel > .q-field {
+  background-color: rgb(248, 235, 200);
+}
+
 .edit__editor {
   font-size: 1.3rem;
 }
@@ -482,7 +488,7 @@ export default {
 }
 
 .preview__content {
-  margin-top: 11px;
+  margin-top: 14px;
   padding-top: 5px;
   padding-left: 10px;
   border: 1px dotted rgb(209, 208, 208);
@@ -492,11 +498,12 @@ export default {
   font-family: "jomolhari", sans-serif;
   font-size: 1.3rem;
   line-height: 1.3;
+  background-color: rgb(255, 247, 228);
 }
 
 .preview__content >>> p {
   margin: 0px 0px;
-  color: rgb(155, 155, 155);
+  color: #525252;
 }
 
 .preview >>> .note {

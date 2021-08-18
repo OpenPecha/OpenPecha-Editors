@@ -189,16 +189,24 @@ export default {
 
     formattedPreview() {
       const noteRegex = /<.*?>/g;
+      const noteNumRegex = /\(.*/g;
       const notes = this.currentPreview.match(noteRegex);
       const chunks = this.currentPreview.split(noteRegex);
+      console.log(chunks);
 
       let result = "";
       for (let i = 0; i < notes.length; i++) {
-        const { noteNumber, chunk } = splitNoteNumber(chunks[i]);
+        var noteNum = chunks[i].match(noteNumRegex)[0];
+        var chunk = chunks[i].slice(0, chunks[i].length - noteNum.length);
+
+        // remove note number annotation
+        noteNum = noteNum.replace("(", "");
+        noteNum = noteNum.replace(")", "");
+
         result +=
           chunk +
           '<span class="note-number">' +
-          noteNumber +
+          noteNum +
           "</span>" +
           '<span class="note">' +
           notes[i] +

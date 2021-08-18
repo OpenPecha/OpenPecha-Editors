@@ -9,7 +9,7 @@
       <q-input
         filled
         v-model="search"
-        label="Search"
+        label="Search by Text ID or Title"
         :style="{ 'font-size': '1.5rem' }"
       >
         <template v-slot:append>

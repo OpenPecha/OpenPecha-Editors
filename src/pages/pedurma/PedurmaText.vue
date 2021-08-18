@@ -2,7 +2,9 @@
   <div v-if="!loading" class="container">
     <q-card class="image-card">
       <ImageViewer :src="imgLink" />
-      <!-- <ImageViewer src="https://iiif.bdrc.io/bdr:I8LS67932::I8LS679320015.tif/full/max/0/default.png" /> -->
+      <!-- <ImageViewer
+        src="https://iiif.bdrc.io/bdr:I8LS67932::I8LS679320015.tif/full/max/0/default.png"
+      /> -->
     </q-card>
 
     <div class="edit">
@@ -80,6 +82,7 @@
         />
         <q-btn
           dense
+          outline
           color="green-5"
           label="save"
           icon="save"
@@ -88,6 +91,7 @@
         />
         <q-btn
           dense
+          outline
           :loading="downloading"
           color="blue-5"
           label="Download"
@@ -187,16 +191,24 @@ export default {
 
     formattedPreview() {
       const noteRegex = /<.*?>/g;
+      const noteNumRegex = /\(.*/g;
       const notes = this.currentPreview.match(noteRegex);
       const chunks = this.currentPreview.split(noteRegex);
+      console.log(chunks);
 
       let result = "";
       for (let i = 0; i < notes.length; i++) {
-        const { noteNumber, chunk } = splitNoteNumber(chunks[i]);
+        var noteNum = chunks[i].match(noteNumRegex)[0];
+        var chunk = chunks[i].slice(0, chunks[i].length - noteNum.length);
+
+        // remove note number annotation
+        noteNum = noteNum.replace("(", "");
+        noteNum = noteNum.replace(")", "");
+
         result +=
           chunk +
           '<span class="note-number">' +
-          noteNumber +
+          noteNum +
           "</span>" +
           '<span class="note">' +
           notes[i] +
@@ -319,6 +331,7 @@ export default {
           this.currentPreview = data.content;
         })
         .catch((error) => {
+          this.currentPreview = "";
           var message = "Preview failed";
           if (error.response.status === 422) {
             message = "Missing page number in the note";
@@ -473,6 +486,10 @@ export default {
   font-family: "jomolhari", sans-serif;
 }
 
+.edit__editors >>> .q-tab-panel > .q-field {
+  background-color: rgb(248, 235, 200);
+}
+
 .edit__editor {
   font-size: 1.3rem;
 }
@@ -482,21 +499,23 @@ export default {
 }
 
 .preview__content {
-  margin-top: 11px;
+  margin-top: 14px;
   padding-top: 5px;
   padding-left: 10px;
   border: 1px dotted rgb(209, 208, 208);
+  border-radius: 5px;
   height: 85vh;
   overflow-x: auto;
   overflow-y: hidden;
   font-family: "jomolhari", sans-serif;
   font-size: 1.3rem;
   line-height: 1.3;
+  background-color: rgb(255, 247, 228);
 }
 
 .preview__content >>> p {
   margin: 0px 0px;
-  color: rgb(155, 155, 155);
+  color: #525252;
 }
 
 .preview >>> .note {

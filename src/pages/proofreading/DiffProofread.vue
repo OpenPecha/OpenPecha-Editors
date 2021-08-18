@@ -6,7 +6,6 @@
           <q-btn
             flat
             dense
-            disable
             col="col"
             icon="chevron_left"
             size="20px"
@@ -20,6 +19,17 @@
             icon="chevron_right"
             size="20px"
             @click="loadImage('next')"
+          />
+
+          <q-separator vertical />
+
+          <q-btn
+            dense
+            color="red"
+            text-color="black"
+            label="reset"
+            class="q-ml-md"
+            @click="resetImage"
           />
         </div>
 
@@ -238,6 +248,19 @@ export default {
         .post(getOrigin() + `/api/v1/diffproofread/images/${order}`, {
           image_url: this.pageImageUrl,
         })
+        .then((response) => {
+          this.pageImageUrl = response.data.image_url;
+        });
+    },
+
+    resetImage() {
+      this.$axios
+        .post(
+          getOrigin() + `/api/v1/diffproofread/images/reset/${this.pageId}`,
+          {
+            image_url: this.pageImageUrl,
+          }
+        )
         .then((response) => {
           this.pageImageUrl = response.data.image_url;
         });

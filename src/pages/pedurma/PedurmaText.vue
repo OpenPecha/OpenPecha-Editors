@@ -82,6 +82,7 @@
         />
         <q-btn
           dense
+          outline
           color="green-5"
           label="save"
           icon="save"
@@ -90,6 +91,7 @@
         />
         <q-btn
           dense
+          outline
           :loading="downloading"
           color="blue-5"
           label="Download"
@@ -329,6 +331,7 @@ export default {
           this.currentPreview = data.content;
         })
         .catch((error) => {
+          this.currentPreview = "";
           var message = "Preview failed";
           if (error.response.status === 422) {
             message = "Missing page number in the note";
@@ -500,6 +503,7 @@ export default {
   padding-top: 5px;
   padding-left: 10px;
   border: 1px dotted rgb(209, 208, 208);
+  border-radius: 5px;
   height: 85vh;
   overflow-x: auto;
   overflow-y: hidden;

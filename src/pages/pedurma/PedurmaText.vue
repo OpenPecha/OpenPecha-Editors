@@ -12,10 +12,10 @@
         <q-tabs
           v-model="editorTab"
           dense
+          outside-arrows
           class="text-grey"
           active-color="deep-purple-5"
           align="justify"
-          narrow-indicator
         >
           <q-tab name="namsel" label="མཆན་གནས།"></q-tab>
           <q-tab name="google" label="སྡེ་དགེ་མ་ཡིག"></q-tab>

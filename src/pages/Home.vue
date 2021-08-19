@@ -32,9 +32,9 @@
           <q-separator />
 
           <q-card-section>
-            <div class="text-h4 q-mt-sm q-mb-xs">{{ product.name }}</div>
+            <div class="text-h5 q-mt-sm q-mb-xs">{{ product.name }}</div>
             <div class="text-caption text-grey">
-              Editor for producing collated Kangyur and Tengyur text
+              {{ product.desc }}
             </div>
           </q-card-section>
 

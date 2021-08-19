@@ -33,6 +33,10 @@
         >
         </textarea>
       </div>
+
+      <div style="min-height: 200px" class="row justify-center items-center">
+        <div class="text-grey">Diff not available yet</div>
+      </div>
     </div>
   </q-page>
 </template>

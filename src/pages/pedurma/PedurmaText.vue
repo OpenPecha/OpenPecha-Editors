@@ -82,9 +82,22 @@
         />
         <q-btn
           dense
+          no-caps
           outline
+          label="Guide"
+          icon="description"
+          @click="
+            openURL(
+              'https://docs.google.com/document/d/1Ob9-brku7NvKSQHm8DwYbYPnHX4tJtJDD_2gwFIXQ5w/edit?usp=sharing'
+            )
+          "
+        />
+        <q-btn
+          dense
+          outline
+          no-caps
           color="green-5"
-          label="save"
+          label="Save"
           icon="save"
           @click="save"
           class="q-px-sm"
@@ -92,6 +105,7 @@
         <q-btn
           dense
           outline
+          no-caps
           :loading="downloading"
           color="blue-5"
           label="Download"
@@ -115,6 +129,7 @@ import { mapActions } from "vuex";
 import { getOrigin, toPara } from "src/utils";
 import ImageViewer from "components/ImageViewer.vue";
 import FontSizeModifier from "components/FontSizeModifier.vue";
+import { openURL } from "quasar";
 
 const NAMSEL = "namsel";
 const GOOGLE = "google";
@@ -440,6 +455,10 @@ export default {
           console.log(err);
           this.downloading = false;
         });
+    },
+
+    openURL(url) {
+      openURL(url);
     },
   },
 };

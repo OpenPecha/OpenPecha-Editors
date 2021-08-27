@@ -3,17 +3,17 @@
     <q-card bordered flat class="q-ml-auto q-mr-auto" style="max-width: 950px">
       <editor-menu-bar :editor="editor" v-slot="{ commands, isActive }">
         <q-toolbar>
-          <q-btn flat round dense icon="menu" class="q-mr-sm">
+          <!-- <q-btn flat round dense icon="menu" class="q-mr-sm">
             <q-tooltip>show all text</q-tooltip>
           </q-btn>
-          <q-separator vertical inset />
+          <q-separator vertical inset /> -->
           <q-btn-dropdown
             flat
             no-caps
             dense
             icon="layers"
-            label="Layers"
-            class="q-ml-sm q-mr-sm"
+            label="Style"
+            color="primary"
           >
             <q-list dense>
               <q-item
@@ -36,18 +36,33 @@
           </q-btn-dropdown>
 
           <q-separator vertical inset />
-          <q-btn flat dense icon="undo" @click="commands.undo" class="q-ml-sm">
+          <q-btn flat dense icon="undo" color="grey" @click="commands.undo" class="q-ml-sm">
             <q-tooltip>undo</q-tooltip>
           </q-btn>
-          <q-btn flat dense icon="redo" @click="commands.redo" class="q-mr-sm">
+          <q-btn flat dense icon="redo" color="grey" @click="commands.redo" class="q-mr-sm">
             <q-tooltip>redo</q-tooltip>
           </q-btn>
 
           <q-space />
 
-          <q-btn flat dense icon="get_app" class="q-ml-sm" @click="exportPecha">
-            <q-tooltip>export</q-tooltip>
-          </q-btn>
+          <q-btn-dropdown dense flat no-caps label="Export" color="grey-8">
+            <q-list>
+              <q-item clickable v-close-popup @click="exportPecha('.epub')">
+                <q-item-section>
+                  <q-item-label>.epub</q-item-label>
+                </q-item-section>
+              </q-item>
+
+              <q-item clickable v-close-popup @click="exportPecha('.docx')">
+                <q-item-section>
+                  <q-item-label>.docx</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+
+          <q-separator vertical inset />
+
           <q-btn flat icon="save" text-color="green-5" @click="save">
             <q-tooltip>save</q-tooltip>
           </q-btn>
@@ -107,10 +122,11 @@ export default {
   },
 
   methods: {
-    async exportPecha() {
+    async exportPecha(format) {
       if (this.localHTML) {
         await this.save();
       }
+      console.log(format)
 
       this.$q.loading.show();
       const response = await this.$axios.get(
@@ -120,7 +136,8 @@ export default {
           headers: {
             token: this.userAccessToken,
           },
-        }
+          params: { format }
+        },
       );
       this.$q.loading.hide();
       if (response["status"] == 200) {

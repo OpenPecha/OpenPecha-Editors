@@ -2,7 +2,7 @@
   <div>
     <q-card bordered flat class="q-ml-auto q-mr-auto" style="max-width: 950px">
       <editor-menu-bar :editor="editor" v-slot="{ commands, isActive }">
-        <q-toolbar>
+        <q-toolbar class="q-pa-none">
           <!-- <q-btn flat round dense icon="menu" class="q-mr-sm">
             <q-tooltip>show all text</q-tooltip>
           </q-btn>
@@ -14,6 +14,7 @@
             icon="layers"
             label="Style"
             color="primary"
+            class="q-ml-sm"
           >
             <q-list dense>
               <q-item

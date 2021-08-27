@@ -44,7 +44,7 @@
               color="primary"
               icon-right="arrow_forward"
               label="Get Started"
-              :to="product.path"
+              @click="open(product.path)"
             />
             <q-btn v-else color="primary" label="Coming Soon" disabled />
           </q-card-actions>
@@ -59,6 +59,8 @@
 </template>
 
 <script>
+import { openURL } from "quasar"
+
 export default {
   name: "HomePage",
   components: {
@@ -87,12 +89,22 @@ export default {
           name: "Annotation Editor",
           desc: "Editor for creating annotations and exporting into ebook",
           image: require("assets/img/annotation-editor.png"),
-          path: "/editor/dashboard",
+          path: "https://openpecha.org/editor/dashboard",
           ready: true,
         },
       ],
     };
   },
+
+  methods: {
+    open(path) {
+      if (path.match("https")) {
+        openURL(path)
+      } else {
+        this.$router.push(path)
+      }
+    }
+  }
 };
 </script>
 

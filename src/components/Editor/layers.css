@@ -42,11 +42,31 @@
     color: #897335;
 }
 
-p > .root-text {
+.citation-verse {
+    color: #897335;
+    margin-left: 48px;
+}
+
+.citation-prose {
+    display: block;
+    color: #897335;
+    text-align: justify;
+    margin: 14px 48px;
+}
+
+.root-text {
+    color: #8b1409;
+}
+
+.root-text-verse {
     color: #8b1409;
     line-height: 1;
     text-align: justify;
-    margin-left: 20px;
+    margin-left: 48px;
+}
+
+.root-text-verse:first-child {
+    margin-top: 14px;
 }
 
 .sabche {

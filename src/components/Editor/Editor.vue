@@ -201,8 +201,12 @@ export default {
 .ProseMirror:focus
   outline: none
 
+.ProseMirror > p
+    margin: 0
+
 .editor__content
   font-family: 'monlam-ochan2', sans-serif
   font-size: 1.657rem
   line-height: 2
+
 </style>

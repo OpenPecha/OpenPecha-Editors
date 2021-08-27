@@ -79,16 +79,6 @@ export const layers = [
           color: '#343233'
         },
         {
-          name: "Root Text",
-          style: "root-text",
-          color: '#8b1409'
-        },
-        {
-          name: "Citation",
-          style: "citation",
-          color: '#897335'
-        },
-        {
           name: "Sabche",
           style: "sabche",
           color: '#005e7f'
@@ -97,5 +87,30 @@ export const layers = [
           name: "Yigchung",
           style: "yigchung",
           color: '#343233'
+        },
+        {
+          name: "Root-Text Inline",
+          style: "root-text",
+          color: '#8b1409'
+        },
+        {
+          name: "Root-Text Verse",
+          style: "root-text-verse",
+          color: '#8b1409'
+        },
+        {
+          name: "Citation Inline",
+          style: "citation",
+          color: '#897335'
+        },
+        {
+          name: "Citation Verse",
+          style: "citation-verse",
+          color: '#897335'
+        },
+        {
+          name: "Citation Prose",
+          style: "citation-prose",
+          color: '#897335'
         },
       ]

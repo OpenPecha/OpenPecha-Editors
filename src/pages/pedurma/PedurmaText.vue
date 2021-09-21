@@ -242,8 +242,7 @@ export default {
     this.$q.loading.show({
       message: "fetching text, please wait...",
     });
-    await this.fetchText(GOOGLE);
-    await this.fetchText(NAMSEL);
+    await this.fetchText();
     this.imgLink = this.pages[NAMSEL][0].image_link;
     this.getPreview();
     this.loading = false;
@@ -362,19 +361,20 @@ export default {
       this.$q.loading.hide();
     },
 
-    async fetchText(textType) {
+    async fetchText() {
       try {
         const response = await this.$axios.get(
           getOrigin() +
             "/api/v1/pedurma/" +
-            this.getPechaId(textType) +
             "/texts/" +
             this.textId
         );
-        const text = await response.data;
-        this.pages[textType] = text.pages;
-        this.notes[textType] = text.notes;
-        this.textObjIds[textType] = text.id;
+        const texts = response.data;
+        for (const textType in texts) {
+          this.pages[textType] = texts[textType].pages;
+          this.notes[textType] = texts[textType].notes;
+          this.textObjIds[textType] = texts[textType].id;
+        }
       } catch (err) {
         if (err.response) {
           // client received an error response (5xx, 4xx)
@@ -388,18 +388,24 @@ export default {
       }
     },
 
-    async saveText(textType) {
+    async saveText() {
       await this.$axios
         .put(
           getOrigin() +
             "/api/v1/pedurma/" +
-            this.getPechaId(textType) +
             "/texts/" +
             this.textId,
           {
-            id: this.getTextObjId(textType),
-            pages: this.pages[textType],
-            notes: this.dict2List(this.notesDict[textType]),
+            NAMSEL: {
+              id: this.getTextObjId(NAMSEL),
+              pages: this.pages[NAMSEL],
+              notes: this.dict2List(this.notesDict[NAMSEL]),
+            },
+            GOOGLE: {
+              id: this.getTextObjId(GOOGLE),
+              pages: this.pages[GOOGLE],
+              notes: this.dict2List(this.notesDict[GOOGLE]),
+            }
           }
         )
         .then((response) => {
@@ -421,8 +427,7 @@ export default {
     },
 
     save() {
-      this.saveText(GOOGLE);
-      this.saveText(NAMSEL);
+      this.saveText();
       this.$q.notify({
         type: "info",
         message: "Saving the text",

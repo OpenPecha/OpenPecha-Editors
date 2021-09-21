@@ -28,25 +28,25 @@
       :style="{ 'max-width': '1000px', height: '10px' }"
     >
       <q-intersection
-        v-for="text in filteredTexts"
-        :key="text.p_id"
+        v-for="textId in filteredTexts"
+        :key="textId"
         :style="{ height: '7vh' }"
         transition="fade"
       >
         <q-item clickable v-ripple>
           <q-item-section
             :style="{ 'max-width': '50px' }"
-            @click="open(text.p_id)"
+            @click="open(textId)"
           >
-            <q-item-label class="text-h6">{{ text.p_id }}</q-item-label>
+            <q-item-label class="text-h6">{{ textId }}</q-item-label>
           </q-item-section>
 
           <q-item-section
             :style="{ 'margin-left': '50px' }"
-            @click="open(text.p_id)"
+            @click="open(textId)"
           >
             <q-item-label class="text-h4" :style="{ 'margin-top': '-20px' }">{{
-              text.p_title
+              texts[textId].title
             }}</q-item-label>
           </q-item-section>
 
@@ -55,7 +55,7 @@
               class="cursor-pointer text-green-4"
               name="file_download"
               size="md"
-              @click="download(text.p_id)"
+              @click="download(textId)"
             >
               <q-tooltip> Download </q-tooltip>
             </q-icon>
@@ -93,12 +93,13 @@ export default {
 
   computed: {
     filteredTexts() {
-      return this.texts.filter((text) => {
-        return (
-          this.includes(this.search, text.p_id) ||
-          this.includes(this.search, text.p_title)
-        );
-      });
+      return Object.keys(this.texts)
+        .filter((textId) => {
+          return (
+            this.includes(this.search, textId) ||
+            this.includes(this.search, this.texts[textId].title)
+          );
+        });
     },
   },
 
@@ -116,7 +117,7 @@ export default {
             ? process.env.T_TEXT_LIST_URL
             : process.env.K_TEXT_LIST_URL;
         const response = await this.$axios.get(url);
-        this.texts = response.data;
+        this.texts = response.data
       } catch (err) {
         if (err.response) {
           // client received an error response (5xx, 4xx)

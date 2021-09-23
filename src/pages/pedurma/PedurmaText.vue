@@ -365,15 +365,14 @@ export default {
       try {
         const response = await this.$axios.get(
           getOrigin() +
-            "/api/v1/pedurma/" +
-            "/texts/" +
+            "/api/v1/pedurma/texts/" +
             this.textId
         );
         const texts = response.data;
         for (const textType in texts) {
           this.pages[textType] = texts[textType].pages;
           this.notes[textType] = texts[textType].notes;
-          this.textObjIds[textType] = texts[textType].id;
+          this.textObjIds[textType] = texts.text_id;
         }
       } catch (err) {
         if (err.response) {
@@ -388,20 +387,20 @@ export default {
       }
     },
 
-    async saveText() {
+    async save() {
       await this.$axios
         .put(
           getOrigin() +
-            "/api/v1/pedurma/" +
-            "/texts/" +
+            "/api/v1/pedurma/texts/" +
             this.textId,
           {
-            NAMSEL: {
+            "text_id": this.textId,
+            namsel: {
               id: this.getTextObjId(NAMSEL),
               pages: this.pages[NAMSEL],
               notes: this.dict2List(this.notesDict[NAMSEL]),
             },
-            GOOGLE: {
+            google: {
               id: this.getTextObjId(GOOGLE),
               pages: this.pages[GOOGLE],
               notes: this.dict2List(this.notesDict[GOOGLE]),
@@ -411,7 +410,7 @@ export default {
         .then((response) => {
           this.$q.notify({
             type: "positive",
-            message: "saved " + textType + " text",
+            message: "saved text",
             position: "bottom-right",
           });
         })
@@ -424,15 +423,6 @@ export default {
           });
           return;
         });
-    },
-
-    save() {
-      this.saveText();
-      this.$q.notify({
-        type: "info",
-        message: "Saving the text",
-        position: "bottom",
-      });
     },
 
     async download() {

@@ -372,7 +372,7 @@ export default {
         for (const textType in texts) {
           this.pages[textType] = texts[textType].pages;
           this.notes[textType] = texts[textType].notes;
-          this.textObjIds[textType] = texts.text_id;
+          this.textObjIds[textType] = texts[textType].id;
         }
       } catch (err) {
         if (err.response) {
@@ -418,7 +418,7 @@ export default {
           console.log(error);
           this.$q.notify({
             type: "negative",
-            message: "could not save " + textType + " text",
+            message: "could not save text",
             position: "bottom-right",
           });
           return;

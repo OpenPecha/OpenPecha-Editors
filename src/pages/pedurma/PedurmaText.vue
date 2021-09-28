@@ -186,7 +186,7 @@ export default {
     },
 
     notesDict() {
-      const notesDict = {};
+      const result = {};
       const googleNotesDict = {};
       const namselNotesDict = {};
       this.notes.google.forEach((note) => {
@@ -195,9 +195,9 @@ export default {
       this.notes.namsel.forEach((note) => {
         namselNotesDict[note.id] = note;
       });
-      notesDict[GOOGLE] = googleNotesDict;
-      notesDict[NAMSEL] = namselNotesDict;
-      return notesDict;
+      result[GOOGLE] = googleNotesDict;
+      result[NAMSEL] = namselNotesDict;
+      return result;
     },
 
     textId() {
@@ -209,7 +209,6 @@ export default {
       const noteNumRegex = /\(.*/g;
       const notes = this.currentPreview.match(noteRegex);
       const chunks = this.currentPreview.split(noteRegex);
-      console.log(chunks);
 
       let result = "";
       for (let i = 0; i < notes.length; i++) {
@@ -244,7 +243,7 @@ export default {
     });
     await this.fetchText();
     this.imgLink = this.pages[NAMSEL][0].image_link;
-    this.getPreview();
+    await this.getPreview();
     this.loading = false;
     this.$q.loading.hide();
 
@@ -356,9 +355,8 @@ export default {
             message: message,
             position: "bottom",
           });
-          return;
+          this.$q.loading.hide()
         });
-      this.$q.loading.hide();
     },
 
     async fetchText() {

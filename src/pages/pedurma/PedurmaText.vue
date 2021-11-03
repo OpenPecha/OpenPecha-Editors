@@ -297,7 +297,7 @@ export default {
 
     updatePage(textType, value) {
       this.pages[textType][this.currentPageIdx].content = value;
-      this.getPreview();
+      this.debouncedPreview();
       this.debouncedSave()
     },
 
@@ -321,7 +321,7 @@ export default {
     updateNote(textType, value) {
       const noteId = this.pages[textType][this.currentPageIdx].note_ref;
       this.notesDict[textType][noteId].content = value;
-      this.getPreview();
+      this.debouncedPreview();
       this.debouncedSave()
     },
 
@@ -373,6 +373,10 @@ export default {
           this.$q.loading.hide()
         });
     },
+
+    debouncedPreview: debounce(function()  {
+      this.getPreview()
+    }, 1500),
 
     async fetchText() {
       try {

@@ -83,7 +83,7 @@
     </div>
     <div class="preview">
       <div class="row justify-between">
-        <FontSizeModifier />
+        <FontSizeControl />
         <q-btn
           dense
           no-caps
@@ -135,7 +135,7 @@
 import { mapActions } from "vuex";
 import { getOrigin, toPara } from "src/utils";
 import ImageViewer from "components/ImageViewer.vue";
-import FontSizeModifier from "components/FontSizeModifier.vue";
+import FontSizeControl from "components/FontSizeControl.vue";
 import { openURL } from "quasar";
 
 const NAMSEL = "namsel";
@@ -155,7 +155,7 @@ export default {
     editor: require("components/Pedurma/Editor.vue").default,
     DownloadLinkBox: require("components/Modals/DownloadLinkBox.vue").default,
     ImageViewer,
-    FontSizeModifier,
+    FontSizeControl,
   },
 
   data() {

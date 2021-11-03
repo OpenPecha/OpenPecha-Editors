@@ -132,11 +132,14 @@
 </template>
 
 <script>
+import { openURL } from "quasar";
 import { mapActions } from "vuex";
+import debounce from "debounce"
+
 import { getOrigin, toPara } from "src/utils";
+
 import ImageViewer from "components/ImageViewer.vue";
 import FontSizeControl from "components/FontSizeControl.vue";
-import { openURL } from "quasar";
 
 const NAMSEL = "namsel";
 const GOOGLE = "google";
@@ -295,6 +298,7 @@ export default {
     updatePage(textType, value) {
       this.pages[textType][this.currentPageIdx].content = value;
       this.getPreview();
+      this.debouncedSave()
     },
 
     updateGooglePage(value) {
@@ -318,6 +322,7 @@ export default {
       const noteId = this.pages[textType][this.currentPageIdx].note_ref;
       this.notesDict[textType][noteId].content = value;
       this.getPreview();
+      this.debouncedSave()
     },
 
     updateGoogleNote(value) {
@@ -432,6 +437,10 @@ export default {
           return;
         });
     },
+
+    debouncedSave: debounce(function() {
+      this.save()
+    }, 1500),
 
     async download() {
       this.downloading = true;

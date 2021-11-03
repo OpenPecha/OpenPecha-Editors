@@ -11,54 +11,35 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   name: "FontSizeModifier",
   props: {
-    selectors: {
-      type: Array,
-      require: true,
-    },
-    default: {
+    defaultFontSize: {
       type: Number,
-      require: true,
+      default: 1.3
     },
-  },
-
-  data() {
-    return {
-      currentFontSize: this.default,
-    };
-  },
-
-  computed: {
-    selectedDOMs() {
-      return this.selectors.map((selector) => {
-        return document.querySelector(selector);
-      });
-    },
-  },
-
-  watch: {
-    currentFontSize() {
-      this.change();
-    },
+    offset: {
+      type: Number,
+      default: 0.1
+    }
   },
 
   methods: {
-    change() {
-      this.selectedDOMs.forEach((dom) => {
-        dom.style.fontSize = `${this.currentFontSize}rem`;
-      });
-    },
-
+    ...mapActions("pedurma", ["incrementFontSize", "decrementFontSize"]),
     increase() {
-      this.currentFontSize += 0.1;
+      this.incrementFontSize(this.offset);
     },
 
     decrease() {
-      this.currentFontSize -= 0.1;
+      this.decrementFontSize(this.offset)
     },
   },
+
+  created() {
+    this.$store.commit("pedurma/setFontSize", this.defaultFontSize)
+  }
 };
 </script>
 

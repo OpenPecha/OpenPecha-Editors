@@ -41,12 +41,16 @@
           ></q-tab>
         </q-tabs>
 
-        <q-tab-panels v-model="editorTab" animated>
+        <q-tab-panels
+          v-model="editorTab"
+          animated
+          >
           <q-tab-panel name="namsel">
             <editor
               class="edit__editor"
               :text="getPageText('namsel')"
               @input="updateNamselPage"
+              :style="{'font-size': fontSize }"
             />
           </q-tab-panel>
           <q-tab-panel name="google">
@@ -54,6 +58,7 @@
               class="edit__editor"
               :text="getPageText('google')"
               @input="updateGooglePage"
+              :style="{'font-size': fontSize }"
             />
           </q-tab-panel>
           <q-tab-panel name="google-notes">
@@ -61,6 +66,7 @@
               class="edit__editor"
               :text="getNote('google')"
               @input="updateGoogleNote"
+              :style="{'font-size': fontSize }"
             />
           </q-tab-panel>
 
@@ -69,6 +75,7 @@
               class="edit__editor"
               :text="getNote('namsel')"
               @input="updateNamselNote"
+              :style="{'font-size': fontSize }"
             />
           </q-tab-panel>
         </q-tab-panels>
@@ -76,10 +83,7 @@
     </div>
     <div class="preview">
       <div class="row justify-between">
-        <FontSizeModifier
-          :selectors="['.preview__content', '.edit__editor']"
-          :default="1.3"
-        />
+        <FontSizeModifier />
         <q-btn
           dense
           no-caps
@@ -114,7 +118,10 @@
           class="q-ml-sm q-px-sm"
         />
       </div>
-      <div class="preview__content">
+      <div
+        class="preview__content"
+        :style="{'font-size': fontSize }"
+      >
         <div v-if="currentPreview" v-html="formattedPreview"></div>
       </div>
     </div>
@@ -141,12 +148,6 @@ const TENGYUR_PECHAS = {
   google: process.env.T_GOOGLE_PECHA_ID,
   namsel: process.env.T_NAMSEL_PECHA_ID,
 };
-
-function splitNoteNumber(string) {
-  const noteNumber = string[string.length - 2] + " ";
-  const chunk = string.slice(0, string.length - noteNumber.length - 1);
-  return { noteNumber, chunk };
-}
 
 export default {
   name: "PedurmaEditor",
@@ -181,6 +182,10 @@ export default {
   },
 
   computed: {
+    fontSize() {
+      return this.$store.getters["pedurma/fontSizeREM"]
+    },
+
     currentPageIdx() {
       return this.currentPageNum - 1;
     },
@@ -253,6 +258,11 @@ export default {
 
   methods: {
     ...mapActions("app", ["setNavBackPath"]),
+    applyFontSize(newVal, oldVal) {
+      console.log(this.$refs)
+      this.$refs.fontSizeModifier.change()
+    },
+
     getPechaId(textType) {
       const is_kangyur = this.textId[0] === process.env.K_TEXT_ID_PREFIX;
       if (is_kangyur) {

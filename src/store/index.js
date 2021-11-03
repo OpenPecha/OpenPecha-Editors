@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import app from './app'
+import pedurma from "./pedurma"
 import proofread from "./proofread"
-
 
 Vue.use(Vuex)
 
@@ -10,6 +10,7 @@ const Store = new Vuex.Store({
   modules: {
     app,
     proofread,
+    pedurma,
   },
 
   // enable strict mode (adds overhead!)

@@ -489,9 +489,9 @@ export default {
 }
 
 .image-card {
-  /* display: flex;
+  display: flex;
   justify-content: center;
-  align-items: center; */
+  align-items: center;
   width: 35%;
   margin-right: 0.625rem;
   height: 90vh;

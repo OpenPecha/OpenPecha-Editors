@@ -1,5 +1,21 @@
 <template>
-  <inner-image-zoom :src="srcSmall" :zoomSrc="src" />
+  <inner-image-zoom
+    v-if="!error"
+    :src="srcSmall"
+    :zoomSrc="src"
+    alt="Login into bdrc.io to view the image"
+    :onerror="error = true"
+  />
+  <div v-else class="column items-center q-gutter-md">
+    <q-icon name="error" size="xl" class="text-grey" />
+    <div class="text-grey">
+      <div class="text-h5">To view the image</div>
+      <ol>
+        <li>Login into <a href="https://library.bdrc.io" target="_blank">BDRC library</a></li>
+        <li>Reload the page</li>
+      </ol>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -16,6 +32,12 @@ export default {
       type: Boolean,
       default: true,
     },
+  },
+
+  data() {
+    return {
+      error: false
+    }
   },
 
   components: {

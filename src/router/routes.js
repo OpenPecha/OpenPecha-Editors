@@ -47,7 +47,7 @@ const routes = [
       {
         path: '/pedurma/:textId',
         component: () => import(/* webpackChunkName: "editor-pedurma-text" */ 'src/pages/pedurma/PedurmaText.vue'),
-        beforeEnter: authenticationGuard,
+        // beforeEnter: authenticationGuard,
       },
       {
         path: '/pedurma/:textId/notes',

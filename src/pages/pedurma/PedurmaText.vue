@@ -2,9 +2,6 @@
   <div v-if="!loading" class="container">
     <q-card class="image-card">
       <ImageViewer :src="imgLink" />
-      <!-- <ImageViewer
-        src="https://iiif.bdrc.io/bdr:I8LS67932::I8LS679320015.tif/full/max/0/default.png"
-      /> -->
     </q-card>
 
     <div class="edit">
@@ -100,11 +97,13 @@
           dense
           outline
           no-caps
-          color="green-5"
-          label="Save"
-          icon="save"
-          @click="save"
+          color="grey"
+          label="issue"
+          icon="report_problem"
           class="q-px-sm"
+          @click="
+            openURL('https://github.com/OpenPecha-dev/openpecha-editor/issues/new')
+          "
         />
         <q-btn
           dense
@@ -490,6 +489,9 @@ export default {
 }
 
 .image-card {
+  /* display: flex;
+  justify-content: center;
+  align-items: center; */
   width: 35%;
   margin-right: 0.625rem;
   height: 90vh;

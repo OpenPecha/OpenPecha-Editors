@@ -4,6 +4,53 @@
       <ImageViewer :src="imgLink" />
     </q-card>
 
+    <div class="preview">
+      <div class="row justify-between">
+        <FontSizeControl />
+        <q-btn
+          dense
+          no-caps
+          outline
+          label="Guide"
+          icon="description"
+          @click="
+            openURL(
+              'https://docs.google.com/document/d/1Ob9-brku7NvKSQHm8DwYbYPnHX4tJtJDD_2gwFIXQ5w/edit?usp=sharing'
+            )
+          "
+        />
+        <q-btn
+          dense
+          outline
+          no-caps
+          color="grey"
+          label="issue"
+          icon="report_problem"
+          class="q-px-sm"
+          @click="
+            openURL('https://github.com/OpenPecha-dev/openpecha-editor/issues/new')
+          "
+        />
+        <q-btn
+          dense
+          outline
+          no-caps
+          :loading="downloading"
+          color="blue-5"
+          label="Download"
+          icon="file_download"
+          @click="download"
+          class="q-ml-sm q-px-sm"
+        />
+      </div>
+      <div
+        class="preview__content"
+        :style="{'font-size': fontSize }"
+      >
+        <div v-if="currentPreview" v-html="formattedPreview"></div>
+      </div>
+    </div>
+
     <div class="edit">
       <div class="edit__editors">
         <q-tabs
@@ -76,52 +123,6 @@
             />
           </q-tab-panel>
         </q-tab-panels>
-      </div>
-    </div>
-    <div class="preview">
-      <div class="row justify-between">
-        <FontSizeControl />
-        <q-btn
-          dense
-          no-caps
-          outline
-          label="Guide"
-          icon="description"
-          @click="
-            openURL(
-              'https://docs.google.com/document/d/1Ob9-brku7NvKSQHm8DwYbYPnHX4tJtJDD_2gwFIXQ5w/edit?usp=sharing'
-            )
-          "
-        />
-        <q-btn
-          dense
-          outline
-          no-caps
-          color="grey"
-          label="issue"
-          icon="report_problem"
-          class="q-px-sm"
-          @click="
-            openURL('https://github.com/OpenPecha-dev/openpecha-editor/issues/new')
-          "
-        />
-        <q-btn
-          dense
-          outline
-          no-caps
-          :loading="downloading"
-          color="blue-5"
-          label="Download"
-          icon="file_download"
-          @click="download"
-          class="q-ml-sm q-px-sm"
-        />
-      </div>
-      <div
-        class="preview__content"
-        :style="{'font-size': fontSize }"
-      >
-        <div v-if="currentPreview" v-html="formattedPreview"></div>
       </div>
     </div>
     <q-dialog v-model="showDownloadDialog" persistent>

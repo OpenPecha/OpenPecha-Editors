@@ -501,7 +501,7 @@ export default {
 
 .edit {
   width: 30%;
-  margin-right: 0.625rem;
+  margin-left: 0.625rem;
 }
 
 .edit__editors >>> .q-tab__label {

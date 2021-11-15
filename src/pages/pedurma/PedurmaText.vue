@@ -7,30 +7,7 @@
     <div class="preview">
       <div class="row justify-between">
         <FontSizeControl />
-        <q-btn
-          dense
-          no-caps
-          outline
-          label="Guide"
-          icon="description"
-          @click="
-            openURL(
-              'https://docs.google.com/document/d/1Ob9-brku7NvKSQHm8DwYbYPnHX4tJtJDD_2gwFIXQ5w/edit?usp=sharing'
-            )
-          "
-        />
-        <q-btn
-          dense
-          outline
-          no-caps
-          color="grey"
-          label="issue"
-          icon="report_problem"
-          class="q-px-sm"
-          @click="
-            openURL('https://github.com/OpenPecha-dev/openpecha-editor/issues/new')
-          "
-        />
+
         <q-btn
           dense
           outline
@@ -42,6 +19,28 @@
           @click="download"
           class="q-ml-sm q-px-sm"
         />
+
+        <q-pagination
+          v-show="!isNoteTab"
+          dense
+          v-model="currentPageNum"
+          :max="Object.keys(pages.namsel).length"
+          input
+          class="rounded-borders text-grey-4"
+          style="border: 1px solid; height: 30px"
+        />
+        <q-pagination
+          v-if="isNoteTab"
+          dense
+          v-model="currentPageNoteNum"
+          :max="Object.keys(notes.namsel).length"
+          input
+          class="rounded-borders text-grey-4"
+          style="border: 1px solid; height: 30px"
+        />
+
+        <PedurmaHelpMenu />
+
       </div>
       <div
         class="preview__content"
@@ -64,14 +63,6 @@
           <q-tab name="namsel" label="མཆན་གནས།"></q-tab>
           <q-tab name="google" label="སྡེ་དགེ་མ་ཡིག"></q-tab>
 
-          <q-pagination
-            dense
-            v-model="currentPageNum"
-            :max="Object.keys(pages.namsel).length"
-            input
-            class="rounded-borders text-grey-4"
-            style="border: 1px solid; height: 30px"
-          />
 
           <q-tab
             name="google-notes"
@@ -132,7 +123,6 @@
 </template>
 
 <script>
-import { openURL } from "quasar";
 import { mapActions } from "vuex";
 import debounce from "debounce"
 
@@ -140,6 +130,7 @@ import { getOrigin, toPara } from "src/utils";
 
 import ImageViewer from "components/ImageViewer.vue";
 import FontSizeControl from "components/FontSizeControl.vue";
+import PedurmaHelpMenu from "components/Pedurma/PedurmaHelpMenu.vue"
 
 const NAMSEL = "namsel";
 const GOOGLE = "google";
@@ -159,11 +150,13 @@ export default {
     DownloadLinkBox: require("components/Modals/DownloadLinkBox.vue").default,
     ImageViewer,
     FontSizeControl,
+    PedurmaHelpMenu
   },
 
   data() {
     return {
       currentPageNum: 1,
+      currentPageNoteNum: 1,
       currentPreview: "",
       editorTab: NAMSEL,
       editor: NAMSEL,
@@ -185,6 +178,10 @@ export default {
   },
 
   computed: {
+    isNoteTab() {
+      return this.editorTab.includes("notes")
+    },
+
     fontSize() {
       return this.$store.getters["pedurma/fontSizeREM"]
     },
@@ -288,10 +285,11 @@ export default {
     },
 
     getNote(textType) {
-      const noteId = this.pages[textType][this.currentPageIdx].note_ref;
-      if (!noteId) {
+      const notes = this.pages[textType][this.currentPageIdx].note_ref;
+      if (!notes) {
         return "";
       }
+      const noteId = notes[this.currentPageNoteNum - 1]
       return this.notesDict[textType][noteId].content;
     },
 
@@ -310,10 +308,11 @@ export default {
     },
 
     updateImg(textType) {
-      const noteId = this.pages[textType][this.currentPageIdx].note_ref;
-      if (!noteId) {
+      const notes = this.pages[textType][this.currentPageIdx].note_ref;
+      if (!notes) {
         this.imgLink = "";
       }
+      const noteId = notes[this.currentPageNoteNum - 1]
       const page = this.notesDict[textType][noteId];
       this.imgLink = page.image_link;
     },
@@ -380,12 +379,25 @@ export default {
 
     async fetchText() {
       try {
-        const response = await this.$axios.get(
-          getOrigin() +
-            "/api/v1/pedurma/texts/" +
-            this.textId
-        );
-        const texts = response.data;
+        // const response = await this.$axios.get(
+        //   getOrigin() +
+        //     "/api/v1/pedurma/texts/" +
+        //     this.textId
+        // );
+        // const texts = response.data;
+        const texts = {
+          text_id: "T001",
+          namsel: {
+            id: "T001",
+            pages: [ { id: "0001", content: "namsel test page", note_ref: ["0002", "0003"] } ],
+            notes: [ { id: "0002", content: "namsel test note 1 page"}, { id: "0003", content: "namsel test note 2 page" } ]
+          },
+          google: {
+            id: "T001",
+            pages: [ { id: "0001", content: "google test page", note_ref: ["0002", "0003"] } ],
+            notes: [ { id: "0002", content: "google test note 1 page"}, { id: "0003", content: "google test note 2 page" } ]
+          }
+        }
         for (const textType in texts) {
           this.pages[textType] = texts[textType].pages;
           this.notes[textType] = texts[textType].notes;
@@ -473,9 +485,6 @@ export default {
         });
     },
 
-    openURL(url) {
-      openURL(url);
-    },
   },
 };
 </script>

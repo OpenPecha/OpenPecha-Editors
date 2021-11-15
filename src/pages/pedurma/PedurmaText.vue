@@ -546,7 +546,7 @@ export default {
 }
 
 .preview__content {
-  margin-top: 14px;
+  margin-top: 10px;
   padding-top: 5px;
   padding-left: 10px;
   border: 1px dotted rgb(209, 208, 208);

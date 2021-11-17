@@ -43,7 +43,7 @@
 
       </div>
       <div
-        class="preview__content"
+        class="preview__content overflow-auto scroll"
         :style="{'font-size': fontSize }"
       >
         <div v-if="currentPreview" v-html="formattedPreview"></div>
@@ -552,8 +552,6 @@ export default {
   border: 1px dotted rgb(209, 208, 208);
   border-radius: 5px;
   height: 85vh;
-  overflow-x: auto;
-  overflow-y: hidden;
   font-family: "jomolhari", sans-serif;
   font-size: 1.3rem;
   line-height: 1.3;

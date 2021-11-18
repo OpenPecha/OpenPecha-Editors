@@ -318,7 +318,8 @@ export default {
     },
 
     updateNote(textType, value) {
-      const noteId = this.pages[textType][this.currentPageIdx].note_ref;
+      const notes = this.pages[textType][this.currentPageIdx].note_ref;
+      const noteId = notes[this.currentPageNoteNum - 1]
       this.notesDict[textType][noteId].content = value;
       this.debouncedPreview();
       this.debouncedSave()
@@ -340,18 +341,28 @@ export default {
       return list;
     },
 
+    filterNotes(notes, noteIds)  {
+      let result = [], noteId
+      for (noteId in notes) {
+        if (noteIds.includes(noteId)) {
+          result.push(notes[noteId])
+        }
+      }
+      return result
+    },
+
     async getPreview() {
       const googlePage = this.pages.google[this.currentPageIdx];
       const namselPage = this.pages.namsel[this.currentPageIdx];
-      const googleNote = this.notesDict.google[googlePage.note_ref];
-      const namselNote = this.notesDict.namsel[namselPage.note_ref];
+      const googleNotes = this.filterNotes(this.notesDict.google, googlePage.note_ref)
+      const namselNotes = this.filterNotes(this.notesDict.namsel, namselPage.note_ref);
 
       await this.$axios
         .post(getOrigin() + "/api/v1/pedurma/preview", {
           google_page: googlePage,
-          google_page_note: googleNote,
+          google_page_notes: googleNotes,
           namsel_page: namselPage,
-          namsel_page_note: namselNote,
+          namsel_page_notes: namselNotes,
         })
         .then((response) => response.data)
         .then((data) => {

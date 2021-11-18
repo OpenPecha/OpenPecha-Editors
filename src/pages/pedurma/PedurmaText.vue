@@ -389,26 +389,45 @@ export default {
     }, 1500),
 
     async fetchText() {
+      let response
       try {
-        // const response = await this.$axios.get(
-        //   getOrigin() +
-        //     "/api/v1/pedurma/texts/" +
-        //     this.textId
-        // );
-        // const texts = response.data;
-        const texts = {
-          text_id: "T001",
-          namsel: {
-            id: "T001",
-            pages: [ { id: "0001", content: "namsel test page", note_ref: ["0002", "0003"] } ],
-            notes: [ { id: "0002", content: "namsel test note 1 page"}, { id: "0003", content: "namsel test note 2 page" } ]
-          },
-          google: {
-            id: "T001",
-            pages: [ { id: "0001", content: "google test page", note_ref: ["0002", "0003"] } ],
-            notes: [ { id: "0002", content: "google test note 1 page"}, { id: "0003", content: "google test note 2 page" } ]
+        if (!process.env.FAKE_DATA) {
+          response = await this.$axios.get(
+            getOrigin() +
+              "/api/v1/pedurma/texts/" +
+              this.textId
+          );
+        } else {
+          response = {
+            data:
+              {
+                  "text_id": "T001",
+                  "namsel": {
+                      "id": "T001",
+                      "pages": [
+                          { "id": "0001", "content": "namsel test page", "note_ref": ["0002", "0003"]}
+
+                      ],
+                      "notes": [
+                          { "id": "0002", "content": "namsel test note 1 page"},
+                          { "id": "0003", "content": "namsel test note 2 page" }
+                      ]
+                  },
+                  "google": {
+                      "id": "T001",
+                      "pages": [
+                          {"id": "0001", "content": "google test page", "note_ref": ["0002", "0003"]}
+                      ],
+                      "notes": [
+                          { "id": "0002", "content": "google test note 1 page"},
+                          { "id": "0003", "content": "google test note 2 page" }
+                      ]
+                  }
+              }
           }
         }
+
+        const texts = response.data;
         for (const textType in texts) {
           this.pages[textType] = texts[textType].pages;
           this.notes[textType] = texts[textType].notes;

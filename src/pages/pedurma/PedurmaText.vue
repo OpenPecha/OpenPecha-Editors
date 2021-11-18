@@ -33,7 +33,7 @@
           v-if="isNoteTab"
           dense
           v-model="currentPageNoteNum"
-          :max="Object.keys(notes.namsel).length"
+          :max="pages.namsel[currentPageIdx].note_ref.length"
           input
           class="rounded-borders text-grey-4"
           style="border: 1px solid; height: 30px"
@@ -258,8 +258,8 @@ export default {
 
   methods: {
     ...mapActions("app", ["setNavBackPath"]),
+
     applyFontSize(newVal, oldVal) {
-      console.log(this.$refs)
       this.$refs.fontSizeModifier.change()
     },
 

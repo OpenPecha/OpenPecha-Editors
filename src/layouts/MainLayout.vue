@@ -3,15 +3,12 @@
     <q-header class="fixed-top transparent q-py-sm">
       <q-toolbar class="q-mx-auto" style="max-width: 1080px">
         <q-toolbar-title class="cursor-pointer" @click="goToHome">
-          <q-img src="/icons/favicon-128x128.png" style="width: 40px" />
-          <span class="text-weight-medium q-ml-xs" style="color: #12dfec">
-            Open</span
-          >
-          <span class="text-weight-medium" style="color: #8e57f1">Pecha</span>
+            <img
+              :src="require('assets/img/openpecha-title.png')"
+              style="width: 10rem"
+              class="q-ml-sm q-mx-sm"
+            />
         </q-toolbar-title>
-        <q-tabs shrink class="text-blue-grey-9">
-          <q-tab label="Features" @click="scrollToElement('features')" />
-        </q-tabs>
       </q-toolbar>
     </q-header>
     <q-footer class="q-pa-md theme-color row justify-center">

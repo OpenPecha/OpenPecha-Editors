@@ -85,7 +85,6 @@ export default {
 
     remove(pecha_id) {
       this.pechas = this.pechas.filter((pecha) => {
-        print(pecha);
         return pecha.id != pecha_id;
       });
     },

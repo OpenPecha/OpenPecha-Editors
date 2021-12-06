@@ -30,8 +30,11 @@ export function toPara(string) {
       for (const line of string.split("\n")) {
         if (line) {
           paras = paras.concat(`<p>${line}</p>`);
+        } else {
+          paras = paras.concat("<br>")
         }
       }
 
+      console.log(paras)
       return paras
     }

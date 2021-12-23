@@ -21,22 +21,12 @@
         />
 
         <q-pagination
-          v-if="!isNoteTab"
           dense
           input
           v-model="currentPageNum"
           :min="pages.namsel[0].page_no"
           :max="pages.namsel.at(-1).page_no"
-          @input="getPreview()"
-          class="rounded-borders text-grey-4"
-          style="border: 1px solid; height: 30px"
-        />
-        <q-pagination
-          v-if="isNoteTab"
-          dense
-          v-model="currentPageNoteNum"
-          :max="pages.namsel[currentPageIdx].note_ref.length"
-          input
+          @input="getPreview(); editorTab = 'namsel'"
           class="rounded-borders text-grey-4"
           style="border: 1px solid; height: 30px"
         />
@@ -65,7 +55,6 @@
           <q-tab name="namsel" label="མཆན་གནས།"></q-tab>
           <q-tab name="google" label="སྡེ་དགེ་མ་ཡིག"></q-tab>
 
-
           <q-tab
             name="google-notes"
             label="མཆན་ཡིག"
@@ -77,6 +66,7 @@
             @click="updateImg('namsel')"
           ></q-tab>
         </q-tabs>
+
 
         <q-tab-panels
           v-model="editorTab"
@@ -116,6 +106,18 @@
             />
           </q-tab-panel>
         </q-tab-panels>
+        <q-page-sticky position="bottom-right" :offset="[60, 40]">
+          <q-pagination
+            v-if="isNoteTab"
+            dense
+            v-model="currentPageNoteNum"
+            :max="pages.namsel[currentPageIdx].note_ref.length"
+            :max-pages="3"
+            :boundary-numbers="false"
+            class="rounded-borders text-grey-4"
+            style="border: 1px solid; height: 30px"
+          />
+          </q-page-sticky>
       </div>
     </div>
     <q-dialog v-model="showDownloadDialog" persistent>

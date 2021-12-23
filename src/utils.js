@@ -35,6 +35,5 @@ export function toPara(string) {
         }
       }
 
-      console.log(paras)
       return paras
     }

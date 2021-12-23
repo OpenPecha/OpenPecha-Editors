@@ -21,11 +21,13 @@
         />
 
         <q-pagination
-          v-show="!isNoteTab"
+          v-if="!isNoteTab"
           dense
-          v-model="currentPageNum"
-          :max="Object.keys(pages.namsel).length"
           input
+          v-model="currentPageNum"
+          :min="pages.namsel[0].page_no"
+          :max="pages.namsel.at(-1).page_no"
+          @input="getPreview()"
           class="rounded-borders text-grey-4"
           style="border: 1px solid; height: 30px"
         />
@@ -155,7 +157,7 @@ export default {
 
   data() {
     return {
-      currentPageNum: 1,
+      currentPageNum: null,
       currentPageNoteNum: 1,
       currentPreview: "",
       editorTab: NAMSEL,
@@ -171,11 +173,11 @@ export default {
     };
   },
 
-  watch: {
-    currentPageIdx() {
-      this.getPreview();
-    },
-  },
+  // watch: {
+  //   currentPageIdx() {
+  //     this.getPreview();
+  //   },
+  // },
 
   computed: {
     isNoteTab() {
@@ -187,7 +189,7 @@ export default {
     },
 
     currentPageIdx() {
-      return this.currentPageNum - 1;
+      return this.currentPageNum - this.pages[NAMSEL][0].page_no
     },
 
     notesDict() {
@@ -248,6 +250,7 @@ export default {
     });
     await this.fetchText();
     this.imgLink = this.pages[NAMSEL][0].image_link;
+    this.currentPageNum = this.pages[NAMSEL][0].page_no
     await this.getPreview();
     this.loading = false;
     this.$q.loading.hide();

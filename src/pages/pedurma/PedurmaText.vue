@@ -26,7 +26,7 @@
           v-model="currentPageNum"
           :min="pages.namsel[0].page_no"
           :max="pages.namsel.at(-1).page_no"
-          @input="getPreview(); editorTab = 'namsel'"
+          @input="changePage()"
           class="rounded-borders text-grey-4"
           style="border: 1px solid; height: 30px"
         />
@@ -75,7 +75,7 @@
           <q-tab-panel name="namsel">
             <editor
               class="edit__editor"
-              :text="getPageText('namsel')"
+              :text="namselPageContent"
               @input="updateNamselPage"
               :style="{'font-size': fontSize }"
             />
@@ -83,7 +83,7 @@
           <q-tab-panel name="google">
             <editor
               class="edit__editor"
-              :text="getPageText('google')"
+              :text="googlePageContent"
               @input="updateGooglePage"
               :style="{'font-size': fontSize }"
             />
@@ -91,7 +91,7 @@
           <q-tab-panel name="google-notes">
             <editor
               class="edit__editor"
-              :text="getNote('google')"
+              :text="googleNoteContent"
               @input="updateGoogleNote"
               :style="{'font-size': fontSize }"
             />
@@ -100,7 +100,7 @@
           <q-tab-panel name="namsel-notes">
             <editor
               class="edit__editor"
-              :text="getNote('namsel')"
+              :text="namselNoteContent"
               @input="updateNamselNote"
               :style="{'font-size': fontSize }"
             />
@@ -113,6 +113,7 @@
             v-model="currentPageNoteNum"
             :max="pages.namsel[currentPageIdx].note_ref.length"
             :max-pages="3"
+            @input="changeNote()"
             :boundary-numbers="false"
             class="rounded-borders text-grey-4"
             style="border: 1px solid; height: 30px"
@@ -175,12 +176,6 @@ export default {
     };
   },
 
-  // watch: {
-  //   currentPageIdx() {
-  //     this.getPreview();
-  //   },
-  // },
-
   computed: {
     isNoteTab() {
       return this.editorTab.includes("notes")
@@ -211,6 +206,34 @@ export default {
 
     textId() {
       return this.$route.params.textId;
+    },
+
+    namselPageContent() {
+      const page = this.pages[NAMSEL][this.currentPageIdx];
+      return page.content;
+    },
+
+    namselNoteContent() {
+      const notes = this.pages[NAMSEL][this.currentPageIdx].note_ref;
+      if (!notes) {
+        return "";
+      }
+      const noteId = notes[this.currentPageNoteNum - 1]
+      return this.notesDict[NAMSEL][noteId].content;
+    },
+
+    googlePageContent() {
+      const page = this.pages[GOOGLE][this.currentPageIdx];
+      return page.content;
+    },
+
+    googleNoteContent() {
+      const notes = this.pages[GOOGLE][this.currentPageIdx].note_ref;
+      if (!notes) {
+        return "";
+      }
+      const noteId = notes[this.currentPageNoteNum - 1]
+      return this.notesDict[GOOGLE][noteId].content;
     },
 
     formattedPreview() {
@@ -281,12 +304,15 @@ export default {
       return this.textObjIds[textType];
     },
 
-    getPageText(textType) {
-      const page = this.pages[textType][this.currentPageIdx];
-      if (!["google-notes", "namsel-notes"].includes(this.editorTab)) {
-        this.imgLink = page.image_link;
-      }
-      return page.content;
+    changePage() {
+      const page = this.pages[NAMSEL][this.currentPageIdx];
+      this.imgLink = page.image_link;
+      this.getPreview();
+      this.editorTab = 'namsel'
+    },
+
+    changeNote() {
+      this.updateImg(NAMSEL)
     },
 
     getNote(textType) {

@@ -52,18 +52,26 @@
           active-color="deep-purple-5"
           align="justify"
         >
-          <q-tab name="namsel" label="མཆན་གནས།"></q-tab>
-          <q-tab name="google" label="སྡེ་དགེ་མ་ཡིག"></q-tab>
+          <q-tab
+            name="namsel"
+            label="མཆན་གནས།"
+            @click="loadPageImg()"
+          ></q-tab>
+          <q-tab
+            name="google"
+            label="སྡེ་དགེ་མ་ཡིག"
+            @click="loadPageImg()"
+          ></q-tab>
 
           <q-tab
             name="google-notes"
             label="མཆན་ཡིག"
-            @click="updateImg('google')"
+            @click="loadNoteImg()"
           ></q-tab>
           <q-tab
             name="namsel-notes"
             label="མཆན་གྲངས།"
-            @click="updateImg('namsel')"
+            @click="loadNoteImg()"
           ></q-tab>
         </q-tabs>
 
@@ -305,14 +313,13 @@ export default {
     },
 
     changePage() {
-      const page = this.pages[NAMSEL][this.currentPageIdx];
-      this.imgLink = page.image_link;
+      this.loadPageImg()
       this.getPreview();
       this.editorTab = 'namsel'
     },
 
     changeNote() {
-      this.updateImg(NAMSEL)
+      this.loadNoteImg()
     },
 
     getNote(textType) {
@@ -338,13 +345,17 @@ export default {
       this.updatePage(NAMSEL, value);
     },
 
-    updateImg(textType) {
-      const notes = this.pages[textType][this.currentPageIdx].note_ref;
+    loadPageImg() {
+      this.imgLink = this.pages[NAMSEL][this.currentPageIdx].image_link;
+    },
+
+    loadNoteImg() {
+      const notes = this.pages[NAMSEL][this.currentPageIdx].note_ref;
       if (!notes) {
         this.imgLink = "";
       }
       const noteId = notes[this.currentPageNoteNum - 1]
-      const page = this.notesDict[textType][noteId];
+      const page = this.notesDict[NAMSEL][noteId];
       this.imgLink = page.image_link;
     },
 

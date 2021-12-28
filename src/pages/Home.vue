@@ -75,7 +75,7 @@ export default {
           name: "Pedurma Editor",
           desc: "Editor for producing collated Kangyur and Tengyur text",
           image: require("assets/img/pedurma-editor.png"),
-          path: process.env.PROD ? "https://openpecha.bdrc.io/pedurma" : "/pedurma",
+          path: process.env.PROD ? "https://openpecha.bdrc.io/pedurma/catalog" : "/pedurma/catalog",
           ready: true,
         },
         {

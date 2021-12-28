@@ -176,6 +176,7 @@ export default {
       loading: true,
       pages: {},
       notes: {},
+      notesDict: {},
       textObjIds: {},
       imgLink: "",
       download_url: "",
@@ -195,21 +196,6 @@ export default {
 
     currentPageIdx() {
       return this.currentPageNum - this.pages[NAMSEL][0].page_no
-    },
-
-    notesDict() {
-      const result = {};
-      const googleNotesDict = {};
-      const namselNotesDict = {};
-      this.notes.google.forEach((note) => {
-        googleNotesDict[note.id] = note;
-      });
-      this.notes.namsel.forEach((note) => {
-        namselNotesDict[note.id] = note;
-      });
-      result[GOOGLE] = googleNotesDict;
-      result[NAMSEL] = namselNotesDict;
-      return result;
     },
 
     textId() {
@@ -310,6 +296,21 @@ export default {
 
     getTextObjId(textType) {
       return this.textObjIds[textType];
+    },
+
+    toNotesDict() {
+      const notesDict = {}
+      const googleNotesDict = {};
+      const namselNotesDict = {};
+      this.notes.google.forEach((note) => {
+        googleNotesDict[note.id] = note;
+      });
+      this.notes.namsel.forEach((note) => {
+        namselNotesDict[note.id] = note;
+      });
+      notesDict[GOOGLE] = googleNotesDict;
+      notesDict[NAMSEL] = namselNotesDict;
+      this.notesDict = Object.assign({}, this.notesDict, notesDict)
     },
 
     changePage() {
@@ -469,12 +470,21 @@ export default {
           }
         }
 
-        const texts = response.data;
-        for (const textType in texts) {
-          this.pages[textType] = texts[textType].pages;
-          this.notes[textType] = texts[textType].notes;
-          this.textObjIds[textType] = texts[textType].id;
-        }
+        const text = response.data;
+        const pages = {}
+        pages[NAMSEL] = text[NAMSEL].pages;
+        pages[GOOGLE] = text[GOOGLE].pages;
+        this.pages = Object.assign({}, this.pages, pages)
+
+        const notes = {}
+        this.notes[NAMSEL] = text[NAMSEL].notes;
+        this.notes[GOOGLE] = text[GOOGLE].notes;
+        this.pages = Object.assign({}, this.pages, notes)
+
+        this.textObjIds[NAMSEL] = text[NAMSEL].id;
+        this.textObjIds[GOOGLE] = text[GOOGLE].id;
+
+        this.toNotesDict()
       } catch (err) {
         if (err.response) {
           // client received an error response (5xx, 4xx)

@@ -289,7 +289,7 @@ export default {
     this.$q.loading.hide();
 
     // set nav back path
-    this.setNavBackPath("/pedurma");
+    // this.setNavBackPath("/pedurma");
   },
 
   methods: {

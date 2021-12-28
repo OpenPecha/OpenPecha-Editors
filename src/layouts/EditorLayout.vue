@@ -17,7 +17,7 @@
           no-wrap
           class="q-ml-xs"
           v-if="$q.screen.gt.xs"
-          to="/"
+          :to="navBackPath === '' ? '' : '/'"
         >
           <q-toolbar-title class="text-bold">
             <span class="text-weight-medium q-ml-xs" style="color: #12dfec">

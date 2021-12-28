@@ -40,7 +40,7 @@ const routes = [
       },
 
       {
-        path: '/pedurma',
+        path: '/pedurma/catalog',
         component: () => import(/* webpackChunkName: "editor-pedurma-text-list" */ 'src/pages/pedurma/PedurmaTextList.vue'),
         // beforeEnter: authenticationGuard,
       },

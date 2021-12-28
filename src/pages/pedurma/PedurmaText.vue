@@ -147,14 +147,6 @@ import PedurmaHelpMenu from "components/Pedurma/PedurmaHelpMenu.vue"
 
 const NAMSEL = "namsel";
 const GOOGLE = "google";
-const KANGYUR_PECHAS = {
-  google: process.env.K_GOOGLE_PECHA_ID,
-  namsel: process.env.K_NAMSEL_PECHA_ID,
-};
-const TENGYUR_PECHAS = {
-  google: process.env.T_GOOGLE_PECHA_ID,
-  namsel: process.env.T_NAMSEL_PECHA_ID,
-};
 
 export default {
   name: "PedurmaEditor",
@@ -283,15 +275,6 @@ export default {
 
     applyFontSize(newVal, oldVal) {
       this.$refs.fontSizeModifier.change()
-    },
-
-    getPechaId(textType) {
-      const is_kangyur = this.textId[0] === process.env.K_TEXT_ID_PREFIX;
-      if (is_kangyur) {
-        return KANGYUR_PECHAS[textType];
-      } else {
-        return TENGYUR_PECHAS[textType];
-      }
     },
 
     getTextObjId(textType) {

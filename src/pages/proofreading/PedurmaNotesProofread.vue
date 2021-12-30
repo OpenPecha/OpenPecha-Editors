@@ -67,36 +67,22 @@ export default {
 
   data() {
     return {
-      pages: [
-        {
-          manual: "apple",
-          google: "appple",
-          img_link: "",
-          page_num: 100
-        },
-        {
-          manual: "ball",
-          google: "balll",
-          img_link: "",
-          page_num: 101
-        },
-      ],
-      currentPageNum: 0,
+      pages: null,
+      currentPageNum: null,
       diffs: ""
     };
   },
 
   computed: {
     textId() {
-      return this.$route.query.textId;
+      return this.$route.params.textId;
     },
 
     currentPageIdx () {
       return this.currentPageNum - this.pages[0].page_num
     },
 
-    manualPage: {
-      get: function () {
+    manualPage: { get: function () {
         return this.pages[this.currentPageIdx].manual
       },
       set: function (newValue) {
@@ -149,6 +135,7 @@ export default {
         getOrigin() + `/api/v1/pedurma/${this.textId}/notes/proofread`
       );
       this.pages = response.data;
+      this.currentPageNum = this.pages[0].page_num
     },
 
     changePage() {
@@ -202,35 +189,10 @@ export default {
       }
       return this.toPara(formattedDiffs);
     },
-
-    loadImage(order) {
-      this.$axios
-        .post(getOrigin() + `/api/v1/diffproofread/images/${order}`, {
-          image_url: this.pageImageUrl,
-        })
-        .then((response) => {
-          this.pageImageUrl = response.data.image_url;
-        });
-    },
-
-    resetImage() {
-      this.$axios
-        .post(
-          getOrigin() + `/api/v1/diffproofread/images/reset/${this.pageId}`,
-          {
-            image_url: this.pageImageUrl,
-          }
-        )
-        .then((response) => {
-          this.pageImageUrl = response.data.image_url;
-        });
-    },
   },
 
   async created() {
-    // await this.fetchPages();
-    // this.open(this.pageId);
-    this.currentPageNum = this.pages[0].page_num
+    await this.fetchPages();
     this.getDiffs()
   },
 };

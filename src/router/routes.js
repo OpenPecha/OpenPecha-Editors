@@ -58,6 +58,15 @@ const routes = [
         //   authService: "buda"
         //  }
       },
+      {
+        path: '/pedurma/:textId/notes/proofread',
+        component: () => import(/* webpackChunkName: "editor-pedurma-text-notes-proofread" */ 'pages/proofreading/PedurmaNotesProofread.vue'),
+        // beforeEnter: authenticationGuard
+        // meta: {
+        //   requiresAuth: true,
+        //   authService: "buda"
+        //  }
+      },
 
       {
         path: '/proofread',

@@ -228,6 +228,10 @@ export default {
       const notes = this.currentPreview.match(noteRegex);
       const chunks = this.currentPreview.split(noteRegex);
 
+      if (!notes) {
+        return toPara(this.currentPreview)
+      }
+
       let result = "";
       for (let i = 0; i < notes.length; i++) {
         var noteNum = chunks[i].match(noteNumRegex)[0];

@@ -1,16 +1,14 @@
 <template>
   <q-page padding>
     <div
-      class="q-ml-auto q-mr-auto q-mt-lg"
-      :style="{
-        width: '500px',
-      }"
+      class="q-ml-auto q-mr-auto q-mt-lg row justify-between"
+      style="width: 500px"
     >
       <q-input
         filled
         v-model="search"
         label="Search by Text ID or Title"
-        :style="{ 'font-size': '1.5rem' }"
+        style="font-size: 1.5rem"
       >
         <template v-slot:append>
           <q-icon v-if="search === ''" name="search" />
@@ -22,32 +20,44 @@
           />
         </template>
       </q-input>
+
+      <q-btn
+        flat
+        no-caps
+        dense
+        icon="open_in_new"
+        label="Report"
+        color="primary"
+        @click="openURL('https://docs.google.com/spreadsheets/d/1PoNnrEoGMXdzlGznMF3UJU7GmrcZcP_h8CDaolkkrWA/edit#gid=0')"
+      />
     </div>
     <div
       class="q-mt-lg q-mx-auto"
-      :style="{ 'max-width': '1000px', height: '10px' }"
+      style="max-width: 1000px; height: 10px"
     >
       <q-intersection
         v-for="textId in filteredTexts"
         :key="textId"
-        :style="{ height: '7vh' }"
+        style="height: 7vh"
         transition="fade"
       >
         <q-item clickable v-ripple>
           <q-item-section
-            :style="{ 'max-width': '50px' }"
+            style="max-width: 50px"
             @click="open(textId)"
           >
             <q-item-label class="text-h6">{{ textId }}</q-item-label>
           </q-item-section>
 
           <q-item-section
-            :style="{ 'margin-left': '50px' }"
+            style="margin-left: 50px"
             @click="open(textId)"
           >
-            <q-item-label class="text-h4" :style="{ 'margin-top': '-20px' }">{{
-              texts[textId].title
-            }}</q-item-label>
+            <q-item-label
+              class="text-h4"
+              style="margin-top: -20px"
+            >{{ texts[textId].title }}
+          </q-item-label>
           </q-item-section>
 
           <q-item-section side>
@@ -71,6 +81,7 @@
 
 <script>
 import { mapActions } from "vuex";
+import { openURL } from "quasar"
 
 const KANGYUR = "kangyur";
 const TENGYUR = "tengyur";
@@ -136,9 +147,13 @@ export default {
     },
 
     download(text_id) {
-      this.download_url = `https://github.com/OpenPecha/P000791/releases/download/${text_id}/${text_id}.zip`;
-      this.showDownloadBox = true;
+      // this.download_url = `https://github.com/OpenPecha/P000791/releases/download/${text_id}/${text_id}.zip`;
+      // this.showDownloadBox = true;
     },
+
+    openURL(url) {
+      openURL(url)
+    }
   },
 
   mounted() {

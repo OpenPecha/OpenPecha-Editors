@@ -35,8 +35,17 @@
       ></textarea>
     </div>
     <div class="col diffs">
-      <div class="column items-center text-h5 bg-grey-2 q-py-xs">
-       Diff
+      <div class="row justify-center text-h6 bg-grey-2 q-py-xs">
+        <div
+          class="q-px-xs"
+          style="background-color: rgb(184, 236, 184);"
+        >ཡིག་འཛིན།
+        </div>
+        <div
+          class="q-px-xs"
+          style="background-color: rgb(236, 144, 144);"
+        >བཏགས་མ།
+        </div>
       </div>
       <div
         v-html="styledDiffs"

@@ -28,7 +28,8 @@
           width: 100%;
           height: 86vh;
           padding: 10px;
-          font-size: 1.4rem;
+          font-size: 1.2rem;
+          line-height: 2
           overflow: auto;
         "
         v-model="manualPage"
@@ -53,7 +54,8 @@
           width: auto;
           height: 86vh;
           padding: 10px;
-          font-size: 1.1rem;
+          font-size: 1.2rem;
+          line-height: 2
           border: 1px solid grey;
           overflow: auto;
         "
@@ -175,7 +177,7 @@ export default {
     toPara(string) {
       var paras = "";
       for (const line of string.split("\n")) {
-        paras = paras.concat(`<p>${line}</p>`);
+        paras = paras.concat(`<p style="margin: 0">${line}</p>`);
       }
       return paras;
     },

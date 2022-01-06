@@ -29,7 +29,7 @@
           height: 86vh;
           padding: 10px;
           font-size: 1.2rem;
-          line-height: 2
+          line-height: 2;
           overflow: auto;
         "
         v-model="manualPage"
@@ -55,7 +55,7 @@
           height: 86vh;
           padding: 10px;
           font-size: 1.2rem;
-          line-height: 2
+          line-height: 2;
           border: 1px solid grey;
           overflow: auto;
         "

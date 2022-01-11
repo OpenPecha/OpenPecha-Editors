@@ -72,15 +72,20 @@ const routes = [
         path: '/proofread',
         component: () => import(/* webpackChunkName: "editor-proofread" */ 'src/pages/proofreading/ProofreadPechaList.vue'),
       },
+      // {
+      //   path: '/proofread/:pechaId',
+      //   component: () => import(/* webpackChunkName: "editor-proofread" */ 'src/pages/proofreading/ProofreadVolumeList.vue'),
+      // },
+      // {
+      //   path: '/proofread/:pechaId/:volId',
+      //   component: () => import(/* webpackChunkName: "editor-proofread" */ 'src/pages/proofreading/ProofreadEditor.vue'),
+      //   beforeEnter: authenticationGuard,
+      // },
+
       {
-        path: '/proofread/:pechaId',
-        component: () => import(/* webpackChunkName: "editor-proofread" */ 'src/pages/proofreading/ProofreadVolumeList.vue'),
-      },
-      {
-        path: '/proofread/:pechaId/:volId',
-        component: () => import(/* webpackChunkName: "editor-proofread" */ 'src/pages/proofreading/ProofreadEditor.vue'),
-        beforeEnter: authenticationGuard,
-      },
+        path: '/proofread/:projectName/:volId',
+        component: () => import(/* webpackChunkName: "proofread-editor" */ 'src/pages/Proofread.vue')
+      }
     ]
   },
 

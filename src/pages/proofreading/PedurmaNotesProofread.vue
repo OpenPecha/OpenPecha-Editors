@@ -39,12 +39,12 @@
       <div class="row justify-center text-h6 bg-grey-2 q-py-xs">
         <div
           class="q-px-xs"
-          style="background-color: rgb(184, 236, 184);"
+          style="background-color: rgb(236, 144, 144);"
         >ཡིག་འཛིན།
         </div>
         <div
           class="q-px-xs"
-          style="background-color: rgb(236, 144, 144);"
+          style="background-color: rgb(184, 236, 184);"
         >བཏགས་མ།
         </div>
       </div>

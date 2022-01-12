@@ -1,5 +1,5 @@
 <template>
-  <q-page class="col" v-if="pages">
+  <q-page class="col" v-if="currentPage.image_url">
     <div
       style="max-width: 1800px; min-width: 800px; height: 80vh; margin: auto"
     >
@@ -84,8 +84,8 @@ export default {
       projectMetadata: null,
       diffs: "",
       currentPage: {
-        content: "",
-        image_url: ""
+        content: null,
+        image_url: null
       },
       versionPage: null
     };

@@ -28,8 +28,8 @@
             width: 100%;
             height: 28vh
             padding: 10px;
-            font-size: 1rem;
-            line-height: 1;
+            font-size: 1.2rem;
+            line-height: 1.5;
             overflow: auto;
           "
           v-model="currentPageContent"
@@ -54,8 +54,8 @@
             width: auto;
             height: 28vh
             padding: 10px;
-            font-size: 1rem;
-            line-height: 1;
+            font-size: 1.2rem;
+            line-height: 1.5;
             border: 1px solid grey;
             overflow: auto;
           "

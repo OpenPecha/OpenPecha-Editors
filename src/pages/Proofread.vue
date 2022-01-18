@@ -1,5 +1,5 @@
 <template>
-  <q-page class="col" v-if="currentPage.image_url">
+  <q-page class="col q-mx-lg" v-if="currentPage.image_url">
     <div
       style="max-width: 1800px; min-width: 800px; height: 80vh; margin: auto"
     >

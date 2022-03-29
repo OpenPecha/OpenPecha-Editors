@@ -36,6 +36,43 @@
         ></textarea>
       </div>
       <div class="col diffs">
+        <q-card>
+          <q-tabs
+            v-model="tab"
+            dense
+            class="text-grey"
+            active-color="primary"
+            indicator-color="primary"
+            align="justify"
+            narrow-indicator
+          >
+            <q-tab
+              v-for="version in this.projectMetadata.versions"
+              :key="version"
+              :name="version"
+              :label="projectMetadata.proofreading_version + '/' + version"
+              no-caps
+            >
+            </q-tab>
+          </q-tabs>
+
+          <q-separator />
+
+          <q-tab-panels
+            v-model="tab"
+            animated
+            style="font-size: 1.3rem; max-height: 250px; overflow: auto"
+          >
+            <q-tab-panel
+              v-for="version in this.projectMetadata.versions"
+              :key="version"
+              :name="version"
+            >
+              <!-- <div v-html="getStyledDiffs(version)"></div> -->
+            </q-tab-panel>
+
+          </q-tab-panels>
+        </q-card>
         <div class="row justify-center text-h6 bg-grey-2 q-py-xs">
           <div
             class="q-px-xs"
@@ -48,7 +85,7 @@
           >{{ projectMetadata.versions[0] }}
           </div>
         </div>
-        <div
+        <!-- <div
           v-html="styledDiffs"
           style="
             width: auto;
@@ -59,7 +96,7 @@
             border: 1px solid grey;
             overflow: auto;
           "
-        ></div>
+        ></div> -->
       </div>
     </div>
   </q-page>
@@ -82,12 +119,13 @@ export default {
       pages: null,
       currentPageNum: 1,
       projectMetadata: null,
-      diffs: "",
+      diffs: {},
       currentPage: {
         content: null,
         image_url: null
       },
-      versionPage: null
+      versionsPage: {},
+      tab: ""
     };
   },
 
@@ -120,9 +158,6 @@ export default {
       return this.projectMetadata.proofreading_version
     },
 
-    styledDiffs() {
-      return this.formatDiff(this.diffs)
-    }
   },
 
   methods: {
@@ -158,6 +193,7 @@ export default {
         getOrigin() + `/api/v1/diffproofread/metadata/${this.projectName}`
       );
       this.projectMetadata = response.data;
+      this.tab = this.projectMetadata.versions[0]
     },
 
     async fetchPages() {
@@ -167,16 +203,19 @@ export default {
       this.pages = response.data.pages;
     },
 
-    async fetchPage() {
+    async fetchPageContent(version) {
       var response = await this.$axios.get(
-        getOrigin() + `/api/v1/diffproofread/${this.projectName}/${this.proofreadinVersion}/${this.volId}/${this.currentPageId}`
+        getOrigin() + `/api/v1/diffproofread/${this.projectName}/${version}/${this.volId}/${this.currentPageId}`
       );
-      this.currentPage = response.data;
+      return response.data;
+    },
 
-      var response = await this.$axios.get(
-        getOrigin() + `/api/v1/diffproofread/${this.projectName}/${this.projectMetadata.versions[0]}/${this.volId}/${this.currentPageId}`
-      );
-      this.versionPage = response.data;
+    async fetchPage() {
+      this.currentPage = await this.fetchPageContent(this.projectMetadata.proofreading_version)
+
+      for (const version of this.projectMetadata.versions) {
+        this.versionsPage[version] = await this.fetchPageContent(version)
+      }
     },
 
     async changePage() {
@@ -184,20 +223,30 @@ export default {
       this.getDiffs()
     },
 
-    async getDiffs() {
+    getStyledDiffs(version) {
+      return this.formatDiff(version)
+    },
+
+    getVersionsDiffs() {
+      for (const version in this.projectMetadata.versions) {
+        this.getDiffs(version)
+      }
+    },
+
+    async getDiffs(version) {
       const response = await this.$axios.post(
         getOrigin() +
           `/api/v1/diff`,
         {
           textA: this.currentPage.content,
-          textB: this.versionPage.content,
+          textB: this.versionsPage[version].content,
         }
       );
-      this.diffs = response.data
+      this.diffs[version] = response.data
     },
 
-    debouncedGetDiffs: debounce(function() {
-      this.getDiffs()
+    debouncedGetDiffs: debounce(function(version) {
+      this.getDiffs(version)
     }, 1000),
 
     addStyle(string, styleName) {
@@ -213,9 +262,10 @@ export default {
       return paras;
     },
 
-    formatDiff(diffs) {
+    async formatDiff(version) {
       var formattedDiffs = "";
-      for (const diff of diffs) {
+      this.debouncedGetDiffs(version)
+      for (const diff of this.diffs[version]) {
         const [op, chunk] = diff;
         if (op === 1) {
           formattedDiffs = formattedDiffs.concat(
@@ -237,7 +287,7 @@ export default {
     await this.fetchProjectMetadata()
     await this.fetchPages()
     await this.fetchPage()
-    this.getDiffs()
+    this.getVersionsDiffs()
   },
 };
 </script>

@@ -50,9 +50,20 @@
               v-for="version in this.projectMetadata.versions"
               :key="version"
               :name="version"
-              :label="projectMetadata.proofreading_version + '/' + version"
               no-caps
             >
+              <div class="row justify-center text-h6 bg-grey-2 q-py-xs">
+                <div
+                  class="q-px-xs"
+                  style="background-color: rgb(184, 236, 184);"
+                >{{ projectMetadata.proofreading_version }}
+                </div>
+                <div
+                  class="q-px-xs"
+                  style="background-color: rgb(236, 144, 144);"
+                >{{ version }}
+                </div>
+              </div>
             </q-tab>
           </q-tabs>
 
@@ -68,35 +79,11 @@
               :key="version"
               :name="version"
             >
-              <!-- <div v-html="getStyledDiffs(version)"></div> -->
+              <div v-html="styledDiffs[version]"></div>
             </q-tab-panel>
 
           </q-tab-panels>
         </q-card>
-        <div class="row justify-center text-h6 bg-grey-2 q-py-xs">
-          <div
-            class="q-px-xs"
-            style="background-color: rgb(184, 236, 184);"
-          >{{ projectMetadata.proofreading_version }}
-          </div>
-          <div
-            class="q-px-xs"
-            style="background-color: rgb(236, 144, 144);"
-          >{{ projectMetadata.versions[0] }}
-          </div>
-        </div>
-        <!-- <div
-          v-html="styledDiffs"
-          style="
-            width: auto;
-            height: 28vh
-            padding: 10px;
-            font-size: 1.2rem;
-            line-height: 1.5;
-            border: 1px solid grey;
-            overflow: auto;
-          "
-        ></div> -->
       </div>
     </div>
   </q-page>
@@ -148,7 +135,6 @@ export default {
       },
       set: function(newValue) {
         this.currentPage.content = newValue
-        console.log(newValue)
         this.debouncedGetDiffs()
         this.debouncedSave()
       }
@@ -158,6 +144,15 @@ export default {
       return this.projectMetadata.proofreading_version
     },
 
+    styledDiffs() {
+      var diffs = {}
+      for (const version of this.projectMetadata.versions) {
+        if (this.diffs[version]) {
+          diffs[version] = this.formatDiff(this.diffs[version])
+        }
+      }
+      return diffs
+    }
   },
 
   methods: {
@@ -213,9 +208,11 @@ export default {
     async fetchPage() {
       this.currentPage = await this.fetchPageContent(this.projectMetadata.proofreading_version)
 
-      for (const version of this.projectMetadata.versions) {
-        this.versionsPage[version] = await this.fetchPageContent(version)
+      for await (const version of this.projectMetadata.versions) {
+        const versionPage = await this.fetchPageContent(version)
+        this.$set(this.versionsPage, version, versionPage)
       }
+      this.getDiffs()
     },
 
     async changePage() {
@@ -223,30 +220,22 @@ export default {
       this.getDiffs()
     },
 
-    getStyledDiffs(version) {
-      return this.formatDiff(version)
-    },
-
-    getVersionsDiffs() {
-      for (const version in this.projectMetadata.versions) {
-        this.getDiffs(version)
+    async getDiffs() {
+      for (const version of this.projectMetadata.versions) {
+        const response = await this.$axios.post(
+          getOrigin() +
+            `/api/v1/diff`,
+          {
+            textA: this.currentPage.content,
+            textB: this.versionsPage[version].content,
+          }
+        );
+        this.$set(this.diffs, version, response.data)
       }
     },
 
-    async getDiffs(version) {
-      const response = await this.$axios.post(
-        getOrigin() +
-          `/api/v1/diff`,
-        {
-          textA: this.currentPage.content,
-          textB: this.versionsPage[version].content,
-        }
-      );
-      this.diffs[version] = response.data
-    },
-
-    debouncedGetDiffs: debounce(function(version) {
-      this.getDiffs(version)
+    debouncedGetDiffs: debounce(function() {
+      this.getDiffs()
     }, 1000),
 
     addStyle(string, styleName) {
@@ -262,10 +251,9 @@ export default {
       return paras;
     },
 
-    async formatDiff(version) {
+    formatDiff(diffs) {
       var formattedDiffs = "";
-      this.debouncedGetDiffs(version)
-      for (const diff of this.diffs[version]) {
+      for (const diff of diffs) {
         const [op, chunk] = diff;
         if (op === 1) {
           formattedDiffs = formattedDiffs.concat(
@@ -287,7 +275,6 @@ export default {
     await this.fetchProjectMetadata()
     await this.fetchPages()
     await this.fetchPage()
-    this.getVersionsDiffs()
   },
 };
 </script>

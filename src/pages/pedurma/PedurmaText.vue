@@ -255,6 +255,9 @@ export default {
         result += chunks[chunks.length - 1];
       }
 
+      // style double tsek
+      result = result.replace(':', '<span class="double-tsek">:</span>');
+
       return toPara(result);
     },
   },
@@ -634,6 +637,7 @@ export default {
 
 .preview >>> .note {
   padding: 0px 3px;
+  border-radius: 3px;
   color: rgb(44, 44, 44);
   background-color: rgb(209, 188, 248);
   border-radius: 3px;
@@ -641,7 +645,15 @@ export default {
 
 .preview >>> .note-number {
   padding: 0px 3px;
+  border-radius: 3px;
   color: rgb(44, 44, 44);
   background-color: rgb(207, 241, 83);
+}
+
+.preview >>> .double-tsek {
+  padding: 0 3px;
+  border-radius: 3px;
+  color: rgb(44, 44, 44);
+  background-color: rgb(247, 165, 165);
 }
 </style>

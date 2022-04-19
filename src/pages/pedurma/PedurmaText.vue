@@ -256,7 +256,7 @@ export default {
       }
 
       // style double tsek
-      result = result.replace(':', '<span class="double-tsek">:</span>');
+      result = result.replaceAll(':', '<span class="double-tsek">:</span>');
 
       return toPara(result);
     },

@@ -159,9 +159,7 @@ export default {
 
   methods: {
     changeTab(tab) {
-      console.log("tab changed", tab)
       setTimeout(() => {
-        console.log("verion", tab, "checked")
         if (tab in this.versionCheckedFlag) {
           this.versionCheckedFlag[tab] = true
         }

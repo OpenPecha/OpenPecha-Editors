@@ -18,7 +18,7 @@
             v-model="currentPageNum"
             :max="pages.length"
             input
-            @input="changePage()"
+            @input="changePage"
           />
         </div>
         <textarea
@@ -45,6 +45,7 @@
             indicator-color="primary"
             align="justify"
             narrow-indicator
+            @input="changeTab"
           >
             <q-tab
               v-for="version in this.projectMetadata.versions"
@@ -112,7 +113,8 @@ export default {
         image_url: null
       },
       versionsPage: {},
-      tab: ""
+      tab: "",
+      versionCheckedFlag: {}
     };
   },
 
@@ -156,6 +158,16 @@ export default {
   },
 
   methods: {
+    changeTab(tab) {
+      console.log("tab changed", tab)
+      setTimeout(() => {
+        console.log("verion", tab, "checked")
+        if (tab in this.versionCheckedFlag) {
+          this.versionCheckedFlag[tab] = true
+        }
+      }, 5000)
+    },
+
     save() {
       return this.$axios
         .put(getOrigin() + `/api/v1/diffproofread/${this.projectName}/${this.proofreadinVersion}/${this.volId}/${this.currentPageId}`,
@@ -183,12 +195,19 @@ export default {
       this.save()
     }, 1000),
 
+    setVersionCheckFlag(versions) {
+      versions.forEach(version => {
+        this.versionCheckedFlag[version] = false
+      })
+    },
+
     async fetchProjectMetadata() {
       const response = await this.$axios.get(
         getOrigin() + `/api/v1/diffproofread/metadata/${this.projectName}`
       );
       this.projectMetadata = response.data;
       this.tab = this.projectMetadata.versions[0]
+      this.setVersionCheckFlag(this.projectMetadata.versions.slice(1))
     },
 
     async fetchPages() {
@@ -215,9 +234,19 @@ export default {
       this.getDiffs()
     },
 
-    async changePage() {
+    async changePage(pageNum) {
+      if (Object.values(this.versionCheckedFlag).includes(false)) {
+        this.currentPageNum--
+          this.$q.notify({
+            type: "warning",
+            message: `Please check all the editions (${Object.keys(this.versionCheckedFlag)}) before proceeding to next page`,
+            position: "top",
+          });
+          return
+      }
       await this.fetchPage()
       this.getDiffs()
+      this.setVersionCheckFlag(this.projectMetadata.versions.slice(1))
     },
 
     async getDiffs() {

@@ -105,7 +105,7 @@ export default {
   data() {
     return {
       pages: null,
-      currentPageNum: 1,
+      currentPageNumStore: 1,
       projectMetadata: null,
       diffs: {},
       currentPage: {
@@ -114,8 +114,18 @@ export default {
       },
       versionsPage: {},
       tab: "",
-      versionCheckedFlag: {}
+      versionCheckedFlag: {},
+      allowPageChange: true
     };
+  },
+
+  watch: {
+    async currentPageNum(newPageNum, oldPageNum) {
+      // console.log("change current page")
+      //   await this.fetchPage()
+      //   this.getDiffs()
+      //   this.setVersionCheckFlag(this.projectMetadata.versions.slice(1))
+    }
   },
 
   computed: {
@@ -125,6 +135,27 @@ export default {
 
     volId() {
       return this.$route.params.volId;
+    },
+
+    currentPageNum: {
+      get() {
+        return this.currentPageNumStore
+      },
+
+      set(newPageNum) {
+        if (newPageNum === (this.currentPageNumStore+1)) {
+          if (Object.values(this.versionCheckedFlag).includes(false)) {
+              this.$q.notify({
+                type: "warning",
+                message: `Please check all the editions (${Object.keys(this.versionCheckedFlag)}) before proceeding to next page`,
+                position: "top",
+              });
+              this.allowPageChange = false
+              return
+          }
+        }
+          this.currentPageNumStore = newPageNum
+      }
     },
 
     currentPageId () {
@@ -233,18 +264,14 @@ export default {
     },
 
     async changePage(pageNum) {
-      if (Object.values(this.versionCheckedFlag).includes(false)) {
-        this.currentPageNum--
-          this.$q.notify({
-            type: "warning",
-            message: `Please check all the editions (${Object.keys(this.versionCheckedFlag)}) before proceeding to next page`,
-            position: "top",
-          });
-          return
+      if (!this.allowPageChange) {
+        return
       }
+      console.log("page change")
       await this.fetchPage()
       this.getDiffs()
       this.setVersionCheckFlag(this.projectMetadata.versions.slice(1))
+      this.tab = this.projectMetadata.versions[0]
     },
 
     async getDiffs() {

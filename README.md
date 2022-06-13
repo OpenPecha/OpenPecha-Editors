@@ -1,8 +1,45 @@
-# OpenPecha Editor (openpecha-editor)
+<h1 align="center">
+  <br>
+  <a href="https://openpecha.org"><img src="https://avatars.githubusercontent.com/u/82142807?s=400&u=19e108a15566f3a1449bafb03b8dd706a72aebcd&v=4" alt="OpenPecha" width="150"></a>
+  <br>
+</h1>
 
-Online editor for editing pecha in OpenPecha format (.opf)
+<h3 align="center">OpenPecha Fontend</h3>
 
-## Install the dependencies
+
+<!-- Replace the title of the repository -->
+
+<p align="center">
+  <a href="#description">Description</a> •
+  <a href="#owner">Owner</a> •
+  <a href="#integrations">Integrations</a> •
+  <a href="#docs">Docs</a>
+</p>
+<hr>
+
+## Description
+
+Hosting Pedurma Editor and Proofreading Editor apps
+
+<!-- This section provides a high-level overview for the repo -->
+
+## Owner
+
+- [@10zinten](https://github.com/10zinten)
+
+<!-- This section lists the owners of the repo -->
+
+## Integrations
+
+- No integrations with other repos.
+
+<!-- This section must list as bulleted list how this repo depends or is integrated with other repos -->
+
+## Docs
+
+
+
+### Install the dependencies
 ```bash
 yarn
 ```
@@ -29,3 +66,6 @@ See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
 
 #### tiptab
   - https://codesandbox.io/s/9x8fr
+
+<!-- This section must link to the docs which are in the root of the repository in /docs -->
+

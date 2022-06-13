@@ -60,7 +60,7 @@ See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
 
 ### Resources
 - project example, https://github.com/rbretecher/expense-tracker
-- More project examplese,https://github.com/quasarframework/quasar-awesome
+- More project examples,https://github.com/quasarframework/quasar-awesome
 - Advanced annotating, https://github.com/doccano/doccano
 - text annotation, https://github.com/recogito/recogito-js
 

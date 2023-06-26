@@ -3,13 +3,15 @@ FROM node:18.16.1-slim as develop-stage
 
 WORKDIR /app
 
+RUN which python
+
 COPY package*.json ./
 RUN yarn global add @quasar/cli
 COPY . .
 
 # build stage
 FROM develop-stage as build-stage
-RUN PYTHON=$(which python) yarn
+RUN yarn
 
 ARG OPENPECHA_API_URL
 ARG APP_DOMAIN_DEV

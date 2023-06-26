@@ -2,11 +2,13 @@
 FROM node:18.16.1-alpine3.18 as develop-stage
 
 WORKDIR /app
+
+RUN apk add python3=3.8.12-r1 py3-pip
+RUN which python3
+
 COPY package*.json ./
 RUN yarn global add @quasar/cli
 COPY . .
-
-RUN which python3
 
 # build stage
 FROM develop-stage as build-stage

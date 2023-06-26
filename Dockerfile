@@ -6,7 +6,7 @@ COPY package*.json ./
 RUN yarn global add @quasar/cli
 COPY . .
 
-RUN echo "$$$$$$$$$$$$$$$$$$$$$" & which python
+RUN which python3
 
 # build stage
 FROM develop-stage as build-stage

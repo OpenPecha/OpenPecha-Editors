@@ -9,7 +9,7 @@ COPY . .
 
 # build stage
 FROM develop-stage as build-stage
-RUN yarn
+RUN PYTHON=$(which python) yarn
 
 ARG OPENPECHA_API_URL
 ARG APP_DOMAIN_DEV

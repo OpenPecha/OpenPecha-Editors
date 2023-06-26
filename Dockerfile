@@ -3,8 +3,6 @@ FROM node:18.16.1-slim as develop-stage
 
 WORKDIR /app
 
-RUN apk add python2
-
 COPY package*.json ./
 RUN yarn global add @quasar/cli
 COPY . .

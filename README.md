@@ -68,4 +68,3 @@ See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
   - https://codesandbox.io/s/9x8fr
 
 <!-- This section must link to the docs which are in the root of the repository in /docs -->
-
